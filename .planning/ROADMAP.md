@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Next.js 15 scaffold, @supabase/ssr client utilities (server/browser/admin), Framer Motion AuthCard, route group structure
+- [x] 01-01-PLAN.md — Next.js 15 scaffold, @supabase/ssr client utilities (server/browser/admin), Framer Motion AuthCard, route group structure
 - [ ] 01-02-PLAN.md — Seven-table Postgres schema with RLS policies on all tables, handle_new_user trigger for auto-profile creation
 - [ ] 01-03-PLAN.md — Auth flows: signup, email verify, login redirect routing, password reset, middleware session guard
 
@@ -141,7 +141,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 1/3 | In progress | - |
 | 2. Brand Onboarding | 0/2 | Not started | - |
 | 3. Billing and Credits | 0/3 | Not started | - |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |

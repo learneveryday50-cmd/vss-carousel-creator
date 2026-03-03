@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 1 of 7 (Foundation)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-03 — Roadmap created, all 42 v1 requirements mapped to 7 phases
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-03 — 01-01 complete: Next.js scaffold, Supabase clients, route groups, AuthCard
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 7 min
+- Total execution time: 0.12 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation | 1 | 7 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: none yet
+- Last 5 plans: 01-01 (7 min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -46,6 +46,10 @@ Recent decisions affecting current work:
 - [Pre-build]: Credits deducted only on successful n8n response, never on click or failure — must be enforced by atomic RPC in Phase 5
 - [Pre-build]: Fire-and-forget async generation pattern is mandatory — Vercel serverless timeout (10s Hobby) is shorter than generation time (30-90s)
 - [Pre-build]: ImageBB URL expiry is a known v1 risk — document as limitation, migrate to Supabase Storage in v2
+- [01-01]: Scaffolded into temp directory to avoid create-next-app conflict with existing .claude/ and .planning/ directories
+- [01-01]: shadcn initialized with zinc base color using --base-color flag (--yes alone triggers interactive prompt)
+- [01-01]: .env.local.example force-added to git (template, not secrets) despite .gitignore *.local exclusion
+- [01-01]: email_confirmed_at guard added to middleware for /verify-email redirect per plan Task 2 description
 
 ### Pending Todos
 
@@ -61,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 1 context gathered. Implementation decisions locked in CONTEXT.md. Ready to plan Phase 1.
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Stopped at: Completed 01-01-PLAN.md — Next.js scaffold, Supabase clients, route groups, AuthCard. Ready for 01-02.
+Resume file: .planning/phases/01-foundation/01-02-PLAN.md
