@@ -1,3 +1,16 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-03T16:26:58.801Z"
+progress:
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 2
+---
+
 # Project State
 
 ## Project Reference
@@ -50,6 +63,9 @@ Recent decisions affecting current work:
 - [01-01]: shadcn initialized with zinc base color using --base-color flag (--yes alone triggers interactive prompt)
 - [01-01]: .env.local.example force-added to git (template, not secrets) despite .gitignore *.local exclusion
 - [01-01]: email_confirmed_at guard added to middleware for /verify-email redirect per plan Task 2 description
+- [Phase 01-02]: (SELECT auth.uid()) used in all RLS policies instead of auth.uid() — prevents per-row re-evaluation
+- [Phase 01-02]: stripe_webhook_events has zero RLS policies — service role only, zero user access surface
+- [Phase 01-02]: usage_tracking SELECT-only RLS — credit mutations through service role only to prevent client-side manipulation
 
 ### Pending Todos
 
