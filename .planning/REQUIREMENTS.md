@@ -113,22 +113,54 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 to AUTH-04 | Phase 1 | Pending |
-| BRAND-01 to BRAND-03 | Phase 2 | Pending |
-| TMPL-01 to TMPL-03 | Phase 2 | Pending |
-| STYLE-01 to STYLE-03 | Phase 2 | Pending |
-| BILL-01 to BILL-07 | Phase 3 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| BRAND-01 | Phase 2 | Pending |
+| BRAND-02 | Phase 2 | Pending |
+| BRAND-03 | Phase 2 | Pending |
+| TMPL-01 | Phase 2 | Pending |
+| TMPL-02 | Phase 2 | Pending |
+| TMPL-03 | Phase 2 | Pending |
+| STYLE-01 | Phase 2 | Pending |
+| STYLE-02 | Phase 2 | Pending |
+| STYLE-03 | Phase 2 | Pending |
+| BILL-01 | Phase 3 | Pending |
+| BILL-02 | Phase 3 | Pending |
+| BILL-03 | Phase 3 | Pending |
+| BILL-04 | Phase 3 | Pending |
+| BILL-05 | Phase 3 | Pending |
+| BILL-06 | Phase 3 | Pending |
+| BILL-07 | Phase 3 | Pending |
 | N8N-01 | Phase 4 | Pending |
-| GEN-01 to GEN-10 | Phase 5 | Pending |
-| HIST-01 to HIST-06 | Phase 6 | Pending |
-| N8N-02 to N8N-04 | Phase 5 | Pending |
-| MKT-01 to MKT-02 | Phase 7 | Pending |
+| GEN-01 | Phase 5 | Pending |
+| GEN-02 | Phase 5 | Pending |
+| GEN-03 | Phase 5 | Pending |
+| GEN-04 | Phase 5 | Pending |
+| GEN-05 | Phase 5 | Pending |
+| GEN-06 | Phase 5 | Pending |
+| GEN-07 | Phase 5 | Pending |
+| GEN-08 | Phase 5 | Pending |
+| GEN-09 | Phase 5 | Pending |
+| GEN-10 | Phase 5 | Pending |
+| N8N-02 | Phase 5 | Pending |
+| N8N-03 | Phase 5 | Pending |
+| N8N-04 | Phase 5 | Pending |
+| HIST-01 | Phase 6 | Pending |
+| HIST-02 | Phase 6 | Pending |
+| HIST-03 | Phase 6 | Pending |
+| HIST-04 | Phase 6 | Pending |
+| HIST-05 | Phase 6 | Pending |
+| HIST-06 | Phase 6 | Pending |
+| MKT-01 | Phase 7 | Pending |
+| MKT-02 | Phase 7 | Pending |
 
 **Coverage:**
-- v1 requirements: 39 total
-- Mapped to phases: 39
-- Unmapped: 0 ✓
+- v1 requirements: 42 total
+- Mapped to phases: 42
+- Unmapped: 0 (corrected from prior count of 39 — recount verified 42 listed requirements)
 
 ---
 *Requirements defined: 2026-03-03*
-*Last updated: 2026-03-03 after initial definition*
+*Last updated: 2026-03-03 — traceability expanded to individual rows, count corrected to 42*
