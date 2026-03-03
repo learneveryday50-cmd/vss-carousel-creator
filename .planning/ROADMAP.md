@@ -32,12 +32,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User session persists across browser refresh and tab close/reopen
   4. User can reset a forgotten password via an email link and set a new one
   5. All database tables have RLS enabled and enforce per-user data isolation — no user can query another user's rows
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffolding (Next.js + TypeScript, Supabase client setup, environment variables, Vercel config)
-- [ ] 01-02: Database schema (all five core tables: profiles, brands, templates, image_styles, carousels — with RLS policies on every tenant-scoped table)
-- [ ] 01-03: Auth flows (sign up, email verification, login, persistent session, password reset, auth middleware guard on protected routes)
+- [ ] 01-01-PLAN.md — Next.js 15 scaffold, @supabase/ssr client utilities (server/browser/admin), Framer Motion AuthCard, route group structure
+- [ ] 01-02-PLAN.md — Seven-table Postgres schema with RLS policies on all tables, handle_new_user trigger for auto-profile creation
+- [ ] 01-03-PLAN.md — Auth flows: signup, email verify, login redirect routing, password reset, middleware session guard
 
 ### Phase 2: Brand Onboarding
 **Goal**: Users can define their brand identity and select from available templates and image styles — all required inputs are in place before generation can proceed
