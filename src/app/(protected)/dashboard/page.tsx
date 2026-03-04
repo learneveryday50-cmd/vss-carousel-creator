@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getBrands } from '@/lib/supabase/brands'
-import { getTemplates, getImageStyles } from '@/lib/supabase/catalog'
+import { getTemplates, getImageStyles, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function DashboardPage() {
@@ -13,10 +13,12 @@ export default async function DashboardPage() {
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
-  const [brands, templates, styles] = await Promise.all([
+  const [brands, templates, styles, designStyles, hookStyles] = await Promise.all([
     getBrands(),
     getTemplates(),
     getImageStyles(),
+    getDesignStyles(),
+    getHookStyles(),
   ])
 
   const activeBrand =
@@ -57,8 +59,8 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* 3 Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 5 Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
         {/* Card 1 — Active Brand */}
         <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
@@ -104,13 +106,31 @@ export default async function DashboardPage() {
             Manage &rarr;
           </Link>
         </div>
+
+        {/* Card 4 — Design Styles */}
+        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
+          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Design styles</p>
+          <p className="font-bold text-xl text-zinc-900">{designStyles.length} styles available</p>
+          <Link href="/templates" className="text-xs text-zinc-400 hover:text-zinc-600 underline">
+            Browse &rarr;
+          </Link>
+        </div>
+
+        {/* Card 5 — Hook Styles */}
+        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
+          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Hook styles</p>
+          <p className="font-bold text-xl text-zinc-900">{hookStyles.length} hooks available</p>
+          <Link href="/templates" className="text-xs text-zinc-400 hover:text-zinc-600 underline">
+            Browse &rarr;
+          </Link>
+        </div>
       </div>
 
       {/* CTA Block */}
       <div className="rounded-2xl bg-zinc-900 text-white p-8">
         <h2 className="text-xl font-bold mb-2">Ready to generate your first carousel</h2>
         <p className="text-zinc-400 text-sm mb-6">
-          Select a template and image style, enter your idea, and let AI do the rest.
+          Select a hook style, template, design style, and image style, enter your topic, and let AI do the rest.
         </p>
         <div className="flex items-center gap-4">
           <button

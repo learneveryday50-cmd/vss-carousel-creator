@@ -60,3 +60,44 @@ export async function deleteCustomStyle(id: string): Promise<void> {
   const { error } = await supabase.from('image_styles').delete().eq('id', id)
   if (error) throw error
 }
+
+export type DesignStyle = {
+  id: string
+  name: string
+  description: string | null
+  preview_image: string | null
+  sort_order: number
+  is_active: boolean
+}
+
+export async function getDesignStyles(): Promise<DesignStyle[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('design_styles')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return data ?? []
+}
+
+export type HookStyle = {
+  id: string
+  name: string
+  description: string | null
+  example: string | null
+  prompt_instruction: string | null
+  sort_order: number
+  is_active: boolean
+}
+
+export async function getHookStyles(): Promise<HookStyle[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('hook_styles')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+  if (error) throw error
+  return data ?? []
+}

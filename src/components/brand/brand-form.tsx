@@ -83,6 +83,7 @@ export function BrandForm({
             id="voice_guidelines"
             name="voice_guidelines"
             rows={3}
+            maxLength={3000}
             defaultValue={brand?.voice_guidelines ?? ''}
             placeholder="We speak with confidence and clarity..."
             className="flex w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
@@ -97,6 +98,7 @@ export function BrandForm({
             id="product_description"
             name="product_description"
             rows={3}
+            maxLength={1500}
             defaultValue={brand?.product_description ?? ''}
             placeholder="Describe your product or service..."
             className="flex w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
