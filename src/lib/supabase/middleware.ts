@@ -21,7 +21,10 @@ export async function updateSession(request: NextRequest) {
   )
   const { data: { user } } = await supabase.auth.getUser() // NEVER getSession()
   const pathname = request.nextUrl.pathname
-  const isProtected = pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding')
+  const isProtected = pathname.startsWith('/dashboard') ||
+                      pathname.startsWith('/onboarding') ||
+                      pathname.startsWith('/templates') ||
+                      pathname.startsWith('/settings')
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
