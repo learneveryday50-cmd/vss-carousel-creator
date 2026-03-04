@@ -2,7 +2,9 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
-export async function signInAction(formData: FormData) {
+type ActionState = { error?: string } | null
+
+export async function signInAction(_prevState: ActionState, formData: FormData) {
   const supabase = await createClient()
   const { error } = await supabase.auth.signInWithPassword({
     email: formData.get('email') as string,
