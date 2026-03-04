@@ -12,7 +12,7 @@ Build a multi-tenant SaaS platform that turns a raw text idea into a branded Lin
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Auth, database schema with RLS, and project scaffolding — everything else gates on this
+- [x] **Phase 1: Foundation** - Auth, database schema with RLS, and project scaffolding — everything else gates on this (completed 2026-03-04)
 - [ ] **Phase 2: Brand Onboarding** - Brand profile creation/edit, template catalog, and image style options — required inputs for generation
 - [ ] **Phase 3: Billing and Credits** - Stripe Checkout, webhooks, Customer Portal, and credit system — must gate generation before dashboard is built
 - [ ] **Phase 4: n8n Workflow Migration** - Migrate existing n8n workflow from Airtable output to Supabase — unblocks generation UI
@@ -141,7 +141,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress|  |
+| 1. Foundation | 3/3 | Complete   | 2026-03-04 |
 | 2. Brand Onboarding | 0/2 | Not started | - |
 | 3. Billing and Credits | 0/3 | Not started | - |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |

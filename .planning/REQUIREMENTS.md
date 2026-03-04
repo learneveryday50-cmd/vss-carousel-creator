@@ -7,10 +7,10 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up with email and password
-- [ ] **AUTH-02**: User receives email verification after signup and must confirm before accessing dashboard
+- [x] **AUTH-01**: User can sign up with email and password
+- [x] **AUTH-02**: User receives email verification after signup and must confirm before accessing dashboard
 - [x] **AUTH-03**: User session persists across browser refresh
-- [ ] **AUTH-04**: User can reset password via email link
+- [x] **AUTH-04**: User can reset password via email link
 
 ### Brand
 
@@ -113,10 +113,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete (01-01) |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Complete |
 | BRAND-01 | Phase 2 | Pending |
 | BRAND-02 | Phase 2 | Pending |
 | BRAND-03 | Phase 2 | Pending |
