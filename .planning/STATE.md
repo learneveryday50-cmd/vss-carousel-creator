@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-04T09:24:09.705Z"
+status: in-progress
+last_updated: "2026-03-04T10:35:00.000Z"
 progress:
-  total_phases: 1
+  total_phases: 7
   completed_phases: 1
   total_plans: 3
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Turn a raw idea into a branded, ready-to-post LinkedIn carousel in under a minute — without ever opening a design tool.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 2 — Brand Onboarding
 
 ## Current Position
 
-Phase: 1 of 7 (Foundation)
-Plan: 1 of 3 in current phase
+Phase: 2 of 7 (Brand Onboarding)
+Plan: 1 of 1 in current phase (complete)
 Status: In progress
-Last activity: 2026-03-03 — 01-01 complete: Next.js scaffold, Supabase clients, route groups, AuthCard
+Last activity: 2026-03-04 — 02-01 complete: Brand CRUD system, onboarding wizard, BrandForm, settings pages
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [██░░░░░░░░] 14%
 
 ## Performance Metrics
 
@@ -41,13 +41,15 @@ Progress: [█░░░░░░░░░] 5%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 1 | 7 min | 7 min |
+| 02-brand-onboarding | 1 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (7 min)
-- Trend: -
+- Last 5 plans: 01-01 (7 min), 02-01 (4 min)
+- Trend: improving
 
 *Updated after each plan completion*
 | Phase 01-foundation P01-03 | 20 | 2 tasks | 10 files |
+| Phase 02-brand-onboarding P02-01 | 4 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -70,6 +72,9 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: [01-03]: Server Actions use (prevState, formData) signature for React 19 useActionState compatibility
 - [Phase 01-foundation]: [01-03]: reset-password page splits into two client form components; page.tsx is Server Component detecting recovery session via getUser()
 - [Phase 01-foundation]: [01-03]: verifyOtp({ type, token_hash }) used in /auth/confirm — NOT exchangeCodeForSession() — handles both email and recovery types in one route
+- [Phase 02-brand-onboarding]: [02-01]: redirect_to hidden field pattern in createBrandAction supports both onboarding→/dashboard and settings/new→/settings/brand without duplicating the action
+- [Phase 02-brand-onboarding]: [02-01]: OnboardingPanels extracted as client component so onboarding/page.tsx stays Server Component (required for getBrands() and redirect())
+- [Phase 02-brand-onboarding]: [02-01]: Next.js 15 async params pattern used in edit page (params: Promise<{ id: string }>)
 
 ### Pending Todos
 
@@ -84,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 01-01-PLAN.md — Next.js scaffold, Supabase clients, route groups, AuthCard. Ready for 01-02.
-Resume file: .planning/phases/01-foundation/01-02-PLAN.md
+Last session: 2026-03-04
+Stopped at: Completed 02-01-PLAN.md — Brand CRUD system, onboarding wizard, BrandForm component, settings pages. Phase 2 complete.
+Resume file: .planning/phases/03-dashboard/03-01-PLAN.md

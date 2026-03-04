@@ -14,9 +14,9 @@
 
 ### Brand
 
-- [ ] **BRAND-01**: User can create a single brand profile during onboarding
-- [ ] **BRAND-02**: Brand profile includes: name, primary/secondary colors, voice guidelines, product description, audience description, CTA text
-- [ ] **BRAND-03**: User can edit their brand profile after onboarding
+- [x] **BRAND-01**: User can create a single brand profile during onboarding
+- [x] **BRAND-02**: Brand profile includes: name, primary/secondary colors, voice guidelines, product description, audience description, CTA text
+- [x] **BRAND-03**: User can edit their brand profile after onboarding
 
 ### Templates
 
@@ -117,9 +117,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete (01-01) |
 | AUTH-04 | Phase 1 | Complete |
-| BRAND-01 | Phase 2 | Pending |
-| BRAND-02 | Phase 2 | Pending |
-| BRAND-03 | Phase 2 | Pending |
+| BRAND-01 | Phase 2 | Complete |
+| BRAND-02 | Phase 2 | Complete |
+| BRAND-03 | Phase 2 | Complete |
 | TMPL-01 | Phase 2 | Pending |
 | TMPL-02 | Phase 2 | Pending |
 | TMPL-03 | Phase 2 | Pending |

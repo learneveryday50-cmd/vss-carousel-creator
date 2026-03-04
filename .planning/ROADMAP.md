@@ -49,11 +49,12 @@ Plans:
   3. 5-6 carousel templates are visible and selectable in the UI, each with a distinct front cover, content pages, and CTA page (placeholder assets acceptable)
   4. 4 built-in image styles are visible and selectable (Technical Annotation & Realism, Notebook, Whiteboard Diagram, Comic Strip Storyboard)
   5. User can add a custom image style name beyond the 4 built-in options
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Brand profile (multi-step onboarding wizard, brand CRUD, redirect to dashboard after completion)
-- [ ] 02-02: Templates and image styles (seed template catalog with placeholder URLs, seed built-in styles, custom style creation)
+- [x] 02-01-PLAN.md — Brand CRUD (multi-step onboarding wizard, create/edit/delete brand, Server Actions, /settings/brand pages)
+- [ ] 02-02-PLAN.md — Template & Style catalog (seed 5 templates + 4 built-in styles, TemplateGallery, StyleSelector, custom style creation)
+- [ ] 02-03-PLAN.md — Dashboard shell + Brand Switcher (sidebar nav, header, cookie-based brand selection, dashboard overview page)
 
 ### Phase 3: Billing and Credits
 **Goal**: Users are on a plan, credits are tracked and visible, Stripe events reliably update plan state, and the generation endpoint will have a working credit gate to enforce
@@ -142,7 +143,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-04 |
-| 2. Brand Onboarding | 0/2 | Not started | - |
+| 2. Brand Onboarding | 1/3 | In Progress|  |
 | 3. Billing and Credits | 0/3 | Not started | - |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
 | 5. Generation Dashboard | 0/3 | Not started | - |
