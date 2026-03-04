@@ -1,8 +1,16 @@
-export default function OnboardingPage() {
+import { redirect } from 'next/navigation'
+import { getBrands } from '@/lib/supabase/brands'
+import { createBrandAction } from './actions'
+import { BrandForm } from '@/components/brand/brand-form'
+import { OnboardingPanels } from './panels'
+
+export default async function OnboardingPage() {
+  const brands = await getBrands()
+  if (brands.length > 0) {
+    redirect('/dashboard')
+  }
+
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold text-gray-900">Onboarding</h1>
-      <p className="text-gray-500 mt-2">Brand setup coming in Phase 2.</p>
-    </main>
+    <OnboardingPanels action={createBrandAction} />
   )
 }
