@@ -13,7 +13,7 @@ Build a multi-tenant SaaS platform that turns a raw text idea into a branded Lin
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Auth, database schema with RLS, and project scaffolding — everything else gates on this (completed 2026-03-04)
-- [ ] **Phase 2: Brand Onboarding** - Brand profile creation/edit, template catalog, and image style options — required inputs for generation
+- [x] **Phase 2: Brand Onboarding** - Brand profile creation/edit, template catalog, and image style options — required inputs for generation (completed 2026-03-04)
 - [ ] **Phase 3: Billing and Credits** - Stripe Checkout, webhooks, Customer Portal, and credit system — must gate generation before dashboard is built
 - [ ] **Phase 4: n8n Workflow Migration** - Migrate existing n8n workflow from Airtable output to Supabase — unblocks generation UI
 - [ ] **Phase 5: Generation Dashboard** - Core value loop: async generation, Realtime status, credit gate, post-success credit deduction, and carousel preview
@@ -54,7 +54,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Brand CRUD (multi-step onboarding wizard, create/edit/delete brand, Server Actions, /settings/brand pages)
 - [x] 02-02-PLAN.md — Template & Style catalog (seed 5 templates + 4 built-in styles, TemplateGallery, StyleSelector, custom style creation)
-- [ ] 02-03-PLAN.md — Dashboard shell + Brand Switcher (sidebar nav, header, cookie-based brand selection, dashboard overview page)
+- [x] 02-03-PLAN.md — Dashboard shell + Brand Switcher (sidebar nav, header, cookie-based brand selection, dashboard overview page)
 
 ### Phase 3: Billing and Credits
 **Goal**: Users are on a plan, credits are tracked and visible, Stripe events reliably update plan state, and the generation endpoint will have a working credit gate to enforce
@@ -143,7 +143,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-04 |
-| 2. Brand Onboarding | 2/3 | In Progress|  |
+| 2. Brand Onboarding | 3/3 | Complete   | 2026-03-04 |
 | 3. Billing and Credits | 0/3 | Not started | - |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
 | 5. Generation Dashboard | 0/3 | Not started | - |

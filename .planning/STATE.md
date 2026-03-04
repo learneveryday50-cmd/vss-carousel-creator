@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in-progress
-last_updated: "2026-03-04T11:00:00.000Z"
+status: unknown
+last_updated: "2026-03-04T16:09:19.567Z"
 progress:
-  total_phases: 7
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 5
+  total_phases: 2
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Turn a raw idea into a branded, ready-to-post LinkedIn carousel in under a minute — without ever opening a design tool.
-**Current focus:** Phase 2 — Brand Onboarding
+**Current focus:** Phase 3 — Payments/Billing (Phase 2 complete)
 
 ## Current Position
 
-Phase: 2 of 7 (Brand Onboarding)
-Plan: 3 of 3 in current phase (02-02 complete, 02-03 pending)
-Status: In progress
-Last activity: 2026-03-04 — 02-02 complete: Template & Style catalog — seed migration, catalog helpers, TemplateGallery, StyleSelector, /templates page
+Phase: 2 of 7 (Brand Onboarding) — COMPLETE
+Plan: 3 of 3 in current phase (all complete)
+Status: Phase 2 complete — ready for Phase 3 (Billing/Stripe)
+Last activity: 2026-03-04 — 02-03 complete: Dashboard shell — sidebar nav, header, brand switcher cookie system, dashboard overview page
 
-Progress: [██░░░░░░░░] 14%
+Progress: [███░░░░░░░] 21%
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 01-foundation P01-03 | 20 | 2 tasks | 10 files |
 | Phase 02-brand-onboarding P02-01 | 4 | 3 tasks | 9 files |
 | Phase 02-brand-onboarding P02-02 | 10 | 3 tasks | 7 files |
+| Phase 02-brand-onboarding P03 | 15 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 02-brand-onboarding]: [02-02]: Descriptions stored in client-side slug→string map in TemplateCard rather than DB column — keeps templates table lean
 - [Phase 02-brand-onboarding]: [02-02]: TemplateGallery implements controlled + uncontrolled selection modes — controlled mode ready for Phase 5 generation form embedding
 - [Phase 02-brand-onboarding]: [02-02]: StyleSelector built-in icons are inline SVGs with selected color prop — avoids icon library dependency for 4 static icons
+- [Phase 02-brand-onboarding]: [02-03]: Brand cookie resolved once in protected layout — all protected pages inherit selectedBrandId without re-reading cookie
+- [Phase 02-brand-onboarding]: [02-03]: Sidebar uses usePathname() for active state — entire file is Client Component, simpler than Server Sidebar + separate Client NavItem file
+- [Phase 02-brand-onboarding]: [02-03]: BrandSwitcher uses click-outside mousedown pattern (no shadcn Popover) to keep dependencies lean
 
 ### Pending Todos
 
@@ -94,5 +98,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 02-02-PLAN.md — Template & Style catalog: seed migration, catalog helpers, TemplateGallery, StyleSelector, /templates page.
-Resume file: .planning/phases/02-brand-onboarding/02-03-PLAN.md
+Stopped at: Completed 02-03-PLAN.md — Dashboard shell: sidebar nav, header, brand switcher cookie system, dashboard overview page. Phase 2 complete.
+Resume file: .planning/phases/03-payments/ (Phase 3 — Billing/Stripe)

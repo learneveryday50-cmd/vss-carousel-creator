@@ -20,13 +20,13 @@
 
 ### Templates
 
-- [ ] **TMPL-01**: 5–6 carousel templates are available for selection (placeholder assets for v1, final designs swapped in later)
-- [ ] **TMPL-02**: Each template has a front cover page, consistent content pages, and a CTA page
+- [x] **TMPL-01**: 5–6 carousel templates are available for selection (placeholder assets for v1, final designs swapped in later)
+- [x] **TMPL-02**: Each template has a front cover page, consistent content pages, and a CTA page
 - [ ] **TMPL-03**: Template assets are hosted as URLs (either self-hosted or user-provided) and passed to n8n at generation time
 
 ### Image Styles
 
-- [ ] **STYLE-01**: 4 built-in image styles available: Technical Annotation & Realism, Notebook, Whiteboard Diagram, Comic Strip Storyboard
+- [x] **STYLE-01**: 4 built-in image styles available: Technical Annotation & Realism, Notebook, Whiteboard Diagram, Comic Strip Storyboard
 - [ ] **STYLE-02**: User can add custom image style names beyond the 4 built-in options
 - [ ] **STYLE-03**: Selected image style name is passed to n8n at generation time
 
@@ -120,10 +120,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRAND-01 | Phase 2 | Complete |
 | BRAND-02 | Phase 2 | Complete |
 | BRAND-03 | Phase 2 | Complete |
-| TMPL-01 | Phase 2 | Pending |
-| TMPL-02 | Phase 2 | Pending |
+| TMPL-01 | Phase 2 | Complete |
+| TMPL-02 | Phase 2 | Complete |
 | TMPL-03 | Phase 2 | Pending |
-| STYLE-01 | Phase 2 | Pending |
+| STYLE-01 | Phase 2 | Complete |
 | STYLE-02 | Phase 2 | Pending |
 | STYLE-03 | Phase 2 | Pending |
 | BILL-01 | Phase 3 | Pending |
