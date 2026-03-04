@@ -3,7 +3,11 @@
     "allow": [
       "Bash(node:*)",
       "WebSearch",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(cmd:*)",
+      "Bash(npm run:*)",
+      "Bash(powershell:*)",
+      "Bash(rm:*)"
     ]
   }
 }
