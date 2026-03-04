@@ -53,7 +53,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Brand CRUD (multi-step onboarding wizard, create/edit/delete brand, Server Actions, /settings/brand pages)
-- [ ] 02-02-PLAN.md — Template & Style catalog (seed 5 templates + 4 built-in styles, TemplateGallery, StyleSelector, custom style creation)
+- [x] 02-02-PLAN.md — Template & Style catalog (seed 5 templates + 4 built-in styles, TemplateGallery, StyleSelector, custom style creation)
 - [ ] 02-03-PLAN.md — Dashboard shell + Brand Switcher (sidebar nav, header, cookie-based brand selection, dashboard overview page)
 
 ### Phase 3: Billing and Credits
@@ -143,7 +143,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-04 |
-| 2. Brand Onboarding | 1/3 | In Progress|  |
+| 2. Brand Onboarding | 2/3 | In Progress|  |
 | 3. Billing and Credits | 0/3 | Not started | - |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
 | 5. Generation Dashboard | 0/3 | Not started | - |

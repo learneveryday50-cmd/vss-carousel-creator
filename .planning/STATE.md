@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-04T10:35:00.000Z"
+last_updated: "2026-03-04T11:00:00.000Z"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 3
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 2 of 7 (Brand Onboarding)
-Plan: 1 of 1 in current phase (complete)
+Plan: 3 of 3 in current phase (02-02 complete, 02-03 pending)
 Status: In progress
-Last activity: 2026-03-04 — 02-01 complete: Brand CRUD system, onboarding wizard, BrandForm, settings pages
+Last activity: 2026-03-04 — 02-02 complete: Template & Style catalog — seed migration, catalog helpers, TemplateGallery, StyleSelector, /templates page
 
 Progress: [██░░░░░░░░] 14%
 
@@ -50,6 +50,7 @@ Progress: [██░░░░░░░░] 14%
 *Updated after each plan completion*
 | Phase 01-foundation P01-03 | 20 | 2 tasks | 10 files |
 | Phase 02-brand-onboarding P02-01 | 4 | 3 tasks | 9 files |
+| Phase 02-brand-onboarding P02-02 | 10 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,9 @@ Recent decisions affecting current work:
 - [Phase 02-brand-onboarding]: [02-01]: redirect_to hidden field pattern in createBrandAction supports both onboarding→/dashboard and settings/new→/settings/brand without duplicating the action
 - [Phase 02-brand-onboarding]: [02-01]: OnboardingPanels extracted as client component so onboarding/page.tsx stays Server Component (required for getBrands() and redirect())
 - [Phase 02-brand-onboarding]: [02-01]: Next.js 15 async params pattern used in edit page (params: Promise<{ id: string }>)
+- [Phase 02-brand-onboarding]: [02-02]: Descriptions stored in client-side slug→string map in TemplateCard rather than DB column — keeps templates table lean
+- [Phase 02-brand-onboarding]: [02-02]: TemplateGallery implements controlled + uncontrolled selection modes — controlled mode ready for Phase 5 generation form embedding
+- [Phase 02-brand-onboarding]: [02-02]: StyleSelector built-in icons are inline SVGs with selected color prop — avoids icon library dependency for 4 static icons
 
 ### Pending Todos
 
@@ -90,5 +94,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 02-01-PLAN.md — Brand CRUD system, onboarding wizard, BrandForm component, settings pages. Phase 2 complete.
-Resume file: .planning/phases/03-dashboard/03-01-PLAN.md
+Stopped at: Completed 02-02-PLAN.md — Template & Style catalog: seed migration, catalog helpers, TemplateGallery, StyleSelector, /templates page.
+Resume file: .planning/phases/02-brand-onboarding/02-03-PLAN.md
