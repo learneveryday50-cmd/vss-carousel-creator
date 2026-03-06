@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T09:56:00Z"
+last_updated: "2026-03-06T09:58:22.247Z"
 progress:
-  total_phases: 7
+  total_phases: 3
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 3 of 7 (Billing and Credits) — IN PROGRESS
-Plan: 1 of 3 complete
-Status: Phase 3 Plan 01 complete — Stripe SDK singleton + pg_cron migration done; ready for Plan 02 (webhooks)
-Last activity: 2026-03-06 — 03-01 complete: Stripe SDK singleton, pg_cron billing cron migration, .env.local.example updated
+Plan: 2 of 3 complete
+Status: Phase 3 Plan 02 complete — Stripe webhook Route Handler done with idempotency and subscription lifecycle; ready for Plan 03 (billing UI)
+Last activity: 2026-03-06 — 03-02 complete: Stripe webhook handler, signature verification, subscription created/updated/deleted, invoice.paid credit reset
 
 Progress: [███░░░░░░░] 24%
 
@@ -53,6 +53,7 @@ Progress: [███░░░░░░░] 24%
 | Phase 02-brand-onboarding P02-02 | 10 | 3 tasks | 7 files |
 | Phase 02-brand-onboarding P03 | 15 | 3 tasks | 7 files |
 | Phase 03-billing-and-credits P03-01 | 5 | 2 tasks | 4 files |
+| Phase 03 P02 | 5 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,9 @@ Recent decisions affecting current work:
 - [Phase 03-billing-and-credits]: [03-01]: reset_free_tier_credits() uses SECURITY DEFINER SET search_path = '' — bypasses RLS on usage_tracking, prevents search_path injection
 - [Phase 03-billing-and-credits]: [03-01]: Idempotency via date_trunc('month', last_reset_at) < date_trunc('month', NOW()) — cron retries are safe
 - [Phase 03-billing-and-credits]: [03-01]: Only plan='free' rows reset by cron; Pro credits reset by invoice.paid webhook in Plan 02
+- [Phase 03-02]: Insert to stripe_webhook_events BEFORE processing — Stripe retry hits idempotency check; UNIQUE constraint catches concurrent duplicates
+- [Phase 03-02]: Use req.text() not req.json() for raw body — constructEvent verifies HMAC over exact raw bytes; JSON parsing corrupts whitespace and breaks signature
+- [Phase 03-02]: Stripe SDK v20+ breaking change: invoice.subscription removed; subscription invoices detected via invoice.parent?.type === 'subscription_details'
 
 ### Pending Todos
 
@@ -103,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 03-01-PLAN.md — Stripe SDK singleton + pg_cron monthly free-tier credit reset migration. Phase 3 Plan 1 of 3 complete.
-Resume file: .planning/phases/03-billing-and-credits/03-02-PLAN.md (Phase 3 Plan 02 — Stripe webhooks)
+Stopped at: Completed 03-02-PLAN.md — Stripe webhook Route Handler with idempotency and subscription lifecycle handling. Phase 3 Plan 2 of 3 complete.
+Resume file: .planning/phases/03-billing-and-credits/03-03-PLAN.md (Phase 3 Plan 03 — Billing UI)
