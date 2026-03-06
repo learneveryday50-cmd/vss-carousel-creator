@@ -66,12 +66,12 @@ Plans:
   3. User can manage or cancel their subscription via the Stripe Customer Portal link
   4. Monthly credit reset occurs on the 1st of each month — credits are restored to the plan limit
   5. Free-tier user who has exhausted all 3 credits sees an upgrade prompt instead of the Generate button
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Stripe setup (Products and Prices configuration, Stripe Customer created at signup, stripe_webhook_events idempotency table)
-- [ ] 03-02: Webhook handler (/api/stripe/webhook with raw body, signature verification, plan/credit update on all subscription events)
-- [ ] 03-03: Credit UI and billing pages (credit display in header, Checkout Session endpoint, Customer Portal link, upgrade prompt for exhausted free-tier users, monthly credit reset logic)
+- [ ] 03-01-PLAN.md — Stripe SDK singleton (`src/lib/stripe/server.ts`), pg_cron migration for monthly free-tier credit reset, env var documentation
+- [ ] 03-02-PLAN.md — Webhook Route Handler (`/api/stripe/webhook`): raw body + signature verification, idempotency, subscription event processing with admin writes
+- [ ] 03-03-PLAN.md — Credit UI: usage_tracking data flow through layout → AppShell → Header → CreditBadge, CreditGate component, `/settings/billing` page with Checkout + Portal Server Actions, sidebar Billing nav entry
 
 ### Phase 4: n8n Workflow Migration
 **Goal**: The existing n8n Cloud workflow writes generation results to Supabase instead of Airtable, and the end-to-end pipeline (webhook trigger → AI generation → Supabase write) is verified in isolation before the generation UI is built around it
