@@ -1,11 +1,12 @@
 'use client'
 import { useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { signInAction } from './actions'
+import { signInAction, signInWithGoogleAction } from './actions'
 
 type FormState = { error?: string } | null
 
@@ -71,6 +72,8 @@ function CarouselPreview() {
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(signInAction, null)
+  const searchParams = useSearchParams()
+  const urlError = searchParams.get('error')
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
@@ -175,14 +178,16 @@ export default function LoginPage() {
           </div>
 
           {/* Google button */}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full h-11 text-sm font-medium border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
-          >
-            <GoogleIcon />
-            Continue with Google
-          </Button>
+          <form action={signInWithGoogleAction}>
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full h-11 text-sm font-medium border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+            >
+              <GoogleIcon />
+              Continue with Google
+            </Button>
+          </form>
 
           {/* Divider */}
           <div className="relative my-6">
@@ -211,9 +216,9 @@ export default function LoginPage() {
               <Input id="password" name="password" type="password" required placeholder="Enter your password" className="h-11" />
             </div>
 
-            {state?.error && (
+            {(state?.error || urlError) && (
               <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
-                <p className="text-red-600 text-sm">{state.error}</p>
+                <p className="text-red-600 text-sm">{state?.error ?? urlError}</p>
               </div>
             )}
 

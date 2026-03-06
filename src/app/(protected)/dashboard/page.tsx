@@ -27,22 +27,26 @@ export default async function DashboardPage() {
   const customStyleCount = styles.filter((s) => s.is_custom).length
   const builtInStyleCount = styles.filter((s) => !s.is_custom).length
 
-  // Derive a greeting name from email
   const displayName = user?.email?.split('@')[0] ?? 'there'
 
   if (!activeBrand) {
     return (
-      <div className="max-w-4xl">
-        <div className="bg-white rounded-2xl border border-zinc-100 p-8 text-center">
-          <h2 className="text-lg font-semibold text-zinc-900 mb-2">Set up your brand first</h2>
-          <p className="text-zinc-500 text-sm mb-4">
+      <div className="max-w-lg mx-auto mt-12">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-10 text-center">
+          <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M11 2v18M2 11h18" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Set up your brand first</h2>
+          <p className="text-gray-500 text-sm mb-6">
             You need at least one brand before you can use the dashboard.
           </p>
           <Link
             href="/onboarding"
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-zinc-900 text-white text-sm font-medium hover:bg-zinc-800"
+            className="inline-flex items-center px-5 py-2.5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors"
           >
-            Create a brand
+            Create a brand &rarr;
           </Link>
         </div>
       </div>
@@ -50,98 +54,95 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-8">
+
       {/* Heading */}
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900">Welcome, {displayName}</h1>
-        <p className="text-zinc-500 mt-1 text-sm">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-1">Dashboard</p>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          Welcome back, <span className="text-amber-600">{displayName}</span>
+        </h1>
+        <p className="text-gray-500 mt-1 text-sm">
           Your brand is set up. Ready to create.
         </p>
       </div>
 
-      {/* 5 Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
 
         {/* Card 1 — Active Brand */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Active brand</p>
-          <div className="flex items-center gap-2">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3 xl:col-span-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Active brand</p>
+          <div className="flex items-center gap-2.5">
             <span
-              className="w-4 h-4 rounded-full flex-shrink-0"
+              className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
               style={{ backgroundColor: activeBrand.primary_color }}
             />
-            <span className="font-bold text-xl text-zinc-900 truncate">{activeBrand.name}</span>
+            <span className="font-bold text-xl text-gray-900 truncate">{activeBrand.name}</span>
           </div>
           <Link
             href={`/settings/brand/${activeBrand.id}/edit`}
-            className="text-xs text-zinc-400 hover:text-zinc-600 underline"
+            className="text-xs text-amber-600 hover:text-amber-700 font-medium"
           >
-            Edit brand
+            Edit brand &rarr;
           </Link>
         </div>
 
         {/* Card 2 — Templates */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Template library</p>
-          <p className="font-bold text-xl text-zinc-900">{templates.length} templates available</p>
-          <Link
-            href="/templates"
-            className="text-xs text-zinc-400 hover:text-zinc-600 underline"
-          >
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Templates</p>
+          <p className="font-bold text-2xl text-gray-900">{templates.length}</p>
+          <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
           </Link>
         </div>
 
         {/* Card 3 — Image Styles */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Image styles</p>
-          <p className="font-bold text-xl text-zinc-900">
-            {builtInStyleCount} built-in
-            {customStyleCount > 0 ? ` + ${customStyleCount} custom` : ''}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Image styles</p>
+          <p className="font-bold text-2xl text-gray-900">
+            {builtInStyleCount}
+            {customStyleCount > 0 && <span className="text-base text-gray-400 font-medium"> +{customStyleCount}</span>}
           </p>
-          <Link
-            href="/templates"
-            className="text-xs text-zinc-400 hover:text-zinc-600 underline"
-          >
+          <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Manage &rarr;
           </Link>
         </div>
 
-        {/* Card 4 — Design Styles */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Design styles</p>
-          <p className="font-bold text-xl text-zinc-900">{designStyles.length} styles available</p>
-          <Link href="/templates" className="text-xs text-zinc-400 hover:text-zinc-600 underline">
+        {/* Card 4 — Design + Hook combo */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Styles &amp; Hooks</p>
+          <p className="font-bold text-2xl text-gray-900">{designStyles.length + hookStyles.length}</p>
+          <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
           </Link>
         </div>
 
-        {/* Card 5 — Hook Styles */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5 space-y-2">
-          <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Hook styles</p>
-          <p className="font-bold text-xl text-zinc-900">{hookStyles.length} hooks available</p>
-          <Link href="/templates" className="text-xs text-zinc-400 hover:text-zinc-600 underline">
-            Browse &rarr;
-          </Link>
-        </div>
       </div>
 
       {/* CTA Block */}
-      <div className="rounded-2xl bg-zinc-900 text-white p-8">
-        <h2 className="text-xl font-bold mb-2">Ready to generate your first carousel</h2>
-        <p className="text-zinc-400 text-sm mb-6">
-          Select a hook style, template, design style, and image style, enter your topic, and let AI do the rest.
-        </p>
-        <div className="flex items-center gap-4">
-          <button
-            disabled
-            className="inline-flex items-center px-5 py-2.5 rounded-lg bg-white/20 text-white/50 text-sm font-medium cursor-not-allowed"
+      <div className="rounded-2xl bg-gray-900 text-white p-8 flex flex-col sm:flex-row sm:items-center gap-6">
+        <div className="flex-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-2">Next step</p>
+          <h2 className="text-lg font-bold mb-1">Ready to generate your first carousel?</h2>
+          <p className="text-gray-400 text-sm">
+            Select a hook style, template, design style, and image style — then let AI do the rest.
+          </p>
+        </div>
+        <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">
+          <Link
+            href="/templates"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-semibold hover:bg-amber-400 transition-colors"
           >
-            Generate carousel
-          </button>
-          <span className="text-xs text-white/40">Unlocks in Phase 5</span>
+            Create a carousel
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7h9M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
+          <span className="text-xs text-gray-500">AI generation coming in Phase 5</span>
         </div>
       </div>
+
     </div>
   )
 }

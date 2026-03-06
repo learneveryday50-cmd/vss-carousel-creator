@@ -1,4 +1,5 @@
 'use server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
@@ -14,4 +15,26 @@ export async function signInAction(_prevState: ActionState, formData: FormData) 
   // Check if user has a brand to determine redirect
   const { data: brand } = await supabase.from('brands').select('id').single()
   redirect(brand ? '/dashboard' : '/onboarding')
+}
+
+export async function signInWithGoogleAction() {
+  const supabase = await createClient()
+  const headersList = await headers()
+  const host = headersList.get('host') ?? 'localhost:3000'
+  const protocol = host.startsWith('localhost') ? 'http' : 'https'
+  const origin = `${protocol}://${host}`
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  })
+
+  if (error || !data.url) {
+    const msg = encodeURIComponent(error?.message ?? 'Could not start Google sign-in.')
+    redirect(`/login?error=${msg}`)
+  }
+
+  redirect(data.url)
 }

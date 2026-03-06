@@ -1,95 +1,74 @@
 'use client'
 
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Template } from '@/lib/supabase/catalog'
+import { TemplatePreview } from './template-preview'
 
 const DESCRIPTIONS: Record<string, string> = {
-  'hook-insight-cta': 'Open with a bold hook, deliver one key insight, close with a strong CTA.',
-  'problem-solution': 'Present a relatable problem, then walk through your solution.',
-  'step-by-step': 'Break down a process into clear sequential steps.',
-  'story-thread': 'Share a narrative arc — beginning, struggle, resolution.',
-  'case-study': 'Show real results: situation, actions taken, measurable outcome.',
+  'hook-insight-cta':  'Bold hook → key insight → strong CTA',
+  'problem-solution':  'Relatable problem → clear solution',
+  'step-by-step':      'Sequential steps through a process',
+  'story-thread':      'Narrative arc: setup → struggle → resolution',
+  'case-study':        'Situation → actions → measurable outcome',
 }
 
-type TemplateCardProps = {
-  template: Template
-  selected: boolean
-  onSelect: (id: string) => void
-}
+type Props = { template: Template; selected: boolean; onSelect: (id: string) => void }
 
-export function TemplateCard({ template, selected, onSelect }: TemplateCardProps) {
+export function TemplateCard({ template, selected, onSelect }: Props) {
   const description = DESCRIPTIONS[template.slug] ?? ''
-
   return (
-    <button
+    <motion.button
       type="button"
       onClick={() => onSelect(template.id)}
       className={[
-        'w-full text-left rounded-2xl border p-5 transition-all duration-150',
-        'bg-white hover:shadow-sm',
+        'relative w-full text-left rounded-xl border bg-white transition-all duration-200 overflow-hidden',
         selected
-          ? 'border-zinc-300 ring-2 ring-zinc-900'
-          : 'border-zinc-100 hover:border-zinc-300',
+          ? 'border-amber-400 ring-2 ring-amber-400/30 shadow-md'
+          : 'border-gray-200 hover:border-amber-300 hover:shadow-md shadow-sm',
       ].join(' ')}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.97 }}
+      animate={selected ? { scale: [0.97, 1.02, 1] } : { scale: 1 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
     >
-      {/* Thumbnail placeholder */}
-      <div className="w-full aspect-[4/3] rounded-xl bg-zinc-100 flex items-center justify-center">
-        <SlideStackIcon />
+      {/* Selected badge */}
+      <AnimatePresence>
+        {selected && (
+          <motion.span
+            className="absolute top-2.5 right-2.5 z-10 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-sm"
+            initial={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.4 }}
+            transition={{ duration: 0.15, ease: 'backOut' }}
+          >
+            <CheckIcon />
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* Preview area */}
+      <div className={[
+        'w-full aspect-[4/3] p-3 flex flex-col border-b',
+        selected ? 'bg-amber-50 border-amber-100' : 'bg-gray-50 border-gray-100',
+      ].join(' ')}>
+        <TemplatePreview slug={template.slug} />
       </div>
 
-      {/* Template name */}
-      <p className="font-semibold text-zinc-900 mt-3 text-sm">{template.name}</p>
-
-      {/* Description */}
-      {description && (
-        <p className="text-sm text-zinc-500 mt-1 leading-snug">{description}</p>
-      )}
-
-      {/* Select indicator */}
-      <div className="mt-3 flex items-center gap-1.5">
-        {selected ? (
-          <>
-            <CheckIcon className="w-4 h-4 text-zinc-900" />
-            <span className="text-xs font-medium text-zinc-900">Selected</span>
-          </>
-        ) : (
-          <span className="text-xs text-zinc-400">Select</span>
+      {/* Info */}
+      <div className="px-3.5 py-3">
+        <p className="font-semibold text-gray-900 text-sm leading-snug">{template.name}</p>
+        {description && (
+          <p className="text-xs text-gray-500 mt-1 leading-snug">{description}</p>
         )}
       </div>
-    </button>
+    </motion.button>
   )
 }
 
-function SlideStackIcon() {
+function CheckIcon() {
   return (
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect x="4" y="6" width="24" height="5" rx="1.5" fill="#d4d4d8" />
-      <rect x="4" y="13.5" width="24" height="5" rx="1.5" fill="#d4d4d8" />
-      <rect x="4" y="21" width="24" height="5" rx="1.5" fill="#d4d4d8" />
-    </svg>
-  )
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-        clipRule="evenodd"
-      />
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M1.5 5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }

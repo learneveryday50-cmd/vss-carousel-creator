@@ -1,12 +1,8 @@
 import { getTemplates, getImageStyles, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
-import { TemplateGallery } from '@/components/templates/template-gallery'
-import { StyleSelector } from '@/components/image-styles/style-selector'
-import { DesignStyleSelector } from '@/components/design-styles/design-style-selector'
-import { SlideCountSelector } from '@/components/slide-count/slide-count-selector'
-import { HookStyleSelector } from '@/components/hook-styles/hook-style-selector'
+import { CreatorWorkflow } from '@/components/creator/creator-workflow'
 
 export const metadata = {
-  title: 'Templates & Styles',
+  title: 'Create Carousel',
 }
 
 export default async function TemplatesPage() {
@@ -18,63 +14,24 @@ export default async function TemplatesPage() {
   ])
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-        {/* Page header */}
-        <div className="mb-10">
-          <h1 className="text-2xl font-bold text-zinc-900">Templates &amp; Styles</h1>
-          <p className="text-sm text-zinc-500 mt-1">
-            Choose a hook style, template, design style, image style, and slide count.
-          </p>
+    <div className="w-full max-w-7xl">
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-semibold uppercase tracking-widest border border-amber-200">
+            Creator
+          </span>
         </div>
-
-        {/* Section 1: Hook Styles */}
-        <section>
-          <h2 className="text-base font-semibold text-zinc-900 mb-1">Choose a hook style</h2>
-          <p className="text-sm text-zinc-400 mb-4">Controls how the first slide is written.</p>
-          <HookStyleSelector styles={hookStyles} />
-        </section>
-
-        {/* Divider */}
-        <div className="my-10 border-t border-zinc-100" />
-
-        {/* Section 2: Templates */}
-        <section>
-          <h2 className="text-base font-semibold text-zinc-900 mb-4">Choose a template</h2>
-          <TemplateGallery templates={templates} />
-        </section>
-
-        {/* Divider */}
-        <div className="my-10 border-t border-zinc-100" />
-
-        {/* Section 3: Design Styles */}
-        <section>
-          <h2 className="text-base font-semibold text-zinc-900 mb-4">Choose a design style</h2>
-          <DesignStyleSelector styles={designStyles} />
-        </section>
-
-        {/* Divider */}
-        <div className="my-10 border-t border-zinc-100" />
-
-        {/* Section 4: Image styles */}
-        <section>
-          <h2 className="text-base font-semibold text-zinc-900 mb-4">Choose an image style</h2>
-          <div className="max-w-xl">
-            <StyleSelector styles={styles} />
-          </div>
-        </section>
-
-        {/* Divider */}
-        <div className="my-10 border-t border-zinc-100" />
-
-        {/* Section 5: Slide Count */}
-        <section>
-          <h2 className="text-base font-semibold text-zinc-900 mb-4">Choose a slide count</h2>
-          <SlideCountSelector />
-        </section>
-
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Create Carousel</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Set your topic, choose a structure and style, then generate.
+        </p>
       </div>
+      <CreatorWorkflow
+        hookStyles={hookStyles}
+        templates={templates}
+        designStyles={designStyles}
+        imageStyles={styles}
+      />
     </div>
   )
 }

@@ -1,130 +1,148 @@
 'use client'
 
+import { motion, AnimatePresence } from 'framer-motion'
 import type { DesignStyle } from '@/lib/supabase/catalog'
 
-type DesignStyleCardProps = {
+type Props = {
   style: DesignStyle
   selected: boolean
   onSelect: (id: string) => void
 }
 
-export function DesignStyleCard({ style, selected, onSelect }: DesignStyleCardProps) {
+export function DesignStyleCard({ style, selected, onSelect }: Props) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={() => onSelect(style.id)}
       className={[
-        'w-full text-left rounded-2xl border p-5 transition-all duration-150',
-        'bg-white hover:shadow-sm',
+        'relative w-full text-left rounded-xl border bg-white transition-all duration-200 overflow-hidden',
         selected
-          ? 'border-zinc-300 ring-2 ring-zinc-900'
-          : 'border-zinc-100 hover:border-zinc-300',
+          ? 'border-amber-400 ring-2 ring-amber-400/30 shadow-md'
+          : 'border-gray-200 hover:border-amber-300 hover:shadow-md shadow-sm',
       ].join(' ')}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.97 }}
+      animate={selected ? { scale: [0.97, 1.02, 1] } : { scale: 1 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
     >
-      {/* Preview placeholder */}
-      <div className="w-full aspect-[4/3] rounded-xl bg-zinc-100 flex items-center justify-center">
-        <DesignStyleIcon name={style.name} />
+      {/* Selected badge */}
+      <AnimatePresence>
+        {selected && (
+          <motion.span
+            className="absolute top-2.5 right-2.5 z-10 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-sm"
+            initial={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.4 }}
+            transition={{ duration: 0.15, ease: 'backOut' }}
+          >
+            <CheckIcon />
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* Visual preview */}
+      <div className={[
+        'w-full aspect-[4/3] border-b flex items-center justify-center',
+        selected ? 'bg-amber-50 border-amber-100' : 'bg-gray-50 border-gray-100',
+      ].join(' ')}>
+        <DesignPreview name={style.name} />
       </div>
 
-      {/* Style name */}
-      <p className="font-semibold text-zinc-900 mt-3 text-sm">{style.name}</p>
-
-      {/* Description */}
-      {style.description && (
-        <p className="text-sm text-zinc-500 mt-1 leading-snug">{style.description}</p>
-      )}
-
-      {/* Select indicator */}
-      <div className="mt-3 flex items-center gap-1.5">
-        {selected ? (
-          <>
-            <CheckIcon className="w-4 h-4 text-zinc-900" />
-            <span className="text-xs font-medium text-zinc-900">Selected</span>
-          </>
-        ) : (
-          <span className="text-xs text-zinc-400">Select</span>
+      {/* Info */}
+      <div className="px-3.5 py-3">
+        <p className="font-semibold text-gray-900 text-sm leading-snug">{style.name}</p>
+        {style.description && (
+          <p className="text-xs text-gray-500 mt-1 leading-snug line-clamp-2">{style.description}</p>
         )}
       </div>
-    </button>
+    </motion.button>
   )
 }
 
-function DesignStyleIcon({ name }: { name: string }) {
+function DesignPreview({ name }: { name: string }) {
   if (name === 'Minimal') {
     return (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="8" y="10" width="16" height="2" rx="1" fill="#d4d4d8" />
-        <rect x="11" y="15" width="10" height="1.5" rx="0.75" fill="#d4d4d8" />
-        <rect x="13" y="19.5" width="6" height="1.5" rx="0.75" fill="#d4d4d8" />
+      <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+        {/* Centered minimal layout */}
+        <rect x="16" y="12" width="48" height="8" rx="2.5" fill="#f59e0b" />
+        <rect x="22" y="24" width="36" height="4" rx="1.5" fill="#6b7280" />
+        <rect x="28" y="31" width="24" height="4" rx="1.5" fill="#9ca3af" />
+        <rect x="32" y="38" width="16" height="4" rx="1.5" fill="#d1d5db" />
       </svg>
     )
   }
-
   if (name === 'Professional') {
     return (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="6" y="8" width="20" height="3" rx="1" fill="#d4d4d8" />
-        <rect x="6" y="13" width="8" height="10" rx="1" fill="#e4e4e7" />
-        <rect x="16" y="13" width="10" height="4.5" rx="1" fill="#e4e4e7" />
-        <rect x="16" y="19" width="10" height="4" rx="1" fill="#e4e4e7" />
+      <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+        {/* Two-column professional layout */}
+        <rect x="6" y="8" width="68" height="7" rx="2" fill="#f59e0b" />
+        <rect x="6" y="19" width="28" height="30" rx="2" fill="#f3f4f6" stroke="#e5e7eb" strokeWidth="1" />
+        <rect x="38" y="19" width="36" height="13" rx="2" fill="#f3f4f6" stroke="#e5e7eb" strokeWidth="1" />
+        <rect x="38" y="36" width="36" height="13" rx="2" fill="#f3f4f6" stroke="#e5e7eb" strokeWidth="1" />
+        {/* Content bars */}
+        <rect x="9" y="24" width="20" height="3" rx="1" fill="#d1d5db" />
+        <rect x="9" y="30" width="16" height="3" rx="1" fill="#e5e7eb" />
+        <rect x="41" y="23" width="26" height="3" rx="1" fill="#d1d5db" />
+        <rect x="41" y="39" width="22" height="3" rx="1" fill="#d1d5db" />
       </svg>
     )
   }
-
   if (name === 'Bold') {
     return (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="4" y="6" width="24" height="8" rx="2" fill="#a1a1aa" />
-        <rect x="4" y="17" width="14" height="3" rx="1" fill="#d4d4d8" />
-        <rect x="4" y="22" width="10" height="3" rx="1" fill="#d4d4d8" />
+      <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+        {/* Bold full-bleed header */}
+        <rect x="6" y="6" width="68" height="22" rx="3" fill="#f59e0b" />
+        <rect x="11" y="12" width="40" height="5" rx="1.5" fill="white" opacity="0.9" />
+        <rect x="11" y="20" width="28" height="3.5" rx="1" fill="white" opacity="0.6" />
+        {/* Content */}
+        <rect x="6" y="33" width="44" height="5" rx="1.5" fill="#374151" />
+        <rect x="6" y="41" width="36" height="4" rx="1.5" fill="#6b7280" />
+        <rect x="6" y="48" width="28" height="4" rx="1.5" fill="#9ca3af" />
       </svg>
     )
   }
-
   if (name === 'Corporate') {
     return (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="6" y="6" width="20" height="2.5" rx="1" fill="#a1a1aa" />
-        <rect x="6" y="11" width="20" height="1.5" rx="0.75" fill="#d4d4d8" />
-        <rect x="6" y="14.5" width="20" height="1.5" rx="0.75" fill="#d4d4d8" />
-        <rect x="6" y="18" width="20" height="1.5" rx="0.75" fill="#d4d4d8" />
-        <rect x="6" y="23" width="8" height="2.5" rx="1" fill="#a1a1aa" />
+      <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+        {/* Corporate header with rule */}
+        <rect x="6" y="8" width="68" height="7" rx="1.5" fill="#1f2937" />
+        <rect x="6" y="8" width="8" height="7" rx="1.5" fill="#f59e0b" />
+        {/* Rule lines */}
+        <line x1="6" y1="20" x2="74" y2="20" stroke="#e5e7eb" strokeWidth="1" />
+        <rect x="6" y="24" width="68" height="4" rx="1.5" fill="#d1d5db" />
+        <rect x="6" y="31" width="56" height="4" rx="1.5" fill="#e5e7eb" />
+        <rect x="6" y="38" width="60" height="4" rx="1.5" fill="#d1d5db" />
+        <line x1="6" y1="47" x2="74" y2="47" stroke="#e5e7eb" strokeWidth="1" />
+        {/* CTA bar */}
+        <rect x="6" y="50" width="22" height="7" rx="2" fill="#f59e0b" />
       </svg>
     )
   }
-
   if (name === 'Social') {
     return (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <circle cx="16" cy="12" r="5" fill="#e4e4e7" />
-        <rect x="8" y="20" width="16" height="2" rx="1" fill="#d4d4d8" />
-        <rect x="10" y="24" width="12" height="2" rx="1" fill="#d4d4d8" />
+      <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+        {/* Avatar-centered social layout */}
+        <circle cx="40" cy="22" r="14" fill="#f3f4f6" stroke="#e5e7eb" strokeWidth="1.5" />
+        <circle cx="40" cy="18" r="6" fill="#d1d5db" />
+        <path d="M26 32 Q40 26 54 32" fill="#d1d5db" />
+        {/* Name bar */}
+        <rect x="22" y="40" width="36" height="5" rx="1.5" fill="#374151" />
+        {/* Handle */}
+        <rect x="28" y="48" width="24" height="3.5" rx="1.5" fill="#9ca3af" />
       </svg>
     )
   }
-
-  // Fallback
   return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="6" y="6" width="20" height="20" rx="2" stroke="#d4d4d8" strokeWidth="1.5" />
+    <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+      <rect x="10" y="10" width="60" height="40" rx="3" stroke="#e5e7eb" strokeWidth="2" />
     </svg>
   )
 }
 
-function CheckIcon({ className }: { className?: string }) {
+function CheckIcon() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        fillRule="evenodd"
-        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-        clipRule="evenodd"
-      />
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path d="M1.5 5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
