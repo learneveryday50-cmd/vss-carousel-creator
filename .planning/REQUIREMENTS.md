@@ -54,11 +54,11 @@
 
 ### Billing & Credits
 
-- [ ] **BILL-01**: Free tier: 3 carousel generations per month, resets on the 1st of each month
-- [ ] **BILL-02**: Pro tier: $29.99/month, 10 carousel generations per month, resets monthly
+- [x] **BILL-01**: Free tier: 3 carousel generations per month, resets on the 1st of each month
+- [x] **BILL-02**: Pro tier: $29.99/month, 10 carousel generations per month, resets monthly
 - [ ] **BILL-03**: User can subscribe to Pro via Stripe Checkout
 - [ ] **BILL-04**: User can manage/cancel subscription via Stripe Customer Portal
-- [ ] **BILL-05**: Stripe webhooks update user plan and credit balance on subscription events (created, updated, cancelled, renewed)
+- [x] **BILL-05**: Stripe webhooks update user plan and credit balance on subscription events (created, updated, cancelled, renewed)
 - [ ] **BILL-06**: Credit balance is visible to the user at all times (e.g. in dashboard header)
 - [ ] **BILL-07**: Users on Free tier who exhaust credits see an upgrade prompt
 
@@ -126,11 +126,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STYLE-01 | Phase 2 | Complete |
 | STYLE-02 | Phase 2 | Pending |
 | STYLE-03 | Phase 2 | Pending |
-| BILL-01 | Phase 3 | Pending |
-| BILL-02 | Phase 3 | Pending |
+| BILL-01 | Phase 3 | Complete |
+| BILL-02 | Phase 3 | Complete |
 | BILL-03 | Phase 3 | Pending |
 | BILL-04 | Phase 3 | Pending |
-| BILL-05 | Phase 3 | Pending |
+| BILL-05 | Phase 3 | Complete |
 | BILL-06 | Phase 3 | Pending |
 | BILL-07 | Phase 3 | Pending |
 | N8N-01 | Phase 4 | Pending |
