@@ -2,8 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getBrands } from '@/lib/supabase/brands'
-import { Sidebar } from '@/components/layout/sidebar'
-import { Header } from '@/components/layout/header'
+import { AppShell } from '@/components/layout/app-shell'
 
 export default async function ProtectedLayout({
   children,
@@ -28,17 +27,26 @@ export default async function ProtectedLayout({
   const selectedBrandId =
     brands.find((b) => b.id === cookieBrandId)?.id ?? brands[0]?.id ?? null
 
+  const { data: usage } = await supabase
+    .from('usage_tracking')
+    .select('plan, credits_remaining, credits_limit')
+    .eq('user_id', user.id)
+    .single()
+
+  const creditData = {
+    plan: (usage?.plan ?? 'free') as 'free' | 'pro',
+    creditsRemaining: usage?.credits_remaining ?? 0,
+    creditsLimit: usage?.credits_limit ?? 3,
+  }
+
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header
-          brands={brands}
-          selectedBrandId={selectedBrandId}
-          userEmail={user.email}
-        />
-        <main className="flex-1 p-6 bg-zinc-50 overflow-auto">{children}</main>
-      </div>
-    </div>
+    <AppShell
+      brands={brands}
+      selectedBrandId={selectedBrandId}
+      userEmail={user.email}
+      creditData={creditData}
+    >
+      {children}
+    </AppShell>
   )
 }
