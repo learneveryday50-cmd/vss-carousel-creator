@@ -7,7 +7,6 @@ import { createAdminClient } from '@/lib/supabase/admin'
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(req: Request) {
-  // CRITICAL: raw body for signature verification — do NOT use req.json()
   const body = await req.text()
   const headersList = await headers()
   const sig = headersList.get('stripe-signature')
@@ -26,7 +25,6 @@ export async function POST(req: Request) {
 
   const admin = createAdminClient()
 
-  // Idempotency check — skip already-processed events
   const { data: existing } = await admin
     .from('stripe_webhook_events')
     .select('id')
@@ -37,8 +35,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true, skipped: true })
   }
 
-  // Insert BEFORE processing — prevents double-processing on Stripe retry
-  // If a concurrent request beats us here, the UNIQUE constraint throws — treat as skipped
   try {
     await admin.from('stripe_webhook_events').insert({
       stripe_event_id: event.id,
@@ -49,26 +45,45 @@ export async function POST(req: Request) {
   }
 
   switch (event.type) {
-    case 'customer.subscription.created':
-    case 'customer.subscription.updated': {
-      const sub = event.data.object as Stripe.Subscription
-      const customerId = sub.customer as string
-      await admin
+    case 'checkout.session.completed': {
+      const session = event.data.object as Stripe.Checkout.Session
+      const userId = session.metadata?.user_id
+      const customerId = session.customer as string
+      const subscriptionId = session.subscription as string
+
+      console.log('[webhook] checkout.session.completed', { userId, customerId, subscriptionId, metadata: session.metadata })
+
+      if (!userId) {
+        console.error('[webhook] No user_id in session metadata — skipping upsert')
+        break
+      }
+
+      const { error } = await admin
         .from('usage_tracking')
-        .update({
+        .upsert({
+          user_id: userId,
           plan: 'pro',
           credits_limit: 10,
           credits_remaining: 10,
-          stripe_subscription_id: sub.id,
-          stripe_subscription_status: sub.status,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscriptionId,
+          stripe_subscription_status: 'active',
           updated_at: new Date().toISOString(),
-        })
-        .eq('stripe_customer_id', customerId)
+        }, { onConflict: 'user_id' })
+
+      if (error) {
+        console.error('[webhook] upsert failed:', error)
+      } else {
+        console.log('[webhook] upsert success for user_id:', userId)
+      }
+
       break
     }
+
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
       const customerId = sub.customer as string
+
       await admin
         .from('usage_tracking')
         .update({
@@ -80,14 +95,17 @@ export async function POST(req: Request) {
           updated_at: new Date().toISOString(),
         })
         .eq('stripe_customer_id', customerId)
+
       break
     }
+
     case 'invoice.paid': {
       const invoice = event.data.object as Stripe.Invoice
-      // Only reset credits for subscription invoices (not one-time payments)
-      // Stripe SDK v20+ uses invoice.parent.type === 'subscription_details' instead of invoice.subscription
+
       if (invoice.parent?.type !== 'subscription_details') break
+
       const customerId = invoice.customer as string
+
       await admin
         .from('usage_tracking')
         .update({
@@ -97,9 +115,9 @@ export async function POST(req: Request) {
         })
         .eq('stripe_customer_id', customerId)
         .eq('plan', 'pro')
+
       break
     }
-    // All other event types: acknowledged but no action
   }
 
   return NextResponse.json({ received: true })

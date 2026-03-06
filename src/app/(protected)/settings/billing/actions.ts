@@ -26,8 +26,10 @@ export async function createCheckoutSession() {
     const admin = createAdminClient()
     await admin
       .from('usage_tracking')
-      .update({ stripe_customer_id: customerId, updated_at: new Date().toISOString() })
-      .eq('user_id', user.id)
+      .upsert(
+        { user_id: user.id, stripe_customer_id: customerId, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      )
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -36,6 +38,10 @@ export async function createCheckoutSession() {
     line_items: [{ price: process.env.STRIPE_PRO_PRICE_ID!, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/templates`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
+    metadata: { user_id: user.id },
+    subscription_data: {
+      metadata: { user_id: user.id },
+    },
   })
 
   redirect(session.url!)
