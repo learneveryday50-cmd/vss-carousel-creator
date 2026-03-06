@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Auth, database schema with RLS, and project scaffolding — everything else gates on this (completed 2026-03-04)
 - [x] **Phase 2: Brand Onboarding** - Brand profile creation/edit, template catalog, and image style options — required inputs for generation (completed 2026-03-04)
-- [ ] **Phase 3: Billing and Credits** - Stripe Checkout, webhooks, Customer Portal, and credit system — must gate generation before dashboard is built
+- [x] **Phase 3: Billing and Credits** - Stripe Checkout, webhooks, Customer Portal, and credit system — must gate generation before dashboard is built (completed 2026-03-06)
 - [ ] **Phase 4: n8n Workflow Migration** - Migrate existing n8n workflow from Airtable output to Supabase — unblocks generation UI
 - [ ] **Phase 5: Generation Dashboard** - Core value loop: async generation, Realtime status, credit gate, post-success credit deduction, and carousel preview
 - [ ] **Phase 6: History, Downloads, and Export** - Carousel history page, slide downloads, PDF export, and copy post text — retention driver
@@ -144,7 +144,7 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-04 |
 | 2. Brand Onboarding | 3/3 | Complete   | 2026-03-04 |
-| 3. Billing and Credits | 2/3 | In Progress|  |
+| 3. Billing and Credits | 3/3 | Complete   | 2026-03-06 |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
 | 5. Generation Dashboard | 0/3 | Not started | - |
 | 6. History, Downloads, and Export | 0/2 | Not started | - |

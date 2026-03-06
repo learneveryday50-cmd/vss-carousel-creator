@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T09:58:22.247Z"
+last_updated: "2026-03-06T09:59:18.692Z"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Turn a raw idea into a branded, ready-to-post LinkedIn carousel in under a minute — without ever opening a design tool.
-**Current focus:** Phase 3 — Payments/Billing (Phase 2 complete)
+**Current focus:** Phase 4 — AI Generation (Phase 3 complete)
 
 ## Current Position
 
-Phase: 3 of 7 (Billing and Credits) — IN PROGRESS
-Plan: 2 of 3 complete
-Status: Phase 3 Plan 02 complete — Stripe webhook Route Handler done with idempotency and subscription lifecycle; ready for Plan 03 (billing UI)
-Last activity: 2026-03-06 — 03-02 complete: Stripe webhook handler, signature verification, subscription created/updated/deleted, invoice.paid credit reset
+Phase: 3 of 7 (Billing and Credits) — COMPLETE
+Plan: 3 of 3 complete
+Status: Phase 3 fully complete — all billing infrastructure (Stripe SDK, webhooks, credit UI) done; ready for Phase 4 (AI generation)
+Last activity: 2026-03-06 — 03-03 complete: CreditBadge in header, CreditGate component, /settings/billing page, Stripe Checkout/Portal Server Actions
 
-Progress: [███░░░░░░░] 24%
+Progress: [████░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [███░░░░░░░] 24%
 | Phase 02-brand-onboarding P03 | 15 | 3 tasks | 7 files |
 | Phase 03-billing-and-credits P03-01 | 5 | 2 tasks | 4 files |
 | Phase 03 P02 | 5 | 1 tasks | 1 files |
+| Phase 03-billing-and-credits P03-03 | 2 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Recent decisions affecting current work:
 - [Phase 03-02]: Insert to stripe_webhook_events BEFORE processing — Stripe retry hits idempotency check; UNIQUE constraint catches concurrent duplicates
 - [Phase 03-02]: Use req.text() not req.json() for raw body — constructEvent verifies HMAC over exact raw bytes; JSON parsing corrupts whitespace and breaks signature
 - [Phase 03-02]: Stripe SDK v20+ breaking change: invoice.subscription removed; subscription invoices detected via invoice.parent?.type === 'subscription_details'
+- [Phase 03-billing-and-credits]: creditData fetched once in protected layout, prop-drilled to Header — avoids redundant DB calls
+- [Phase 03-billing-and-credits]: Billing nav accessible via avatar dropdown only — no sidebar entry per locked decision
+- [Phase 03-billing-and-credits]: Lazy Stripe customer creation on first Checkout click only — prevents orphaned customers
 
 ### Pending Todos
 
@@ -107,5 +111,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 03-02-PLAN.md — Stripe webhook Route Handler with idempotency and subscription lifecycle handling. Phase 3 Plan 2 of 3 complete.
-Resume file: .planning/phases/03-billing-and-credits/03-03-PLAN.md (Phase 3 Plan 03 — Billing UI)
+Stopped at: Completed 03-03-PLAN.md — CreditBadge in header, CreditGate upgrade prompt, /settings/billing page with Stripe Checkout/Portal Server Actions. Phase 3 fully complete.
+Resume file: .planning/phases/04-generation/04-01-PLAN.md (Phase 4 Plan 01 — AI Generation)
