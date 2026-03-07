@@ -96,12 +96,12 @@ Plans:
   3. After clicking Generate, user sees a "Generating" status indicator without the page blocking or timing out
   4. When generation completes successfully, the carousel preview (slide images + post body text) is displayed and exactly 1 credit is deducted from the user's balance
   5. When generation fails or errors, no credit is deducted and the user sees a failure state
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Generation API (/api/generate route: auth check, atomic credit check via consume_credit() RPC, fire-and-forget n8n POST, returns carousel_id; n8n webhook secret validation)
-- [ ] 05-02: Generation UI (idea input, brand/template/style selectors, Generate button, Supabase Realtime status listener for pending → completed/failed transitions)
-- [ ] 05-03: Carousel preview (slide image display from ImageBB URLs, post body text display, generation metadata stored: idea, brand, template, style, timestamp)
+- [ ] 05-01-PLAN.md — consume_credit() PostgreSQL RPC migration (atomic FOR UPDATE credit deduction, SECURITY DEFINER, race-condition-safe)
+- [ ] 05-02-PLAN.md — Generation API routes (POST /api/generate: auth + consume_credit + insert carousel + fire-and-forget n8n; GET /api/generate/status: poll carousel by id)
+- [ ] 05-03-PLAN.md — Generation UI (CreatorWorkflow: generation state machine, polling loop, credit gate; PreviewPanel: config/processing/completed/failed render modes with Framer Motion AnimatePresence)
 
 ### Phase 6: History, Downloads, and Export
 **Goal**: Users can browse all their past carousels, re-download slides, export a full PDF, and copy post text — closing the full value loop and giving users a reason to return
