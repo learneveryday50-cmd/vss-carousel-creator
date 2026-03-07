@@ -81,10 +81,10 @@ Plans:
   1. Triggering the n8n webhook with a test payload results in a carousel record being created or updated in the Supabase carousels table (not Airtable)
   2. n8n can authenticate to Supabase using a service role key stored as an n8n credential (key is never exposed to any client or logged)
   3. A duplicate of the original workflow exists as a backup before any edits are made via n8n MCP
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 04-01: n8n workflow migration (duplicate original workflow, replace Airtable output nodes with Supabase HTTP nodes via n8n MCP, configure service role key credential, end-to-end smoke test)
+- [ ] 04-01-PLAN.md — n8n workflow migration (backup original workflow JSON, create Supabase service role Header Auth credential, replace Airtable output nodes with HTTP Request nodes, end-to-end smoke test via PATCH to carousels table)
 
 ### Phase 5: Generation Dashboard
 **Goal**: Users can generate a branded carousel from a text idea, see live status updates, view the result as a preview, and have exactly one credit deducted only on success — failed generations do not cost credits
