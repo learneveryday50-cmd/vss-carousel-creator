@@ -327,23 +327,24 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
 
     {/* ── Generation modal ─────────────────────────────────────── */}
     {generationState !== 'idle' && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div className="relative w-full max-w-lg">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+        <div className="relative w-full max-w-lg my-auto">
+          {/* Close button — inside top-right of panel */}
           <button
-              onClick={() => {
-                setGenerationState('idle')
-                setCarouselId(null)
-                setSlideUrls([])
-                setPostBody('')
-                setProcessingStep(1)
-              }}
-              className="absolute -top-9 right-0 text-white/70 hover:text-white flex items-center gap-1.5 text-sm font-medium transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
-              Close
-            </button>
+            onClick={() => {
+              setGenerationState('idle')
+              setCarouselId(null)
+              setSlideUrls([])
+              setPostBody('')
+              setProcessingStep(1)
+            }}
+            className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            aria-label="Close"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M1 1l10 10M11 1L1 11" stroke="#6b7280" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+          </button>
           <PreviewPanel
             topic={topic}
             template={selectedTemplate}
