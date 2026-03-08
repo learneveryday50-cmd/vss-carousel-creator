@@ -329,8 +329,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
     {generationState !== 'idle' && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div className="relative w-full max-w-lg">
-          {(generationState === 'completed' || generationState === 'failed') && (
-            <button
+          <button
               onClick={() => {
                 setGenerationState('idle')
                 setCarouselId(null)
@@ -345,7 +344,6 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
               </svg>
               Close
             </button>
-          )}
           <PreviewPanel
             topic={topic}
             template={selectedTemplate}
