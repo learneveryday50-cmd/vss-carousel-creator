@@ -22,26 +22,26 @@
 
 - [x] **TMPL-01**: 5–6 carousel templates are available for selection (placeholder assets for v1, final designs swapped in later)
 - [x] **TMPL-02**: Each template has a front cover page, consistent content pages, and a CTA page
-- [ ] **TMPL-03**: Template assets are hosted as URLs (either self-hosted or user-provided) and passed to n8n at generation time
+- [x] **TMPL-03**: Template assets are hosted as URLs (either self-hosted or user-provided) and passed to n8n at generation time
 
 ### Image Styles
 
 - [x] **STYLE-01**: 4 built-in image styles available: Technical Annotation & Realism, Notebook, Whiteboard Diagram, Comic Strip Storyboard
 - [ ] **STYLE-02**: User can add custom image style names beyond the 4 built-in options
-- [ ] **STYLE-03**: Selected image style name is passed to n8n at generation time
+- [x] **STYLE-03**: Selected image style name is passed to n8n at generation time
 
 ### Generation
 
 - [ ] **GEN-01**: User can input an idea (text) on the dashboard
 - [ ] **GEN-02**: User must select a brand, a carousel template, and an image style before generating
 - [x] **GEN-03**: System checks user has credits remaining before triggering n8n — users with 0 credits cannot generate
-- [ ] **GEN-04**: On Generate, system triggers the n8n webhook asynchronously (fire-and-forget)
+- [x] **GEN-04**: On Generate, system triggers the n8n webhook asynchronously (fire-and-forget)
 - [ ] **GEN-05**: Generation status is shown to user: Generating → Completed or Failed
 - [x] **GEN-06**: On successful n8n response, 1 credit is deducted from user's usage balance
 - [x] **GEN-07**: On failed or errored n8n response, no credit is deducted
 - [ ] **GEN-08**: n8n returns ImageBB URLs for each carousel slide and a post body text string
 - [ ] **GEN-09**: Generated carousel (slides + post body) is displayed as a preview after successful generation
-- [ ] **GEN-10**: Each generation record is linked to: original idea, brand, template, image style, and timestamp
+- [x] **GEN-10**: Each generation record is linked to: original idea, brand, template, image style, and timestamp
 
 ### History & Library
 
@@ -65,9 +65,9 @@
 ### n8n Integration
 
 - [ ] **N8N-01**: Existing n8n Cloud workflow is migrated from Airtable output nodes to Supabase output nodes using the n8n MCP
-- [ ] **N8N-02**: n8n workflow receives: idea text, brand data (name, colors, voice, product, audience, CTA), template identifier/URL, image style name
-- [ ] **N8N-03**: n8n workflow returns: array of ImageBB slide URLs, post body text string
-- [ ] **N8N-04**: n8n callback/result is authenticated to prevent result injection from unauthorized sources
+- [x] **N8N-02**: n8n workflow receives: idea text, brand data (name, colors, voice, product, audience, CTA), template identifier/URL, image style name
+- [x] **N8N-03**: n8n workflow returns: array of ImageBB slide URLs, post body text string
+- [x] **N8N-04**: n8n callback/result is authenticated to prevent result injection from unauthorized sources
 
 ### Marketing
 
@@ -122,10 +122,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRAND-03 | Phase 2 | Complete |
 | TMPL-01 | Phase 2 | Complete |
 | TMPL-02 | Phase 2 | Complete |
-| TMPL-03 | Phase 2 | Pending |
+| TMPL-03 | Phase 2 | Complete |
 | STYLE-01 | Phase 2 | Complete |
 | STYLE-02 | Phase 2 | Pending |
-| STYLE-03 | Phase 2 | Pending |
+| STYLE-03 | Phase 2 | Complete |
 | BILL-01 | Phase 3 | Complete |
 | BILL-02 | Phase 3 | Complete |
 | BILL-03 | Phase 3 | Complete |
@@ -137,16 +137,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GEN-01 | Phase 5 | Pending |
 | GEN-02 | Phase 5 | Pending |
 | GEN-03 | Phase 5 | Complete |
-| GEN-04 | Phase 5 | Pending |
+| GEN-04 | Phase 5 | Complete |
 | GEN-05 | Phase 5 | Pending |
 | GEN-06 | Phase 5 | Complete |
 | GEN-07 | Phase 5 | Complete |
 | GEN-08 | Phase 5 | Pending |
 | GEN-09 | Phase 5 | Pending |
-| GEN-10 | Phase 5 | Pending |
-| N8N-02 | Phase 5 | Pending |
-| N8N-03 | Phase 5 | Pending |
-| N8N-04 | Phase 5 | Pending |
+| GEN-10 | Phase 5 | Complete |
+| N8N-02 | Phase 5 | Complete |
+| N8N-03 | Phase 5 | Complete |
+| N8N-04 | Phase 5 | Complete |
 | HIST-01 | Phase 6 | Pending |
 | HIST-02 | Phase 6 | Pending |
 | HIST-03 | Phase 6 | Pending |

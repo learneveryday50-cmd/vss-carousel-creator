@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 ## Current Position
 
 Phase: 5 of 7 (Generation Dashboard) — IN PROGRESS
-Plan: 1 of 3 complete
-Status: Phase 5 Plan 01 complete — consume_credit() RPC function live in Supabase; Plan 02 (generate API route) is next
-Last activity: 2026-03-08 — 05-01 complete: consume_credit() PostgreSQL function with FOR UPDATE row lock, SECURITY DEFINER, applied to Supabase
+Plan: 2 of 3 complete
+Status: Phase 5 Plan 02 complete — POST /api/generate and GET /api/generate/status routes created; Plan 03 (generation dashboard UI) is next
+Last activity: 2026-03-08 — 05-02 complete: generate API routes with credit gate, fire-and-forget n8n, and user-scoped status polling
 
-Progress: [██████░░░░] 57%
+Progress: [███████░░░] 64%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [██████░░░░] 57%
 | Phase 03 P02 | 5 | 1 tasks | 1 files |
 | Phase 03-billing-and-credits P03-03 | 2 | 2 tasks | 8 files |
 | Phase 05-generation-dashboard P01 | 5 | 1 tasks | 1 files |
+| Phase 05-generation-dashboard P02 | 1 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,10 @@ Recent decisions affecting current work:
 - [Phase 03-billing-and-credits]: Lazy Stripe customer creation on first Checkout click only — prevents orphaned customers
 - [Phase 05-generation-dashboard]: consume_credit() deducts credit at job creation time before n8n fires; v1 design — no credit refund on n8n failure
 - [Phase 05-generation-dashboard]: FOR UPDATE row lock in consume_credit() prevents concurrent double-deduction
+- [05-02]: n8n fetch is fire-and-forget (no await) — Vercel Hobby 10s timeout constraint; generation takes 30-90s
+- [05-02]: All DB mutations use createAdminClient(); createClient() used only for auth.getUser()
+- [05-02]: Status route returns 401 (not 404) on unauthenticated requests — client can distinguish auth failure from not-found
+- [05-02]: N8N_WEBHOOK_SECRET sent as X-Webhook-Secret header (outbound webhook auth, N8N-04)
 
 ### Pending Todos
 
@@ -114,5 +119,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-08
-Stopped at: Completed 05-01-PLAN.md — consume_credit() RPC migration verified live in Supabase with atomic FOR UPDATE row locking. Requirements GEN-03, GEN-06, GEN-07 satisfied.
-Resume file: .planning/phases/05-generation-dashboard/05-02-PLAN.md (Phase 5 Plan 02 — Generate API route)
+Stopped at: Completed 05-02-PLAN.md — POST /api/generate and GET /api/generate/status routes created, type-safe, all guards enforced. Requirements GEN-04, GEN-10, N8N-02, N8N-03, N8N-04, TMPL-03, STYLE-03 satisfied.
+Resume file: .planning/phases/05-generation-dashboard/05-03-PLAN.md (Phase 5 Plan 03 — Generation Dashboard UI)
