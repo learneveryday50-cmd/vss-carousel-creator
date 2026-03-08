@@ -16,6 +16,8 @@ export type ImageStyle = {
   id: string
   user_id: string | null
   name: string
+  description: string | null
+  sample_url: string | null
   is_custom: boolean
   created_at: string
 }
