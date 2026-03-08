@@ -32,15 +32,15 @@
 
 ### Generation
 
-- [ ] **GEN-01**: User can input an idea (text) on the dashboard
-- [ ] **GEN-02**: User must select a brand, a carousel template, and an image style before generating
+- [x] **GEN-01**: User can input an idea (text) on the dashboard
+- [x] **GEN-02**: User must select a brand, a carousel template, and an image style before generating
 - [x] **GEN-03**: System checks user has credits remaining before triggering n8n — users with 0 credits cannot generate
 - [x] **GEN-04**: On Generate, system triggers the n8n webhook asynchronously (fire-and-forget)
-- [ ] **GEN-05**: Generation status is shown to user: Generating → Completed or Failed
+- [x] **GEN-05**: Generation status is shown to user: Generating → Completed or Failed
 - [x] **GEN-06**: On successful n8n response, 1 credit is deducted from user's usage balance
 - [x] **GEN-07**: On failed or errored n8n response, no credit is deducted
-- [ ] **GEN-08**: n8n returns ImageBB URLs for each carousel slide and a post body text string
-- [ ] **GEN-09**: Generated carousel (slides + post body) is displayed as a preview after successful generation
+- [x] **GEN-08**: n8n returns ImageBB URLs for each carousel slide and a post body text string
+- [x] **GEN-09**: Generated carousel (slides + post body) is displayed as a preview after successful generation
 - [x] **GEN-10**: Each generation record is linked to: original idea, brand, template, image style, and timestamp
 
 ### History & Library
@@ -134,15 +134,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BILL-06 | Phase 3 | Complete |
 | BILL-07 | Phase 3 | Complete |
 | N8N-01 | Phase 4 | Pending |
-| GEN-01 | Phase 5 | Pending |
-| GEN-02 | Phase 5 | Pending |
+| GEN-01 | Phase 5 | Complete |
+| GEN-02 | Phase 5 | Complete |
 | GEN-03 | Phase 5 | Complete |
 | GEN-04 | Phase 5 | Complete |
-| GEN-05 | Phase 5 | Pending |
+| GEN-05 | Phase 5 | Complete |
 | GEN-06 | Phase 5 | Complete |
 | GEN-07 | Phase 5 | Complete |
-| GEN-08 | Phase 5 | Pending |
-| GEN-09 | Phase 5 | Pending |
+| GEN-08 | Phase 5 | Complete |
+| GEN-09 | Phase 5 | Complete |
 | GEN-10 | Phase 5 | Complete |
 | N8N-02 | Phase 5 | Complete |
 | N8N-03 | Phase 5 | Complete |

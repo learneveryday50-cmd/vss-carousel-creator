@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-08T08:48:49.197Z"
+last_updated: "2026-03-08T08:59:10.929Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 13
-  completed_plans: 10
+  completed_plans: 12
 ---
 
 # Project State
@@ -104,6 +104,8 @@ Recent decisions affecting current work:
 - [05-02]: All DB mutations use createAdminClient(); createClient() used only for auth.getUser()
 - [05-02]: Status route returns 401 (not 404) on unauthenticated requests — client can distinguish auth failure from not-found
 - [05-02]: N8N_WEBHOOK_SECRET sent as X-Webhook-Secret header (outbound webhook auth, N8N-04)
+- [Phase 05-generation-dashboard]: submitGeneration/handleGenerate separation: submitGeneration has no idle-guard so handleRetry can call it directly, bypassing React 18 batching stale-closure issue
+- [Phase 05-generation-dashboard]: TemplatesPage reads selected_brand_id cookie directly (consistent with layout.tsx pattern) and passes creditData to CreatorWorkflow
 
 ### Pending Todos
 
