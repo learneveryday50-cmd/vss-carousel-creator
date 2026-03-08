@@ -56,8 +56,8 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
   const selectedHook = hookStyles.find((h) => h.id === hookId)
   const selectedTemplate = templates.find((t) => t.id === templateId)
 
-  // Minimum-input check: topic + templateId + imageId required; hookId/designId optional
-  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId
+  // Minimum-input check: topic + templateId + imageId + brandId required
+  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId && !!selectedBrandId
 
   const completedSteps = [
     topic.trim().length > 0,
@@ -177,6 +177,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
       : generationState
 
   return (
+    <>
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-10 items-start">
 
       {/* ── Left: Config flow ─────────────────────────────────── */}
@@ -249,10 +250,15 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
           <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex-1">
               <p className="text-sm font-semibold text-gray-900">
-                {canGenerate ? 'Ready to generate your carousel.' : 'Add a topic, select a template and image style to unlock generation.'}
+                {canGenerate ? 'Ready to generate your carousel.' : 'Complete the required steps to unlock generation.'}
               </p>
               {!canGenerate && (
-                <p className="text-xs text-gray-400 mt-0.5">Topic, template, and image style are required.</p>
+                <ul className="text-xs text-gray-400 mt-1 space-y-0.5">
+                  {!selectedBrandId && <li>• No brand selected — use the brand switcher in the header</li>}
+                  {!topic.trim() && <li>• Step 1: Enter a topic</li>}
+                  {!templateId && <li>• Step 2: Select a template</li>}
+                  {!imageId && <li>• Step 5: Select an image style</li>}
+                </ul>
               )}
             </div>
 
@@ -276,22 +282,55 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
 
       </div>
 
-      {/* ── Right: Live preview ───────────────────────────────── */}
+      {/* ── Right: Live config preview (always config mode) ──── */}
       <aside className="xl:sticky xl:top-6">
         <PreviewPanel
           topic={topic}
           template={selectedTemplate}
           hookStyle={selectedHook}
           slideCount={slideCount}
-          mode={previewMode}
-          processingStep={processingStep}
-          slideUrls={slideUrls}
-          postBody={postBody}
-          onRetry={handleRetry}
+          mode="config"
         />
       </aside>
 
     </div>
+
+    {/* ── Generation modal ─────────────────────────────────────── */}
+    {generationState !== 'idle' && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="relative w-full max-w-lg">
+          {(generationState === 'completed' || generationState === 'failed') && (
+            <button
+              onClick={() => {
+                setGenerationState('idle')
+                setCarouselId(null)
+                setSlideUrls([])
+                setPostBody('')
+                setProcessingStep(1)
+              }}
+              className="absolute -top-9 right-0 text-white/70 hover:text-white flex items-center gap-1.5 text-sm font-medium transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+              Close
+            </button>
+          )}
+          <PreviewPanel
+            topic={topic}
+            template={selectedTemplate}
+            hookStyle={selectedHook}
+            slideCount={slideCount}
+            mode={previewMode}
+            processingStep={processingStep}
+            slideUrls={slideUrls}
+            postBody={postBody}
+            onRetry={handleRetry}
+          />
+        </div>
+      </div>
+    )}
+    </>
   )
 }
 

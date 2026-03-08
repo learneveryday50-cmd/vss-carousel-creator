@@ -11,7 +11,18 @@
       "Skill(gsd:execute-phase)",
       "Bash([ -f \"C:/Users/APC/Downloads/vss-code-saas-project/src/app/\\(protected\\)/dashboard/actions.ts\" ] && echo \"FOUND: actions.ts\" || echo \"MISSING: actions.ts\"\n[ -f \"C:/Users/APC/Downloads/vss-code-saas-project/src/components/brand/brand-switcher.tsx\" ] && echo \"FOUND: brand-switcher.tsx\" || echo \"MISSING: brand-switcher.tsx\"\n[ -f \"C:/Users/APC/Downloads/vss-code-saas-project/src/components/layout/sidebar.tsx\" ] && echo \"FOUND: sidebar.tsx\" || echo \"MISSING: sidebar.tsx\"\n[ -f \"C:/Users/APC/Downloads/vss-code-saas-project/src/components/layout/header.tsx\" ] && echo \"FOUND: header.tsx\" || echo \"MISSING: header.tsx\"\n[ -f \"C:/Users/APC/Downloads/vss-code-saas-project/.planning/phases/02-brand-onboarding/02-03-SUMMARY.md\" ] && echo \"FOUND: SUMMARY.md\" || echo \"MISSING: SUMMARY.md\")",
       "Bash(ls:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(curl:*)",
+      "Bash(npx supabase:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_ba07449a5e9fef5dcda351448853b4cd431615ce npx supabase:*)",
+      "Bash(npx next:*)",
+      "Bash(netstat:*)",
+      "Skill(gsd:plan-phase)",
+      "Bash(stripe:*)",
+      "Bash(supabase db:*)",
+      "Skill(gsd:progress)",
+      "Bash(git:*)",
+      "Bash(source:*)"
     ]
   }
 }

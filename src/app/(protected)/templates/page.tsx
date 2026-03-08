@@ -9,10 +9,23 @@ export const metadata = {
 
 export default async function TemplatesPage() {
   const cookieStore = await cookies()
-  const selectedBrandId = cookieStore.get('selected_brand_id')?.value ?? null
-
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  // Auto-fallback to first brand if no cookie is set
+  const cookieBrandId = cookieStore.get('selected_brand_id')?.value ?? null
+  let selectedBrandId = cookieBrandId
+  if (!selectedBrandId && user) {
+    const { data: firstBrand } = await supabase
+      .from('brands')
+      .select('id')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .single()
+    selectedBrandId = firstBrand?.id ?? null
+  }
+
   const { data: usage } = user
     ? await supabase.from('usage_tracking').select('plan, credits_remaining, credits_limit').eq('user_id', user.id).single()
     : { data: null }

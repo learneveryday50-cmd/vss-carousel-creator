@@ -8,6 +8,7 @@ import {
   Palette,
   CreditCard,
   Sparkles,
+  History,
   X,
 } from 'lucide-react'
 
@@ -97,6 +98,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           href="/templates"
           icon={<Layers className="w-4 h-4 flex-shrink-0" />}
           label="Create Carousel"
+          onClick={onClose}
+        />
+        <NavItem
+          href="/history"
+          icon={<History className="w-4 h-4 flex-shrink-0" />}
+          label="History"
           onClick={onClose}
         />
         <NavItem

@@ -89,12 +89,38 @@ export function PreviewPanel({
 
   const [currentSlide, setCurrentSlide] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+
+  const cleanCaption = stripMarkdown(postBody)
 
   function handleCopy() {
-    navigator.clipboard.writeText(postBody).then(() => {
+    navigator.clipboard.writeText(cleanCaption).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })
+  }
+
+  async function handleDownloadAll() {
+    if (downloading || slideUrls.length === 0) return
+    setDownloading(true)
+    for (let i = 0; i < slideUrls.length; i++) {
+      try {
+        const res = await fetch(slideUrls[i])
+        const blob = await res.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `slide-${i + 1}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        await new Promise((r) => setTimeout(r, 300))
+      } catch {
+        // skip failed slide
+      }
+    }
+    setDownloading(false)
   }
 
   return (
@@ -302,14 +328,26 @@ export function PreviewPanel({
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
+
+                {/* Download all */}
+                <button
+                  onClick={handleDownloadAll}
+                  disabled={downloading}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                    <path d="M6.5 1v7.5M3.5 6l3 3 3-3M1 10.5v1a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {downloading ? 'Downloading…' : `Download all ${slideUrls.length} slides`}
+                </button>
               </div>
             )}
 
             {/* Post body */}
-            {postBody && (
+            {cleanCaption && (
               <div className="flex flex-col gap-2">
-                <p className="text-sm text-gray-700 leading-relaxed bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  {postBody}
+                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  {cleanCaption}
                 </p>
                 <button
                   onClick={handleCopy}
@@ -364,6 +402,19 @@ export function PreviewPanel({
       </AnimatePresence>
     </div>
   )
+}
+
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')       // **bold**
+    .replace(/\*([^*]+)\*/g, '$1')           // *italic*
+    .replace(/^#{1,6}\s+/gm, '')             // ## headings
+    .replace(/^[-*_]{3,}\s*$/gm, '')         // --- dividers
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')      // [text](url)
+    .replace(/`(.+?)`/g, '$1')               // `code`
+    .replace(/^\s*[-*+]\s+/gm, '• ')         // - list → bullet
+    .replace(/\n{3,}/g, '\n\n')              // collapse excess newlines
+    .trim()
 }
 
 function SlideShell({ number, tag, tagStyle, children }: {

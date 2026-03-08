@@ -106,32 +106,31 @@ export async function POST(request: NextRequest) {
   }
 
   // 7. Fire-and-forget n8n webhook — do NOT await
+  // Flat structure matches n8n workflow's "Standardize Inputs" node field paths
   const n8nPayload = {
     carousel_id: carousel.id,
     idea_text: body.idea_text,
     slide_count: body.slide_count ?? 7,
-    brand: {
-      name: brand.name,
-      primary_color: brand.primary_color,
-      secondary_color: brand.secondary_color,
-      voice_guidelines: brand.voice_guidelines,
-      product_description: brand.product_description,
-      audience_description: brand.audience_description,
-      cta_text: brand.cta_text,
-    },
-    template: {
-      id: template.id,
-      name: template.name,
-      slug: template.slug,
-      cover_url: template.cover_url,
-      content_url: template.content_url,
-      cta_url: template.cta_url,
-    },
-    image_style: {
-      id: imageStyle.id,
-      name: imageStyle.name,
-      description: imageStyle.description,
-    },
+    // Brand fields (flat)
+    brand_id: brand_id,
+    brand_name: brand.name,
+    brand_color: brand.primary_color,
+    voice_guidelines: brand.voice_guidelines,
+    product_description: brand.product_description,
+    audience_description: brand.audience_description,
+    cta_text: brand.cta_text,
+    // Template fields (flat)
+    template_id: template.id,
+    template_front_url: template.cover_url,
+    template_content_url: template.content_url,
+    template_cta_url: template.cta_url,
+    // Image style fields (flat)
+    image_style_id: imageStyle.id,
+    style_name: imageStyle.name,
+    style_description: imageStyle.description,
+    // Design style (optional — not required by workflow but passed for context)
+    design_style: '',
+    custom_instructions: '',
   }
 
   fetch(n8nWebhookUrl, {
