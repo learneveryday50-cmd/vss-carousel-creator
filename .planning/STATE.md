@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T09:59:18.692Z"
+last_updated: "2026-03-08T08:48:49.197Z"
 progress:
-  total_phases: 3
+  total_phases: 5
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 13
+  completed_plans: 10
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 ## Current Position
 
-Phase: 3 of 7 (Billing and Credits) — COMPLETE
-Plan: 3 of 3 complete
-Status: Phase 3 fully complete — all billing infrastructure (Stripe SDK, webhooks, credit UI) done; ready for Phase 4 (AI generation)
-Last activity: 2026-03-06 — 03-03 complete: CreditBadge in header, CreditGate component, /settings/billing page, Stripe Checkout/Portal Server Actions
+Phase: 5 of 7 (Generation Dashboard) — IN PROGRESS
+Plan: 1 of 3 complete
+Status: Phase 5 Plan 01 complete — consume_credit() RPC function live in Supabase; Plan 02 (generate API route) is next
+Last activity: 2026-03-08 — 05-01 complete: consume_credit() PostgreSQL function with FOR UPDATE row lock, SECURITY DEFINER, applied to Supabase
 
-Progress: [████░░░░░░] 33%
+Progress: [██████░░░░] 57%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [████░░░░░░] 33%
 | Phase 03-billing-and-credits P03-01 | 5 | 2 tasks | 4 files |
 | Phase 03 P02 | 5 | 1 tasks | 1 files |
 | Phase 03-billing-and-credits P03-03 | 2 | 2 tasks | 8 files |
+| Phase 05-generation-dashboard P01 | 5 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Recent decisions affecting current work:
 - [Phase 03-billing-and-credits]: creditData fetched once in protected layout, prop-drilled to Header — avoids redundant DB calls
 - [Phase 03-billing-and-credits]: Billing nav accessible via avatar dropdown only — no sidebar entry per locked decision
 - [Phase 03-billing-and-credits]: Lazy Stripe customer creation on first Checkout click only — prevents orphaned customers
+- [Phase 05-generation-dashboard]: consume_credit() deducts credit at job creation time before n8n fires; v1 design — no credit refund on n8n failure
+- [Phase 05-generation-dashboard]: FOR UPDATE row lock in consume_credit() prevents concurrent double-deduction
 
 ### Pending Todos
 
@@ -110,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-06
-Stopped at: Completed 03-03-PLAN.md — CreditBadge in header, CreditGate upgrade prompt, /settings/billing page with Stripe Checkout/Portal Server Actions. Phase 3 fully complete.
-Resume file: .planning/phases/04-generation/04-01-PLAN.md (Phase 4 Plan 01 — AI Generation)
+Last session: 2026-03-08
+Stopped at: Completed 05-01-PLAN.md — consume_credit() RPC migration verified live in Supabase with atomic FOR UPDATE row locking. Requirements GEN-03, GEN-06, GEN-07 satisfied.
+Resume file: .planning/phases/05-generation-dashboard/05-02-PLAN.md (Phase 5 Plan 02 — Generate API route)

@@ -146,6 +146,6 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | 2. Brand Onboarding | 3/3 | Complete   | 2026-03-04 |
 | 3. Billing and Credits | 3/3 | Complete   | 2026-03-06 |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
-| 5. Generation Dashboard | 0/3 | Not started | - |
+| 5. Generation Dashboard | 1/3 | In Progress|  |
 | 6. History, Downloads, and Export | 0/2 | Not started | - |
 | 7. Landing Page and Polish | 0/2 | Not started | - |
