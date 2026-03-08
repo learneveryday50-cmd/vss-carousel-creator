@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { getTemplates, getImageStyles, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
+import { getBrands } from '@/lib/supabase/brands'
 import { createClient } from '@/lib/supabase/server'
 import { CreatorWorkflow } from '@/components/creator/creator-workflow'
 
@@ -36,11 +37,12 @@ export default async function TemplatesPage() {
     creditsLimit: usage?.credits_limit ?? 3,
   }
 
-  const [templates, styles, designStyles, hookStyles] = await Promise.all([
+  const [templates, styles, designStyles, hookStyles, brands] = await Promise.all([
     getTemplates(),
     getImageStyles(),
     getDesignStyles(),
     getHookStyles(),
+    getBrands(),
   ])
 
   return (
@@ -61,6 +63,7 @@ export default async function TemplatesPage() {
         templates={templates}
         designStyles={designStyles}
         imageStyles={styles}
+        brands={brands}
         selectedBrandId={selectedBrandId}
         creditData={creditData}
       />

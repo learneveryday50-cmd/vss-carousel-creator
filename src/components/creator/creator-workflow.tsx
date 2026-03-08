@@ -10,6 +10,7 @@ import { SlideCountSelector, type SlideCount } from '@/components/slide-count/sl
 import { PreviewPanel } from '@/components/creator/preview-panel'
 import { CreditGate } from '@/components/billing/credit-gate'
 import type { HookStyle, Template, DesignStyle, ImageStyle } from '@/lib/supabase/catalog'
+import type { Brand } from '@/lib/supabase/brands'
 
 type CreditData = { plan: 'free' | 'pro'; creditsRemaining: number; creditsLimit: number }
 
@@ -18,6 +19,7 @@ type Props = {
   templates: Template[]
   designStyles: DesignStyle[]
   imageStyles: ImageStyle[]
+  brands: Brand[]
   selectedBrandId: string | null
   creditData: CreditData
 }
@@ -36,9 +38,10 @@ const STEPS = [
 const POLL_INTERVAL_MS = 2500
 const POLL_TIMEOUT_MS = 3 * 60 * 1000  // 3 minutes
 
-export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyles, selectedBrandId, creditData }: Props) {
+export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyles, brands, selectedBrandId, creditData }: Props) {
   const router = useRouter()
 
+  const [activeBrandId, setActiveBrandId] = useState<string | null>(selectedBrandId)
   const [topic, setTopic] = useState('')
   const [hookId, setHookId] = useState<string | undefined>()
   const [templateId, setTemplateId] = useState<string | undefined>()
@@ -57,7 +60,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
   const selectedTemplate = templates.find((t) => t.id === templateId)
 
   // Minimum-input check: topic + templateId + imageId + brandId required
-  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId && !!selectedBrandId
+  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId && !!activeBrandId
 
   const completedSteps = [
     topic.trim().length > 0,
@@ -72,7 +75,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
   // submitGeneration — contains POST fetch and carousel_id setup.
   // Does NOT guard on generationState so it works from both handleGenerate and handleRetry.
   async function submitGeneration() {
-    if (!canGenerate || !selectedBrandId) return
+    if (!canGenerate || !activeBrandId) return
     setGenerationState('loading')
     setProcessingStep(1)
 
@@ -81,7 +84,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          brand_id: selectedBrandId,
+          brand_id: activeBrandId,
           template_id: templateId,
           image_style_id: imageId,
           idea_text: topic,
@@ -182,6 +185,33 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
 
       {/* ── Left: Config flow ─────────────────────────────────── */}
       <div className="min-w-0 space-y-0">
+
+        {/* Brand selector */}
+        {brands.length > 0 && (
+          <div className="mb-6 flex items-center gap-3 flex-wrap">
+            <span className="text-xs font-semibold text-gray-500 flex-shrink-0">Brand:</span>
+            <div className="flex flex-wrap gap-2">
+              {brands.map((b) => {
+                const isActive = b.id === activeBrandId
+                return (
+                  <button
+                    key={b.id}
+                    onClick={() => setActiveBrandId(b.id)}
+                    className={[
+                      'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
+                      isActive
+                        ? 'bg-amber-50 border-amber-400 text-amber-700 ring-2 ring-amber-400/30'
+                        : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
+                    ].join(' ')}
+                  >
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: b.primary_color }} />
+                    {b.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Progress bar */}
         <div className="mb-8 flex items-center gap-2">

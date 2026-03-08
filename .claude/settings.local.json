@@ -22,7 +22,8 @@
       "Bash(supabase db:*)",
       "Skill(gsd:progress)",
       "Bash(git:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Skill(gsd:pause-work)"
     ]
   }
 }
