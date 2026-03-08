@@ -1,20 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { HookStyleSelector } from '@/components/hook-styles/hook-style-selector'
 import { TemplateGallery } from '@/components/templates/template-gallery'
 import { DesignStyleSelector } from '@/components/design-styles/design-style-selector'
 import { StyleSelector } from '@/components/image-styles/style-selector'
 import { SlideCountSelector, type SlideCount } from '@/components/slide-count/slide-count-selector'
 import { PreviewPanel } from '@/components/creator/preview-panel'
+import { CreditGate } from '@/components/billing/credit-gate'
 import type { HookStyle, Template, DesignStyle, ImageStyle } from '@/lib/supabase/catalog'
+
+type CreditData = { plan: 'free' | 'pro'; creditsRemaining: number; creditsLimit: number }
 
 type Props = {
   hookStyles: HookStyle[]
   templates: Template[]
   designStyles: DesignStyle[]
   imageStyles: ImageStyle[]
+  selectedBrandId: string | null
+  creditData: CreditData
 }
+
+type GenerationState = 'idle' | 'loading' | 'processing' | 'completed' | 'failed'
 
 const STEPS = [
   { n: 1, tag: 'Topic',         label: 'What do you want to create?' },
@@ -25,7 +33,12 @@ const STEPS = [
   { n: 6, tag: 'Output',        label: 'Choose a slide count' },
 ]
 
-export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyles }: Props) {
+const POLL_INTERVAL_MS = 2500
+const POLL_TIMEOUT_MS = 3 * 60 * 1000  // 3 minutes
+
+export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyles, selectedBrandId, creditData }: Props) {
+  const router = useRouter()
+
   const [topic, setTopic] = useState('')
   const [hookId, setHookId] = useState<string | undefined>()
   const [templateId, setTemplateId] = useState<string | undefined>()
@@ -33,8 +46,18 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
   const [imageId, setImageId] = useState<string | undefined>()
   const [slideCount, setSlideCount] = useState<SlideCount>(7)
 
+  // Generation state
+  const [generationState, setGenerationState] = useState<GenerationState>('idle')
+  const [carouselId, setCarouselId] = useState<string | null>(null)
+  const [processingStep, setProcessingStep] = useState<1 | 2 | 3>(1)
+  const [slideUrls, setSlideUrls] = useState<string[]>([])
+  const [postBody, setPostBody] = useState<string>('')
+
   const selectedHook = hookStyles.find((h) => h.id === hookId)
   const selectedTemplate = templates.find((t) => t.id === templateId)
+
+  // Minimum-input check: topic + templateId + imageId required; hookId/designId optional
+  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId
 
   const completedSteps = [
     topic.trim().length > 0,
@@ -45,6 +68,113 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
     true,
   ]
   const completedCount = completedSteps.filter(Boolean).length
+
+  // submitGeneration — contains POST fetch and carousel_id setup.
+  // Does NOT guard on generationState so it works from both handleGenerate and handleRetry.
+  async function submitGeneration() {
+    if (!canGenerate || !selectedBrandId) return
+    setGenerationState('loading')
+    setProcessingStep(1)
+
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand_id: selectedBrandId,
+          template_id: templateId,
+          image_style_id: imageId,
+          idea_text: topic,
+          slide_count: slideCount,
+        }),
+      })
+
+      if (!res.ok) {
+        setGenerationState('failed')
+        return
+      }
+
+      const { carousel_id } = await res.json()
+      setCarouselId(carousel_id)
+      setGenerationState('processing')
+    } catch {
+      setGenerationState('failed')
+    }
+  }
+
+  // handleGenerate — entry point from Generate button.
+  // Guards on generationState === 'idle' to prevent double-submission.
+  async function handleGenerate() {
+    if (generationState !== 'idle') return
+    await submitGeneration()
+  }
+
+  // handleRetry — resets carousel state and calls submitGeneration() directly,
+  // bypassing the idle-state guard to avoid React 18 batching stale-closure issues.
+  async function handleRetry() {
+    // v1: retry creates a new carousel row and deducts another credit; refund-on-failure is v2
+    setCarouselId(null)
+    setProcessingStep(1)
+    // Call submitGeneration() directly — NOT handleGenerate() — to skip the idle-state guard.
+    // React 18 batching means generationState is still 'failed' in the closure when this runs,
+    // so going through handleGenerate() would hit the guard and return early silently.
+    await submitGeneration()
+  }
+
+  // Polling useEffect
+  useEffect(() => {
+    if (!carouselId || generationState !== 'processing') return
+
+    const startTime = Date.now()
+
+    // Simulated step advancement (client-side only — n8n doesn't emit step updates)
+    const stepTimer1 = setTimeout(() => setProcessingStep(2), 8000)
+    const stepTimer2 = setTimeout(() => setProcessingStep(3), 20000)
+
+    const interval = setInterval(async () => {
+      if (Date.now() - startTime > POLL_TIMEOUT_MS) {
+        clearInterval(interval)
+        setGenerationState('failed')
+        return
+      }
+
+      try {
+        const res = await fetch(`/api/generate/status?id=${carouselId}`)
+        if (!res.ok) return  // transient error — keep polling
+
+        const data = await res.json()
+        if (data.status === 'completed') {
+          clearInterval(interval)
+          clearTimeout(stepTimer1)
+          clearTimeout(stepTimer2)
+          setSlideUrls(data.slide_urls ?? [])
+          setPostBody(data.post_body ?? '')
+          setGenerationState('completed')
+          router.refresh()  // update credit badge in header
+        } else if (data.status === 'failed') {
+          clearInterval(interval)
+          clearTimeout(stepTimer1)
+          clearTimeout(stepTimer2)
+          setGenerationState('failed')
+        }
+      } catch {
+        // transient network error — keep polling
+      }
+    }, POLL_INTERVAL_MS)
+
+    return () => {
+      clearInterval(interval)
+      clearTimeout(stepTimer1)
+      clearTimeout(stepTimer2)
+    }
+  }, [carouselId, generationState, router])
+
+  // Map generationState to PreviewPanel mode prop
+  const previewMode = generationState === 'loading'
+    ? 'processing'
+    : generationState === 'idle'
+      ? 'config'
+      : generationState
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-10 items-start">
@@ -118,19 +248,29 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
         <div className="py-6">
           <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-900">Ready to generate</p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Complete all steps above, then hit generate.
-                <span className="ml-1 text-amber-500 font-medium">AI generation coming in Phase 5.</span>
+              <p className="text-sm font-semibold text-gray-900">
+                {canGenerate ? 'Ready to generate your carousel.' : 'Add a topic, select a template and image style to unlock generation.'}
               </p>
+              {!canGenerate && (
+                <p className="text-xs text-gray-400 mt-0.5">Topic, template, and image style are required.</p>
+              )}
             </div>
-            <button
-              disabled
-              className="inline-flex items-center gap-2.5 rounded-xl bg-gray-900 text-white px-5 py-2.5 text-sm font-semibold opacity-40 cursor-not-allowed flex-shrink-0"
-            >
-              Generate carousel
-              <ArrowRightIcon />
-            </button>
+
+            {creditData.creditsRemaining === 0 ? (
+              <CreditGate />
+            ) : (
+              <button
+                onClick={handleGenerate}
+                disabled={!canGenerate || generationState !== 'idle'}
+                className={[
+                  'inline-flex items-center gap-2.5 rounded-xl bg-gray-900 text-white px-5 py-2.5 text-sm font-semibold flex-shrink-0 transition-opacity',
+                  (!canGenerate || generationState !== 'idle') ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-800',
+                ].join(' ')}
+              >
+                {generationState === 'loading' ? 'Starting\u2026' : 'Generate carousel'}
+                <ArrowRightIcon />
+              </button>
+            )}
           </div>
         </div>
 
@@ -138,7 +278,17 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
 
       {/* ── Right: Live preview ───────────────────────────────── */}
       <aside className="xl:sticky xl:top-6">
-        <PreviewPanel topic={topic} template={selectedTemplate} hookStyle={selectedHook} slideCount={slideCount} />
+        <PreviewPanel
+          topic={topic}
+          template={selectedTemplate}
+          hookStyle={selectedHook}
+          slideCount={slideCount}
+          mode={previewMode}
+          processingStep={processingStep}
+          slideUrls={slideUrls}
+          postBody={postBody}
+          onRetry={handleRetry}
+        />
       </aside>
 
     </div>
