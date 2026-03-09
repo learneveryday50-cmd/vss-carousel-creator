@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Auth, database schema with RLS, and project scaffolding — everything else gates on this (completed 2026-03-04)
 - [x] **Phase 2: Brand Onboarding** - Brand profile creation/edit, template catalog, and image style options — required inputs for generation (completed 2026-03-04)
 - [x] **Phase 3: Billing and Credits** - Stripe Checkout, webhooks, Customer Portal, and credit system — must gate generation before dashboard is built (completed 2026-03-06)
-- [ ] **Phase 4: n8n Workflow Migration** - Migrate existing n8n workflow from Airtable output to Supabase — unblocks generation UI
+- [ ] **Phase 4: n8n Workflow Migration** - Build clean n8n Cloud workflow JSON from scratch — Gemini + DALL-E 3 + ImgBB pipeline writing results to Supabase
 - [x] **Phase 5: Generation Dashboard** - Core value loop: async generation, Realtime status, credit gate, post-success credit deduction, and carousel preview (completed 2026-03-08)
 - [ ] **Phase 6: History, Downloads, and Export** - Carousel history page, slide downloads, PDF export, and copy post text — retention driver
 - [ ] **Phase 7: Landing Page and Polish** - Public marketing page, animations, and UI polish — no technical risk, executes last
@@ -74,17 +74,17 @@ Plans:
 - [ ] 03-03-PLAN.md — Credit UI: usage_tracking data flow through layout → AppShell → Header → CreditBadge, CreditGate component, `/settings/billing` page with Checkout + Portal Server Actions, sidebar Billing nav entry
 
 ### Phase 4: n8n Workflow Migration
-**Goal**: The existing n8n Cloud workflow writes generation results to Supabase instead of Airtable, and the end-to-end pipeline (webhook trigger → AI generation → Supabase write) is verified in isolation before the generation UI is built around it
+**Goal**: A clean n8n Cloud workflow JSON is built from scratch implementing the full carousel generation pipeline — Gemini 2.0 Flash generates slide content + DALL-E 3 generates images + ImgBB hosts them + Supabase carousels table is updated with results
 **Depends on**: Phase 1
 **Requirements**: N8N-01
 **Success Criteria** (what must be TRUE):
-  1. Triggering the n8n webhook with a test payload results in a carousel record being created or updated in the Supabase carousels table (not Airtable)
-  2. n8n can authenticate to Supabase using a service role key stored as an n8n credential (key is never exposed to any client or logged)
-  3. A duplicate of the original workflow exists as a backup before any edits are made via n8n MCP
+  1. Triggering the n8n webhook with a test payload results in a carousel record being updated in the Supabase carousels table with status=completed, post_body, and slide_urls
+  2. n8n authenticates to Supabase using a service role key stored as a named n8n credential (key never hardcoded in workflow nodes)
+  3. A complete importable n8n workflow JSON file (vss-carousel-workflow-v6.json) exists in the repo
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — n8n workflow migration (backup original workflow JSON, create Supabase service role Header Auth credential, replace Airtable output nodes with HTTP Request nodes, end-to-end smoke test via PATCH to carousels table)
+- [ ] 04-01-PLAN.md — Write complete n8n workflow JSON from scratch (13 nodes: Webhook, 202 ACK, Set Processing, Gemini multimodal, Parse Slides, SplitInBatches, DALL-E 3, ImgBB upload, Collect URL, Aggregate, Build Payload, Set Completed, Set Failed); human checkpoint to import, configure, activate, and smoke test
 
 ### Phase 5: Generation Dashboard
 **Goal**: Users can generate a branded carousel from a text idea, see live status updates, view the result as a preview, and have exactly one credit deducted only on success — failed generations do not cost credits
