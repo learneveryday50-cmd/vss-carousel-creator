@@ -119,7 +119,7 @@ export function parseTemplate(record: AirtableRecord): AirtableTemplate {
 
 export function parseDesignStyle(record: AirtableRecord): AirtableDesignStyle {
   const f = record.fields
-  const example = (f['Example'] as Attachment[] | undefined)?.[0]?.url ?? null
+  const example = (f['Examples'] as Attachment[] | undefined)?.[0]?.url ?? null
   return {
     id: record.id,
     name: String(
