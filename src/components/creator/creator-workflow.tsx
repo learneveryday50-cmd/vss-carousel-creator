@@ -25,7 +25,7 @@ const STEPS = [
 ]
 
 const POLL_INTERVAL_MS = 2500
-const POLL_TIMEOUT_MS = 8 * 60 * 1000
+const POLL_TIMEOUT_MS = 6 * 60 * 1000
 
 export function CreatorWorkflow({ brands, templates, designStyles, selectedBrandId, creditData }: Props) {
   const router = useRouter()
@@ -42,7 +42,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
   const [slideUrls, setSlideUrls] = useState<string[]>([])
   const [postBody, setPostBody] = useState<string>('')
 
-  const canGenerate = topic.trim().length > 0 && !!templateId && !!activeBrandId
+  const canGenerate = topic.trim().length > 0 && !!templateId && !!activeBrandId && !!designId
 
   const completedSteps = [
     topic.trim().length > 0,
@@ -329,6 +329,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
                 <ul className="text-xs text-gray-400 mt-1 space-y-0.5">
                   {!activeBrandId && <li>• No brand selected — choose one above</li>}
                   {!topic.trim() && <li>• Step 1: Enter a topic</li>}
+                  {!designId && <li>• Step 2: Select a visual style</li>}
                   {!templateId && <li>• Step 3: Select a template</li>}
                 </ul>
               )}

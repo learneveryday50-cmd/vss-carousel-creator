@@ -1,6 +1,6 @@
 // Airtable API client — matches the "Generate Linkedin Carousels" n8n workflow
 
-const BASE_ID = 'appg1R20qrO56x3oL'
+const BASE_ID = 'appI5nS17LKNdDYGe'
 
 export const AIRTABLE_TABLES = {
   brands:       'tblSCEQFDEhDCYNv5',
@@ -12,7 +12,7 @@ export const AIRTABLE_TABLES = {
 
 // The ideas table URL passed to the n8n webhook as query param
 export const IDEAS_TABLE_URL =
-  'https://airtable.com/appg1R20qrO56x3oL/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide'
+  'https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide'
 
 function apiKey() {
   const key = process.env.AIRTABLE_API_KEY

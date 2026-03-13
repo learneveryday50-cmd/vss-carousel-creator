@@ -388,7 +388,7 @@ export function PreviewPanel({
             <XCircle className="w-8 h-8 text-red-400" />
             <div>
               <p className="font-semibold text-gray-900">Generation failed</p>
-              <p className="text-sm text-gray-500 mt-1">Something went wrong. Please try again.</p>
+              <p className="text-sm text-gray-500 mt-1">The workflow didn't complete in time. Check n8n for errors, then try again.</p>
             </div>
             <button
               onClick={onRetry}

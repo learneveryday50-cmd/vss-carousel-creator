@@ -18,7 +18,12 @@ export default async function ProtectedLayout({
     redirect('/login')
   }
 
-  const brands = (await listRecords(AIRTABLE_TABLES.brands)).map(parseBrand)
+  let brands: ReturnType<typeof parseBrand>[] = []
+  try {
+    brands = (await listRecords(AIRTABLE_TABLES.brands)).map(parseBrand)
+  } catch (err) {
+    console.error('[layout] Airtable brands fetch failed:', err)
+  }
 
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value

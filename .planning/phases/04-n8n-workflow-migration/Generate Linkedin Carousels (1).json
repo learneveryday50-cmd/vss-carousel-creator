@@ -802,7 +802,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"inputs\":[\n{\n \"input\":\"brand\",\n\"table_url\":\"https://airtable.com/appg1R20qrO56x3oL/tblSCEQFDEhDCYNv5/viwLJFTWUrIp9ftAJ?blocks=hide\"\n},\n{    \n \"input\":\"ideas\", \"table_url\":\"https://airtable.com/appg1R20qrO56x3oL/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide\"\n  },\n{\n  \"input\": \"draft posts\",\n\"table_url\":\"https://airtable.com/appg1R20qrO56x3oL/tblIgtemiB5mTwqzW/viwDYdnQkFLaTuQD0?blocks=hide\"\n},\n{\n  \"input\": \"asset templates\",\n\"table_url\":\"https://airtable.com/appg1R20qrO56x3oL/tblWYBupbcSaGFhUJ/viwUAeEQaXsFEmj3f?blocks=hide\"\n}, \n{\n  \"input\": \"asset design styles\",\n\"table_url\":\"https://airtable.com/appg1R20qrO56x3oL/tbl7sY5329RH6CMAF/viw54Bfu1Urc4jOJb?blocks=hide\"\n}\n  ]\n}",
+        "jsonOutput": "{\n  \"inputs\":[\n{\n \"input\":\"brand\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblSCEQFDEhDCYNv5/viwLJFTWUrIp9ftAJ?blocks=hide\"\n},\n{    \n \"input\":\"ideas\", \"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide\"\n  },\n{\n  \"input\": \"draft posts\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblIgtemiB5mTwqzW/viwDYdnQkFLaTuQD0?blocks=hide\"\n},\n{\n  \"input\": \"asset templates\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblWYBupbcSaGFhUJ/viwUAeEQaXsFEmj3f?blocks=hide\"\n}, \n{\n  \"input\": \"asset design styles\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tbl7sY5329RH6CMAF/viw54Bfu1Urc4jOJb?blocks=hide\"\n}\n  ]\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -1933,7 +1933,7 @@
           },
           "params": {},
           "query": {
-            "table_url": "https://airtable.com/appg1R20qrO56x3oL/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide",
+            "table_url": "https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide",
             "record_id": "recmx3vLyvsQpslRn",
             "path": "create-carousel",
             "origin": "ideas"

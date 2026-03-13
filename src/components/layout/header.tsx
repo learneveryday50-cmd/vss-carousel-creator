@@ -1,7 +1,9 @@
 'use client'
 
-import { Menu, CreditCard } from 'lucide-react'
+import { Menu, CreditCard, LogOut } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import type { AirtableBrand } from '@/lib/airtable'
 import { BrandSwitcher } from '@/components/brand/brand-switcher'
 import { CreditBadge } from '@/components/billing/credit-badge'
@@ -29,6 +31,13 @@ interface HeaderProps {
 
 export function Header({ brands, selectedBrandId, userEmail, creditData, onMenuClick }: HeaderProps) {
   const initials = userEmail ? userEmail.charAt(0).toUpperCase() : '?'
+  const router = useRouter()
+
+  async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   return (
     <header className="h-14 border-b border-gray-200 bg-white flex items-center px-4 lg:px-6 gap-3 flex-shrink-0">
@@ -82,6 +91,11 @@ export function Header({ brands, selectedBrandId, userEmail, creditData, onMenuC
                 <CreditCard className="w-4 h-4 mr-2 text-gray-500" />
                 Billing
               </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="flex items-center cursor-pointer text-red-600 focus:text-red-600">
+              <LogOut className="w-4 h-4 mr-2" />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

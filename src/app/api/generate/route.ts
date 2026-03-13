@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
   const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL
   if (n8nWebhookUrl) {
     const webhookUrl = `${n8nWebhookUrl}?table_url=${encodeURIComponent(IDEAS_TABLE_URL)}&record_id=${record.id}`
-    fetch(webhookUrl, { method: 'POST' })
+    fetch(webhookUrl)
       .catch((err) => console.error('[generate] n8n fire failed:', err))
   }
 

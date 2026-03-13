@@ -1,6 +1,6 @@
 import { type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { getRecord, searchRecords, AIRTABLE_TABLES } from '@/lib/airtable'
+import { getRecord, AIRTABLE_TABLES } from '@/lib/airtable'
 
 export async function GET(request: NextRequest) {
   // 1. Auth check
@@ -31,19 +31,17 @@ export async function GET(request: NextRequest) {
 
   // Completed signal
   if (systemMessage.includes('(3/3) Draft Post Completed')) {
-    // Fetch Draft Posts linked to this idea
+    // Read linked draft IDs directly from the idea record
+    const linkedDraftIds = (ideaRecord.fields['📝 Draft Posts'] as string[] | undefined) ?? []
+    const draftId = linkedDraftIds[0]
+
+    if (!draftId) {
+      // Draft not yet linked — keep polling
+      return Response.json({ status: 'processing', step: 3 })
+    }
+
     try {
-      const draftRecords = await searchRecords(
-        AIRTABLE_TABLES.draftPosts,
-        `FIND("${recordId}", ARRAYJOIN({Idea}, ","))`
-      )
-
-      const draft = draftRecords[0]
-      if (!draft) {
-        // Draft not yet linked — keep polling
-        return Response.json({ status: 'processing', step: 3 })
-      }
-
+      const draft = await getRecord(AIRTABLE_TABLES.draftPosts, draftId)
       type Attachment = { url: string }
       const postBody = String(draft.fields['Post Body'] ?? '')
       const attachments = (draft.fields['Generated Carousel'] as Attachment[] | undefined) ?? []
@@ -55,7 +53,7 @@ export async function GET(request: NextRequest) {
         slide_urls: slideUrls,
       })
     } catch (err) {
-      console.error('[status] Airtable draftPosts fetch failed:', err)
+      console.error('[status] Airtable draft fetch failed:', err)
       return Response.json({ status: 'processing', step: 3 })
     }
   }

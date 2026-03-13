@@ -13,9 +13,9 @@ export default async function DashboardPage() {
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
   const [brandRecords, templateRecords, designStyleRecords] = await Promise.all([
-    listRecords(AIRTABLE_TABLES.brands),
-    listRecords(AIRTABLE_TABLES.templates),
-    listRecords(AIRTABLE_TABLES.designStyles),
+    listRecords(AIRTABLE_TABLES.brands).catch(() => []),
+    listRecords(AIRTABLE_TABLES.templates).catch(() => []),
+    listRecords(AIRTABLE_TABLES.designStyles).catch(() => []),
   ])
 
   const brands = brandRecords.map(parseBrand)
