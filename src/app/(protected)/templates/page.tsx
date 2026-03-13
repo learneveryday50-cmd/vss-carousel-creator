@@ -1,8 +1,16 @@
 import { cookies } from 'next/headers'
-import { getTemplates, getDesignStyles, getHookStyles, getTemplateAssets } from '@/lib/supabase/catalog'
-import { getBrands } from '@/lib/supabase/brands'
 import { createClient } from '@/lib/supabase/server'
 import { CreatorWorkflow } from '@/components/creator/creator-workflow'
+import {
+  listRecords,
+  parseBrand,
+  parseTemplate,
+  parseDesignStyle,
+  AIRTABLE_TABLES,
+  type AirtableBrand,
+  type AirtableTemplate,
+  type AirtableDesignStyle,
+} from '@/lib/airtable'
 
 export const metadata = {
   title: 'Generate LinkedIn Carousel',
@@ -12,20 +20,6 @@ export default async function TemplatesPage() {
   const cookieStore = await cookies()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
-  // Auto-fallback to first brand if no cookie is set
-  const cookieBrandId = cookieStore.get('selected_brand_id')?.value ?? null
-  let selectedBrandId = cookieBrandId
-  if (!selectedBrandId && user) {
-    const { data: firstBrand } = await supabase
-      .from('brands')
-      .select('id')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .single()
-    selectedBrandId = firstBrand?.id ?? null
-  }
 
   const { data: usage } = user
     ? await supabase.from('usage_tracking').select('plan, credits_remaining, credits_limit').eq('user_id', user.id).single()
@@ -37,13 +31,21 @@ export default async function TemplatesPage() {
     creditsLimit: usage?.credits_limit ?? 3,
   }
 
-  const [templates, templateAssets, designStyles, hookStyles, brands] = await Promise.all([
-    getTemplates(),
-    getTemplateAssets(),
-    getDesignStyles(),
-    getHookStyles(),
-    getBrands(),
+  const [brandRecords, templateRecords, designStyleRecords] = await Promise.all([
+    listRecords(AIRTABLE_TABLES.brands),
+    listRecords(AIRTABLE_TABLES.templates),
+    listRecords(AIRTABLE_TABLES.designStyles),
   ])
+
+  const brands: AirtableBrand[] = brandRecords.map(parseBrand)
+  const templates: AirtableTemplate[] = templateRecords.map(parseTemplate)
+  const designStyles: AirtableDesignStyle[] = designStyleRecords.map(parseDesignStyle)
+
+  // Auto-select first brand from cookie or first available
+  const cookieBrandId = cookieStore.get('selected_brand_id')?.value ?? null
+  const selectedBrandId = (cookieBrandId && brands.find((b) => b.id === cookieBrandId))
+    ? cookieBrandId
+    : (brands[0]?.id ?? null)
 
   return (
     <div className="w-full max-w-7xl">
@@ -59,11 +61,9 @@ export default async function TemplatesPage() {
         </p>
       </div>
       <CreatorWorkflow
-        hookStyles={hookStyles}
-        templates={templates}
-        templateAssets={templateAssets}
-        designStyles={designStyles}
         brands={brands}
+        templates={templates}
+        designStyles={designStyles}
         selectedBrandId={selectedBrandId}
         creditData={creditData}
       />

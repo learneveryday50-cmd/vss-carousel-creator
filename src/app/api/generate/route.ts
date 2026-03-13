@@ -1,13 +1,17 @@
 import { type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import {
+  createRecord,
+  IDEAS_TABLE_URL,
+  AIRTABLE_TABLES,
+} from '@/lib/airtable'
 
 export async function POST(request: NextRequest) {
   // 1. Validate env vars
   const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL
-  const n8nWebhookSecret = process.env.N8N_WEBHOOK_SECRET
 
-  if (!n8nWebhookUrl || !n8nWebhookSecret) {
+  if (!n8nWebhookUrl) {
     return Response.json(
       { error: 'Generation service not configured' },
       { status: 503 }
@@ -26,11 +30,8 @@ export async function POST(request: NextRequest) {
   let body: {
     brand_id?: string
     template_id?: string
-    template_asset_id?: string | null
-    hook_style_id?: string | null
-    design_style_id?: string | null
+    design_style_id?: string
     idea_text?: string
-    slide_count?: number
   }
 
   try {
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { brand_id, template_id, template_asset_id, idea_text, hook_style_id, design_style_id } = body
+  const { brand_id, template_id, design_style_id, idea_text } = body
 
   if (!brand_id || !template_id || !idea_text) {
     return Response.json(
@@ -48,110 +49,41 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // 4. Atomic credit deduction (Supabase)
   const admin = createAdminClient()
-
-  // 4. Atomic credit deduction
   const { data: creditResult, error: creditError } = await admin.rpc('consume_credit', {
     p_user_id: user.id,
   })
 
   if (creditError || !creditResult?.success) {
-    return Response.json(
-      { error: 'Insufficient credits' },
-      { status: 402 }
-    )
+    return Response.json({ error: 'Insufficient credits' }, { status: 402 })
   }
 
-  // 5. Fetch related data server-side in parallel
-  const [brandResult, templateResult, hookStyleResult, designStyleResult, templateAssetResult] = await Promise.all([
-    admin.from('brands').select('id, name, primary_color, voice_guidelines, product_description, audience_description, cta_text').eq('id', brand_id).single(),
-    admin.from('templates').select('id, name, slug').eq('id', template_id).single(),
-    hook_style_id
-      ? admin.from('hook_styles').select('id, name, description, prompt_instruction').eq('id', hook_style_id).single()
-      : Promise.resolve({ data: null, error: null }),
-    design_style_id
-      ? admin.from('design_styles').select('id, name, description, preview_image').eq('id', design_style_id).single()
-      : Promise.resolve({ data: null, error: null }),
-    template_asset_id
-      ? admin.from('template_assets').select('template_font_url, template_content_url, template_cta_url').eq('id', template_asset_id).single()
-      : Promise.resolve({ data: null, error: null }),
-  ])
-
-  if (brandResult.error || !brandResult.data) {
-    console.error('[generate] brand lookup failed:', brandResult.error)
-    return Response.json({ error: 'Brand not found' }, { status: 500 })
+  // 5. Create Airtable idea record
+  const ideaFields: Record<string, unknown> = {
+    'Idea': idea_text,
+    '❗Brand Voice': [brand_id],
+    '❗Carousel Template': [template_id],
+    'Number of Drafts': 1,
   }
 
-  if (templateResult.error || !templateResult.data) {
-    console.error('[generate] template lookup failed:', templateResult.error)
-    return Response.json({ error: 'Template not found' }, { status: 500 })
+  if (design_style_id) {
+    ideaFields['❗Design Style'] = [design_style_id]
   }
 
-  const brand = brandResult.data
-  const template = templateResult.data
-  const hookStyle = hookStyleResult.data
-  const designStyle = designStyleResult.data
-  const templateAsset = templateAssetResult.data
-
-  // 6. Insert carousel row
-  const { data: carousel, error: insertError } = await admin
-    .from('carousels')
-    .insert({
-      user_id: user.id,
-      brand_id,
-      template_id,
-      idea_text,
-      status: 'processing',
-    })
-    .select('id')
-    .single()
-
-  if (insertError || !carousel) {
-    console.error('[generate] carousel insert failed:', insertError)
+  let record: { id: string }
+  try {
+    record = await createRecord(AIRTABLE_TABLES.ideas, ideaFields)
+  } catch (err) {
+    console.error('[generate] Airtable createRecord failed:', err)
     return Response.json({ error: 'Failed to create generation job' }, { status: 500 })
   }
 
-  // 7. Fire-and-forget n8n webhook — do NOT await
-  // Flat structure matches n8n workflow's "Standardize Inputs" node field paths
-  const n8nPayload = {
-    carousel_id: carousel.id,
-    idea_text: body.idea_text,
-    slide_count: body.slide_count ?? 7,
-    // Brand fields (flat)
-    brand_id: brand_id,
-    brand_name: brand.name,
-    brand_color: brand.primary_color,
-    voice_guidelines: brand.voice_guidelines,
-    product_description: brand.product_description,
-    audience_description: brand.audience_description,
-    cta_text: brand.cta_text,
-    // Template fields — template_assets provides the actual slide images
-    template_id: template.id,
-    template_name: template.name,
-    template_slug: template.slug,
-    template_front_url: templateAsset?.template_font_url || '',
-    template_content_url: templateAsset?.template_content_url || '',
-    template_cta_url: templateAsset?.template_cta_url || '',
-    // Hook style fields (optional)
-    hook_style_name: hookStyle?.name ?? '',
-    hook_style_description: hookStyle?.description ?? '',
-    hook_style_instruction: hookStyle?.prompt_instruction ?? '',
-    // Design style (visual style — step 5, design_styles table)
-    design_style: designStyle?.name ?? '',
-    design_style_description: designStyle?.description ?? '',
-    design_style_url: designStyle?.preview_image ?? '',  // reference image for this visual style
-    custom_instructions: '',
-  }
+  // 6. Fire-and-forget n8n webhook
+  const webhookUrl = `${n8nWebhookUrl}?table_url=${encodeURIComponent(IDEAS_TABLE_URL)}&record_id=${record.id}`
+  fetch(webhookUrl, { method: 'POST' })
+    .catch((err) => console.error('[generate] n8n fire failed:', err))
 
-  fetch(n8nWebhookUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Webhook-Secret': n8nWebhookSecret,
-    },
-    body: JSON.stringify(n8nPayload),
-  }).catch((err) => console.error('[generate] n8n fire failed:', err))
-
-  // 8. Return immediately with carousel_id
-  return Response.json({ carousel_id: carousel.id }, { status: 201 })
+  // 7. Return immediately with Airtable record_id
+  return Response.json({ record_id: record.id }, { status: 201 })
 }
