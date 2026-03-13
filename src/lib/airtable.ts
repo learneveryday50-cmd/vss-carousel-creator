@@ -106,8 +106,6 @@ function brandToAirtableFields(input: BrandSyncInput): Record<string, unknown> {
     'Brand Color': input.primaryColor,
     'Voice Guidelines': input.voiceGuidelines ?? '',
     'Product & Audience': productAndAudience,
-    'Product Description': input.productDescription ?? '',
-    'Audience Description': input.audienceDescription ?? '',
     'CTA Text': input.ctaText ?? '',
     'Supabase ID': input.supabaseId,
   }
@@ -168,8 +166,8 @@ export function parseBrand(record: AirtableRecord): AirtableBrand {
     primaryColor: String(f['Brand Color'] ?? '#000000'),
     secondaryColor: (f['Secondary Color'] as string) ?? null,
     voiceGuidelines: (f['Voice Guidelines'] as string) ?? null,
-    productDescription: (f['Product Description'] as string) ?? null,
-    audienceDescription: (f['Audience Description'] as string) ?? null,
+    productDescription: (f['Product & Audience'] as string) ?? null,
+    audienceDescription: null,
     ctaText: (f['CTA Text'] as string) ?? null,
   }
 }
