@@ -3,22 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import {
   createRecord,
-  IDEAS_TABLE_URL,
   AIRTABLE_TABLES,
 } from '@/lib/airtable'
 
 export async function POST(request: NextRequest) {
-  // 1. Validate env vars
-  const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL
-
-  if (!n8nWebhookUrl) {
-    return Response.json(
-      { error: 'Generation service not configured' },
-      { status: 503 }
-    )
-  }
-
-  // 2. Auth check
+  // 1. Auth check
   const supabase = await createClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -79,11 +68,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Failed to create generation job' }, { status: 500 })
   }
 
-  // 6. Fire-and-forget n8n webhook
-  const webhookUrl = `${n8nWebhookUrl}?table_url=${encodeURIComponent(IDEAS_TABLE_URL)}&record_id=${record.id}`
-  fetch(webhookUrl, { method: 'POST' })
-    .catch((err) => console.error('[generate] n8n fire failed:', err))
-
-  // 7. Return immediately with Airtable record_id
+  // 6. Return immediately — Airtable automation triggers n8n on record creation
   return Response.json({ record_id: record.id }, { status: 201 })
 }
