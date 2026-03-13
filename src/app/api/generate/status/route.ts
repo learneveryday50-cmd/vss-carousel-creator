@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   // 3. Query carousel — .eq('user_id', user.id) enforces ownership alongside RLS
   const { data: carousel, error } = await supabase
     .from('carousels')
-    .select('id, status, slide_urls, post_body')
+    .select('id, status, slide_urls, slide_content, post_body')
     .eq('id', carouselId)
     .eq('user_id', user.id)
     .single()
@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
     id: carousel.id,
     status: carousel.status,
     slide_urls: carousel.slide_urls,
+    slide_content: carousel.slide_content,
     post_body: carousel.post_body,
   })
 }

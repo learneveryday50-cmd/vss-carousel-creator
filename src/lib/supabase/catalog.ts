@@ -4,22 +4,8 @@ export type Template = {
   id: string
   name: string
   slug: string
-  cover_url: string | null
-  content_url: string | null
-  cta_url: string | null
-  thumbnail_url: string | null
   is_active: boolean
   sort_order: number
-}
-
-export type ImageStyle = {
-  id: string
-  user_id: string | null
-  name: string
-  description: string | null
-  sample_url: string | null
-  is_custom: boolean
-  created_at: string
 }
 
 export async function getTemplates(): Promise<Template[]> {
@@ -33,34 +19,27 @@ export async function getTemplates(): Promise<Template[]> {
   return data ?? []
 }
 
-export async function getImageStyles(): Promise<ImageStyle[]> {
+
+export type TemplateAsset = {
+  id: string
+  name: string
+  description: string | null
+  template_font_url: string | null
+  template_content_url: string | null
+  template_cta_url: string | null
+  is_active: boolean
+  sort_order: number
+}
+
+export async function getTemplateAssets(): Promise<TemplateAsset[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
-    .from('image_styles')
+    .from('template_assets')
     .select('*')
-    .order('is_custom', { ascending: true })  // built-ins first
-    .order('created_at', { ascending: true })
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
   if (error) throw error
   return data ?? []
-}
-
-export async function createCustomStyle(name: string): Promise<ImageStyle> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
-  const { data, error } = await supabase
-    .from('image_styles')
-    .insert({ name, user_id: user.id, is_custom: true })
-    .select()
-    .single()
-  if (error) throw error
-  return data
-}
-
-export async function deleteCustomStyle(id: string): Promise<void> {
-  const supabase = await createClient()
-  const { error } = await supabase.from('image_styles').delete().eq('id', id)
-  if (error) throw error
 }
 
 export type DesignStyle = {

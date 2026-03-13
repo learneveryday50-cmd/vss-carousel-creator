@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { HookStyleSelector } from '@/components/hook-styles/hook-style-selector'
 import { TemplateGallery } from '@/components/templates/template-gallery'
+import { TemplateAssetSelector } from '@/components/template-assets/template-asset-selector'
 import { DesignStyleSelector } from '@/components/design-styles/design-style-selector'
-import { StyleSelector } from '@/components/image-styles/style-selector'
 import { SlideCountSelector, type SlideCount } from '@/components/slide-count/slide-count-selector'
 import { PreviewPanel } from '@/components/creator/preview-panel'
+import { InlineBrandEditor } from '@/components/brand/inline-brand-editor'
 import { CreditGate } from '@/components/billing/credit-gate'
-import type { HookStyle, Template, DesignStyle, ImageStyle } from '@/lib/supabase/catalog'
+import type { HookStyle, Template, TemplateAsset, DesignStyle } from '@/lib/supabase/catalog'
 import type { Brand } from '@/lib/supabase/brands'
 
 type CreditData = { plan: 'free' | 'pro'; creditsRemaining: number; creditsLimit: number }
@@ -17,8 +18,8 @@ type CreditData = { plan: 'free' | 'pro'; creditsRemaining: number; creditsLimit
 type Props = {
   hookStyles: HookStyle[]
   templates: Template[]
+  templateAssets: TemplateAsset[]
   designStyles: DesignStyle[]
-  imageStyles: ImageStyle[]
   brands: Brand[]
   selectedBrandId: string | null
   creditData: CreditData
@@ -27,26 +28,27 @@ type Props = {
 type GenerationState = 'idle' | 'loading' | 'processing' | 'completed' | 'failed'
 
 const STEPS = [
-  { n: 1, tag: 'Topic',         label: 'What do you want to create?' },
-  { n: 2, tag: 'Structure',     label: 'Choose a template' },
-  { n: 3, tag: 'Writing Style', label: 'Choose a hook style' },
-  { n: 4, tag: 'Design',        label: 'Choose a layout style' },
-  { n: 5, tag: 'Images',        label: 'Choose a visual style' },
-  { n: 6, tag: 'Output',        label: 'Choose a slide count' },
+  { n: 1, tag: 'Idea',              label: 'What is your carousel idea?' },
+  { n: 2, tag: 'Carousel Template', label: 'Choose a carousel template' },
+  { n: 3, tag: 'Visual Style',      label: 'Choose a visual style' },
+  { n: 4, tag: 'Template Style',    label: 'Choose template images' },
+  { n: 5, tag: 'Hook Style',        label: 'Choose a hook style' },
+  { n: 6, tag: 'Slide Count',       label: 'Number of slides' },
 ]
 
 const POLL_INTERVAL_MS = 2500
-const POLL_TIMEOUT_MS = 3 * 60 * 1000  // 3 minutes
+const POLL_TIMEOUT_MS = 8 * 60 * 1000  // 8 minutes
 
-export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyles, brands, selectedBrandId, creditData }: Props) {
+export function CreatorWorkflow({ hookStyles, templates, templateAssets, designStyles, brands, selectedBrandId, creditData }: Props) {
   const router = useRouter()
 
   const [activeBrandId, setActiveBrandId] = useState<string | null>(selectedBrandId)
+  const [editBrandOpen, setEditBrandOpen] = useState(false)
   const [topic, setTopic] = useState('')
-  const [hookId, setHookId] = useState<string | undefined>()
   const [templateId, setTemplateId] = useState<string | undefined>()
   const [designId, setDesignId] = useState<string | undefined>()
-  const [imageId, setImageId] = useState<string | undefined>()
+  const [templateAssetId, setTemplateAssetId] = useState<string | undefined>()
+  const [hookId, setHookId] = useState<string | undefined>()
   const [slideCount, setSlideCount] = useState<SlideCount>(7)
 
   // Generation state
@@ -58,22 +60,22 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
 
   const selectedHook = hookStyles.find((h) => h.id === hookId)
   const selectedTemplate = templates.find((t) => t.id === templateId)
+  const activeBrand = brands.find((b) => b.id === activeBrandId) ?? null
 
-  // Minimum-input check: topic + templateId + imageId + brandId required
-  const canGenerate = topic.trim().length > 0 && !!templateId && !!imageId && !!activeBrandId
+  // Minimum-input check: topic + templateId + templateAssetId + brandId required
+  const canGenerate = topic.trim().length > 0 && !!templateId && !!templateAssetId && !!activeBrandId
 
   const completedSteps = [
     topic.trim().length > 0,
     !!templateId,
-    !!hookId,
     !!designId,
-    !!imageId,
+    !!templateAssetId,
+    !!hookId,
     true,
   ]
   const completedCount = completedSteps.filter(Boolean).length
 
-  // submitGeneration — contains POST fetch and carousel_id setup.
-  // Does NOT guard on generationState so it works from both handleGenerate and handleRetry.
+  // submitGeneration — does NOT guard on generationState so it works from handleGenerate and handleRetry.
   async function submitGeneration() {
     if (!canGenerate || !activeBrandId) return
     setGenerationState('loading')
@@ -86,7 +88,9 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
         body: JSON.stringify({
           brand_id: activeBrandId,
           template_id: templateId,
-          image_style_id: imageId,
+          template_asset_id: templateAssetId ?? null,
+          hook_style_id: hookId ?? null,
+          design_style_id: designId ?? null,
           idea_text: topic,
           slide_count: slideCount,
         }),
@@ -117,6 +121,7 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
   async function handleRetry() {
     // v1: retry creates a new carousel row and deducts another credit; refund-on-failure is v2
     setCarouselId(null)
+    setPostBody('')
     setProcessingStep(1)
     // Call submitGeneration() directly — NOT handleGenerate() — to skip the idle-state guard.
     // React 18 batching means generationState is still 'failed' in the closure when this runs,
@@ -186,32 +191,79 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
       {/* ── Left: Config flow ─────────────────────────────────── */}
       <div className="min-w-0 space-y-0">
 
-        {/* Brand selector */}
+        {/* ── Brand step ─────────────────────────────────────── */}
         {brands.length > 0 && (
-          <div className="mb-6 flex items-center gap-3 flex-wrap">
-            <span className="text-xs font-semibold text-gray-500 flex-shrink-0">Brand:</span>
-            <div className="flex flex-wrap gap-2">
-              {brands.map((b) => {
-                const isActive = b.id === activeBrandId
-                return (
-                  <button
-                    key={b.id}
-                    onClick={() => setActiveBrandId(b.id)}
-                    className={[
-                      'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
-                      isActive
-                        ? 'bg-amber-50 border-amber-400 text-amber-700 ring-2 ring-amber-400/30'
-                        : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
-                    ].join(' ')}
-                  >
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: b.primary_color }} />
-                    {b.name}
-                  </button>
-                )
-              })}
+          <section className="py-8">
+            <div className="flex items-start gap-4 mb-5">
+              <div className={[
+                'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5 transition-colors',
+                activeBrandId ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-400',
+              ].join(' ')}>
+                {activeBrandId ? <CheckIcon /> : <BrandIcon />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-0.5">Brand</p>
+                <h2 className="text-base font-semibold text-gray-900 leading-snug">Choose your brand</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Your brand identity applied to every slide.</p>
+              </div>
             </div>
-          </div>
+
+            <div className="ml-11 space-y-3">
+              {/* Brand chips */}
+              <div className="flex flex-wrap gap-2">
+                {brands.map((b) => {
+                  const isActive = b.id === activeBrandId
+                  return (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => { setActiveBrandId(b.id); setEditBrandOpen(false) }}
+                      className={[
+                        'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
+                        isActive
+                          ? 'bg-amber-50 border-amber-400 text-amber-700 ring-2 ring-amber-400/30'
+                          : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
+                      ].join(' ')}
+                    >
+                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: b.primary_color }} />
+                      {b.name}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Edit brand toggle + note */}
+              {activeBrand && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setEditBrandOpen((v) => !v)}
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors"
+                  >
+                    <PencilIcon />
+                    {editBrandOpen ? 'Close editor' : 'Edit brand'}
+                  </button>
+                  {!editBrandOpen && (
+                    <p className="text-xs text-gray-400">
+                      — then complete the steps below to generate.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Inline brand editor */}
+              {editBrandOpen && activeBrand && (
+                <InlineBrandEditor
+                  brand={activeBrand}
+                  onSaved={() => { setEditBrandOpen(false); router.refresh() }}
+                  onCancel={() => setEditBrandOpen(false)}
+                />
+              )}
+            </div>
+          </section>
         )}
+
+        {brands.length > 0 && <SectionDivider />}
 
         {/* Progress bar */}
         <div className="mb-8 flex items-center gap-2">
@@ -226,8 +278,8 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
           </span>
         </div>
 
-        {/* 1 · Topic */}
-        <ConfigSection step={1} tag="Topic" title="What carousel do you want to create?" done={topic.trim().length > 0}>
+        {/* 1 · Idea */}
+        <ConfigSection step={1} tag="Idea" title="What is your carousel idea?" done={topic.trim().length > 0}>
           <textarea
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -235,41 +287,41 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
             rows={2}
             className="w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all shadow-sm"
           />
-          <p className="text-xs text-gray-400 mt-1.5">Clear, specific topics generate better carousels.</p>
+          <p className="text-xs text-gray-400 mt-1.5">Clear, specific ideas generate better carousels.</p>
         </ConfigSection>
 
         <SectionDivider />
 
-        {/* 2 · Structure */}
-        <ConfigSection step={2} tag="Structure" title="Choose a template" description="Controls the narrative flow of your slides." done={!!templateId}>
+        {/* 2 · Carousel Template */}
+        <ConfigSection step={2} tag="Carousel Template" title="Choose a carousel template" description="Controls the narrative flow of your slides." done={!!templateId}>
           <TemplateGallery templates={templates} selectedId={templateId} onSelect={setTemplateId} />
         </ConfigSection>
 
         <SectionDivider />
 
-        {/* 3 · Writing Style */}
-        <ConfigSection step={3} tag="Writing Style" title="Choose a hook style" description="Controls how your first slide opens." done={!!hookId}>
-          <HookStyleSelector styles={hookStyles} selectedId={hookId} onSelect={setHookId} />
-        </ConfigSection>
-
-        <SectionDivider />
-
-        {/* 4 · Design Style */}
-        <ConfigSection step={4} tag="Design Style" title="Choose a layout style" description="Visual aesthetic applied to every slide." done={!!designId}>
+        {/* 3 · Visual Style */}
+        <ConfigSection step={3} tag="Visual Style" title="Choose a visual style" description="Design philosophy Gemini applies when editing your slides." done={!!designId}>
           <DesignStyleSelector styles={designStyles} selectedId={designId} onSelect={setDesignId} />
         </ConfigSection>
 
         <SectionDivider />
 
-        {/* 5 · Image Style */}
-        <ConfigSection step={5} tag="Image Style" title="Choose a visual style" description="Illustration style for AI-generated images." done={!!imageId}>
-          <StyleSelector styles={imageStyles} selectedId={imageId} onSelect={setImageId} />
+        {/* 4 · Template Style */}
+        <ConfigSection step={4} tag="Template Style" title="Choose template images" description="The font, content, and CTA slide images used as your carousel base." done={!!templateAssetId}>
+          <TemplateAssetSelector assets={templateAssets} selectedId={templateAssetId} onSelect={setTemplateAssetId} />
         </ConfigSection>
 
         <SectionDivider />
 
-        {/* 6 · Output */}
-        <ConfigSection step={6} tag="Output" title="Choose a slide count" description="How many slides your carousel will have." done>
+        {/* 5 · Hook Style */}
+        <ConfigSection step={5} tag="Hook Style" title="Choose a hook style" description="Controls how your first slide opens." done={!!hookId}>
+          <HookStyleSelector styles={hookStyles} selectedId={hookId} onSelect={setHookId} />
+        </ConfigSection>
+
+        <SectionDivider />
+
+        {/* 6 · Slide Count */}
+        <ConfigSection step={6} tag="Slide Count" title="Number of slides" description="How many slides your carousel will have." done>
           <SlideCountSelector value={slideCount} onChange={setSlideCount} />
         </ConfigSection>
 
@@ -284,10 +336,10 @@ export function CreatorWorkflow({ hookStyles, templates, designStyles, imageStyl
               </p>
               {!canGenerate && (
                 <ul className="text-xs text-gray-400 mt-1 space-y-0.5">
-                  {!selectedBrandId && <li>• No brand selected — use the brand switcher in the header</li>}
+                  {!activeBrandId && <li>• No brand selected — choose one above</li>}
                   {!topic.trim() && <li>• Step 1: Enter a topic</li>}
-                  {!templateId && <li>• Step 2: Select a template</li>}
-                  {!imageId && <li>• Step 5: Select an image style</li>}
+                  {!templateId && <li>• Step 2: Select a carousel template</li>}
+                  {!templateAssetId && <li>• Step 4: Select a template style</li>}
                 </ul>
               )}
             </div>
@@ -411,6 +463,23 @@ function ArrowRightIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
       <path d="M2.5 7h9M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function PencilIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M8.5 1.5l2 2-7 7H1.5v-2l7-7z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function BrandIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+      <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1.4"/>
+      <circle cx="5.5" cy="5.5" r="1.8" fill="currentColor"/>
     </svg>
   )
 }

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { getBrands } from '@/lib/supabase/brands'
-import { getTemplates, getImageStyles, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
+import { getTemplates, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function DashboardPage() {
@@ -13,19 +13,15 @@ export default async function DashboardPage() {
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
-  const [brands, templates, styles, designStyles, hookStyles] = await Promise.all([
+  const [brands, templates, designStyles, hookStyles] = await Promise.all([
     getBrands(),
     getTemplates(),
-    getImageStyles(),
     getDesignStyles(),
     getHookStyles(),
   ])
 
   const activeBrand =
     brands.find((b) => b.id === cookieBrandId) ?? brands[0] ?? null
-
-  const customStyleCount = styles.filter((s) => s.is_custom).length
-  const builtInStyleCount = styles.filter((s) => !s.is_custom).length
 
   const displayName = user?.email?.split('@')[0] ?? 'there'
 
@@ -97,22 +93,19 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Card 3 — Image Styles */}
+        {/* Card 3 — Design Styles */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Image styles</p>
-          <p className="font-bold text-2xl text-gray-900">
-            {builtInStyleCount}
-            {customStyleCount > 0 && <span className="text-base text-gray-400 font-medium"> +{customStyleCount}</span>}
-          </p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Design styles</p>
+          <p className="font-bold text-2xl text-gray-900">{designStyles.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
-            Manage &rarr;
+            Browse &rarr;
           </Link>
         </div>
 
-        {/* Card 4 — Design + Hook combo */}
+        {/* Card 4 — Hook styles */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Styles &amp; Hooks</p>
-          <p className="font-bold text-2xl text-gray-900">{designStyles.length + hookStyles.length}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Hook styles</p>
+          <p className="font-bold text-2xl text-gray-900">{hookStyles.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
           </Link>
@@ -126,7 +119,7 @@ export default async function DashboardPage() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-2">Next step</p>
           <h2 className="text-lg font-bold mb-1">Ready to generate your first carousel?</h2>
           <p className="text-gray-400 text-sm">
-            Select a hook style, template, design style, and image style — then let AI do the rest.
+            Select a hook style, template, and design style — then let AI do the rest.
           </p>
         </div>
         <div className="flex flex-col items-start sm:items-end gap-2 flex-shrink-0">

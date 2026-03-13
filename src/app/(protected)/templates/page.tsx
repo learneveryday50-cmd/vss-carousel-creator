@@ -1,11 +1,11 @@
 import { cookies } from 'next/headers'
-import { getTemplates, getImageStyles, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
+import { getTemplates, getDesignStyles, getHookStyles, getTemplateAssets } from '@/lib/supabase/catalog'
 import { getBrands } from '@/lib/supabase/brands'
 import { createClient } from '@/lib/supabase/server'
 import { CreatorWorkflow } from '@/components/creator/creator-workflow'
 
 export const metadata = {
-  title: 'Create Carousel',
+  title: 'Generate LinkedIn Carousel',
 }
 
 export default async function TemplatesPage() {
@@ -37,9 +37,9 @@ export default async function TemplatesPage() {
     creditsLimit: usage?.credits_limit ?? 3,
   }
 
-  const [templates, styles, designStyles, hookStyles, brands] = await Promise.all([
+  const [templates, templateAssets, designStyles, hookStyles, brands] = await Promise.all([
     getTemplates(),
-    getImageStyles(),
+    getTemplateAssets(),
     getDesignStyles(),
     getHookStyles(),
     getBrands(),
@@ -53,16 +53,16 @@ export default async function TemplatesPage() {
             Creator
           </span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Create Carousel</h1>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Generate LinkedIn Carousel</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Set your topic, choose a structure and style, then generate.
+          Add your idea, choose a template and design style, then generate.
         </p>
       </div>
       <CreatorWorkflow
         hookStyles={hookStyles}
         templates={templates}
+        templateAssets={templateAssets}
         designStyles={designStyles}
-        imageStyles={styles}
         brands={brands}
         selectedBrandId={selectedBrandId}
         creditData={creditData}

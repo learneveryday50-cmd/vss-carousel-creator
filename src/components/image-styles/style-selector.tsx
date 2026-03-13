@@ -1,8 +1,14 @@
 'use client'
 
-import { useState, useActionState } from 'react'
-import type { ImageStyle } from '@/lib/supabase/catalog'
-import { createCustomStyleAction, deleteCustomStyleAction } from '@/app/(protected)/templates/actions'
+import { useState } from 'react'
+
+type ImageStyle = {
+  id: string
+  name: string
+  description: string | null
+  sample_url: string | null
+  is_custom: boolean
+}
 
 type Props = {
   styles: ImageStyle[]
@@ -21,16 +27,11 @@ export function StyleSelector({ styles, selectedId: controlledId, onSelect }: Pr
   }
 
   const builtIns = styles.filter((s) => !s.is_custom)
-  const customs = styles.filter((s) => s.is_custom)
 
   return (
-    <div className="space-y-6">
-
-      {/* Built-in styles */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600 mb-3">Built-in</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {builtIns.map((style) => {
+    <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {builtIns.map((style) => {
             const isSelected = selectedId === style.id
             return (
               <button
@@ -55,51 +56,22 @@ export function StyleSelector({ styles, selectedId: controlledId, onSelect }: Pr
                   'w-full aspect-[4/3] overflow-hidden border-b',
                   isSelected ? 'border-amber-100' : 'border-gray-100',
                 ].join(' ')} style={{ display: 'block', position: 'relative' }}>
-                  <ImageStylePreview name={style.name} index={builtIns.indexOf(style)} />
+                  {style.sample_url
+                    ? <img src={style.sample_url} alt={style.name} className="w-full h-full object-cover" />
+                    : <ImageStylePreview name={style.name} index={builtIns.indexOf(style)} />
+                  }
                 </div>
                 {/* Label */}
                 <div className="px-3 py-2.5">
                   <p className="text-xs font-semibold text-gray-900 leading-tight">{style.name}</p>
+                  {style.description && (
+                    <p className="text-[10px] text-gray-400 mt-0.5 leading-snug line-clamp-2">{style.description}</p>
+                  )}
                 </div>
               </button>
             )
           })}
         </div>
-      </div>
-
-      {/* Custom styles */}
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Custom</p>
-
-        {customs.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {customs.map((style) => (
-              <div key={style.id} className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => handleSelect(style.id)}
-                  className={[
-                    'rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all duration-150',
-                    selectedId === style.id
-                      ? 'bg-amber-500 text-white border-amber-500'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-amber-300 hover:text-gray-900',
-                  ].join(' ')}
-                >
-                  {style.name}
-                </button>
-                <DeleteStyleForm id={style.id} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {customs.length === 0 && (
-          <p className="text-xs text-gray-400 mb-3">No custom styles yet. Add one below.</p>
-        )}
-
-        <AddCustomStyleForm />
-      </div>
-
     </div>
   )
 }
@@ -290,47 +262,6 @@ function FallbackPreview() {
   )
 }
 
-/* ── Form helpers ─────────────────────────────────────────────────────────── */
-
-function AddCustomStyleForm() {
-  const [state, formAction, isPending] = useActionState(createCustomStyleAction, null)
-  return (
-    <form action={formAction} className="flex items-center gap-2">
-      <input
-        name="name"
-        type="text"
-        placeholder="Custom style name..."
-        required
-        disabled={isPending}
-        className="flex-1 h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent disabled:opacity-50 transition-all shadow-sm"
-      />
-      <button
-        type="submit"
-        disabled={isPending}
-        className="h-9 rounded-lg bg-amber-500 px-4 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50 transition-colors shadow-sm"
-      >
-        {isPending ? 'Adding…' : 'Add'}
-      </button>
-      {state?.error && <p className="text-xs text-red-500">{state.error}</p>}
-    </form>
-  )
-}
-
-function DeleteStyleForm({ id }: { id: string }) {
-  return (
-    <form action={deleteCustomStyleAction}>
-      <input type="hidden" name="id" value={id} />
-      <button
-        type="submit"
-        className="p-1.5 rounded text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
-        aria-label="Delete style"
-      >
-        <XIcon />
-      </button>
-    </form>
-  )
-}
-
 function CheckIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
@@ -339,10 +270,3 @@ function CheckIcon() {
   )
 }
 
-function XIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-      <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
-}

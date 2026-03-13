@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
   let body: {
     brand_id?: string
     template_id?: string
-    image_style_id?: string
+    template_asset_id?: string | null
+    hook_style_id?: string | null
+    design_style_id?: string | null
     idea_text?: string
     slide_count?: number
   }
@@ -37,11 +39,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { brand_id, template_id, image_style_id, idea_text } = body
+  const { brand_id, template_id, template_asset_id, idea_text, hook_style_id, design_style_id } = body
 
-  if (!brand_id || !template_id || !image_style_id || !idea_text) {
+  if (!brand_id || !template_id || !idea_text) {
     return Response.json(
-      { error: 'Missing required fields: brand_id, template_id, image_style_id, idea_text' },
+      { error: 'Missing required fields: brand_id, template_id, idea_text' },
       { status: 400 }
     )
   }
@@ -61,10 +63,18 @@ export async function POST(request: NextRequest) {
   }
 
   // 5. Fetch related data server-side in parallel
-  const [brandResult, templateResult, imageStyleResult] = await Promise.all([
-    admin.from('brands').select('id, name, primary_color, secondary_color, voice_guidelines, product_description, audience_description, cta_text').eq('id', brand_id).single(),
-    admin.from('templates').select('id, name, slug, cover_url, content_url, cta_url').eq('id', template_id).single(),
-    admin.from('image_styles').select('id, name, description').eq('id', image_style_id).single(),
+  const [brandResult, templateResult, hookStyleResult, designStyleResult, templateAssetResult] = await Promise.all([
+    admin.from('brands').select('id, name, primary_color, voice_guidelines, product_description, audience_description, cta_text').eq('id', brand_id).single(),
+    admin.from('templates').select('id, name, slug').eq('id', template_id).single(),
+    hook_style_id
+      ? admin.from('hook_styles').select('id, name, description, prompt_instruction').eq('id', hook_style_id).single()
+      : Promise.resolve({ data: null, error: null }),
+    design_style_id
+      ? admin.from('design_styles').select('id, name, description, preview_image').eq('id', design_style_id).single()
+      : Promise.resolve({ data: null, error: null }),
+    template_asset_id
+      ? admin.from('template_assets').select('template_font_url, template_content_url, template_cta_url').eq('id', template_asset_id).single()
+      : Promise.resolve({ data: null, error: null }),
   ])
 
   if (brandResult.error || !brandResult.data) {
@@ -77,14 +87,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Template not found' }, { status: 500 })
   }
 
-  if (imageStyleResult.error || !imageStyleResult.data) {
-    console.error('[generate] image_style lookup failed:', imageStyleResult.error)
-    return Response.json({ error: 'Image style not found' }, { status: 500 })
-  }
-
   const brand = brandResult.data
   const template = templateResult.data
-  const imageStyle = imageStyleResult.data
+  const hookStyle = hookStyleResult.data
+  const designStyle = designStyleResult.data
+  const templateAsset = templateAssetResult.data
 
   // 6. Insert carousel row
   const { data: carousel, error: insertError } = await admin
@@ -93,7 +100,6 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       brand_id,
       template_id,
-      image_style_id,
       idea_text,
       status: 'processing',
     })
@@ -119,17 +125,21 @@ export async function POST(request: NextRequest) {
     product_description: brand.product_description,
     audience_description: brand.audience_description,
     cta_text: brand.cta_text,
-    // Template fields (flat)
+    // Template fields — template_assets provides the actual slide images
     template_id: template.id,
-    template_front_url: template.cover_url,
-    template_content_url: template.content_url,
-    template_cta_url: template.cta_url,
-    // Image style fields (flat)
-    image_style_id: imageStyle.id,
-    style_name: imageStyle.name,
-    style_description: imageStyle.description,
-    // Design style (optional — not required by workflow but passed for context)
-    design_style: '',
+    template_name: template.name,
+    template_slug: template.slug,
+    template_front_url: templateAsset?.template_font_url || '',
+    template_content_url: templateAsset?.template_content_url || '',
+    template_cta_url: templateAsset?.template_cta_url || '',
+    // Hook style fields (optional)
+    hook_style_name: hookStyle?.name ?? '',
+    hook_style_description: hookStyle?.description ?? '',
+    hook_style_instruction: hookStyle?.prompt_instruction ?? '',
+    // Design style (visual style — step 5, design_styles table)
+    design_style: designStyle?.name ?? '',
+    design_style_description: designStyle?.description ?? '',
+    design_style_url: designStyle?.preview_image ?? '',  // reference image for this visual style
     custom_instructions: '',
   }
 

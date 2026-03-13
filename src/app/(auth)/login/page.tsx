@@ -1,4 +1,5 @@
 'use client'
+import { Suspense } from 'react'
 import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -71,6 +72,14 @@ function CarouselPreview() {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(signInAction, null)
   const searchParams = useSearchParams()
   const urlError = searchParams.get('error')
