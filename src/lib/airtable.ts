@@ -61,12 +61,67 @@ export async function createRecord(
   })
 }
 
+export async function updateRecord(
+  tableId: string,
+  recordId: string,
+  fields: Record<string, unknown>,
+): Promise<AirtableRecord> {
+  return airtableFetch(`/${tableId}/${recordId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ fields }),
+  })
+}
+
 export async function searchRecords(
   tableId: string,
   formula: string,
 ): Promise<AirtableRecord[]> {
   const data = await airtableFetch(`/${tableId}?filterByFormula=${encodeURIComponent(formula)}`)
   return data.records ?? []
+}
+
+// ── Brand sync helpers ───────────────────────────────────────────────────────
+
+type BrandSyncInput = {
+  supabaseId: string
+  name: string
+  primaryColor: string
+  voiceGuidelines?: string | null
+  productDescription?: string | null
+  audienceDescription?: string | null
+  ctaText?: string | null
+}
+
+function brandToAirtableFields(input: BrandSyncInput): Record<string, unknown> {
+  const productAndAudience = [input.productDescription, input.audienceDescription]
+    .filter(Boolean)
+    .join('\n\n')
+
+  return {
+    'Brand Name': input.name,
+    'Brand Color': input.primaryColor,
+    'Voice Guidelines': input.voiceGuidelines ?? '',
+    'Product & Audience': productAndAudience,
+    'CTA Text': input.ctaText ?? '',
+    'Supabase ID': input.supabaseId,
+  }
+}
+
+export async function syncBrandToAirtable(input: BrandSyncInput): Promise<void> {
+  try {
+    // Check if already exists by Supabase ID
+    const existing = await searchRecords(
+      AIRTABLE_TABLES.brands,
+      `{Supabase ID} = "${input.supabaseId}"`
+    )
+    if (existing.length > 0) {
+      await updateRecord(AIRTABLE_TABLES.brands, existing[0].id, brandToAirtableFields(input))
+    } else {
+      await createRecord(AIRTABLE_TABLES.brands, brandToAirtableFields(input))
+    }
+  } catch (err) {
+    console.error('[airtable] syncBrandToAirtable failed:', err)
+  }
 }
 
 // ── Typed app models ────────────────────────────────────────────────────────
