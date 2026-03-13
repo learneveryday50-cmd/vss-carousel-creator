@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     try {
       const draftRecords = await searchRecords(
         AIRTABLE_TABLES.draftPosts,
-        `{Idea} = "${recordId}"`
+        `FIND("${recordId}", ARRAYJOIN({Idea}, ","))`
       )
 
       const draft = draftRecords[0]

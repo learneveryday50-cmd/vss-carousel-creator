@@ -120,7 +120,18 @@ export function parseDesignStyle(record: AirtableRecord): AirtableDesignStyle {
   const f = record.fields
   return {
     id: record.id,
-    name: String(f['Style Name'] ?? f['Name'] ?? ''),
-    description: (f['Design Style'] as string) ?? (f['Description'] as string) ?? null,
+    // Workflow reads lookup fields "Style Name (from Design Style)" or plain "Style Name"/"Name"
+    name: String(
+      f['Style Name (from Design Style)'] ??
+      f['Style Name'] ??
+      f['Name'] ??
+      ''
+    ),
+    description: (
+      (f['Design Style (from Design Style)'] as string) ??
+      (f['Design Style'] as string) ??
+      (f['Description'] as string) ??
+      null
+    ),
   }
 }
