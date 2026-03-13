@@ -89,6 +89,7 @@ export type AirtableDesignStyle = {
   id: string
   name: string
   description: string | null
+  exampleUrl: string | null
 }
 
 type Attachment = { url: string }
@@ -118,9 +119,9 @@ export function parseTemplate(record: AirtableRecord): AirtableTemplate {
 
 export function parseDesignStyle(record: AirtableRecord): AirtableDesignStyle {
   const f = record.fields
+  const example = (f['Example'] as Attachment[] | undefined)?.[0]?.url ?? null
   return {
     id: record.id,
-    // Workflow reads lookup fields "Style Name (from Design Style)" or plain "Style Name"/"Name"
     name: String(
       f['Style Name (from Design Style)'] ??
       f['Style Name'] ??
@@ -133,5 +134,6 @@ export function parseDesignStyle(record: AirtableRecord): AirtableDesignStyle {
       (f['Description'] as string) ??
       null
     ),
+    exampleUrl: example,
   }
 }

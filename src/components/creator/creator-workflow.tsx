@@ -249,10 +249,15 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
                     </span>
                   )}
                   <div className={[
-                    'w-full aspect-[4/3] border-b flex items-center justify-center',
+                    'w-full aspect-[4/3] border-b flex items-center justify-center overflow-hidden',
                     isSelected ? 'bg-amber-50 border-amber-100' : 'bg-gray-50 border-gray-100',
                   ].join(' ')}>
-                    <DesignPreview name={style.name} />
+                    {style.exampleUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={style.exampleUrl} alt={style.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <DesignPreview name={style.name} />
+                    )}
                   </div>
                   <div className="px-3.5 py-3">
                     <p className="font-semibold text-gray-900 text-sm leading-snug">{style.name}</p>
