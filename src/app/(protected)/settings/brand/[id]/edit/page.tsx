@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getBrand } from '@/lib/supabase/brands'
+import { getRecord, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
 import { updateBrandAction } from '../../actions'
 import { BrandForm } from '@/components/brand/brand-form'
 
@@ -10,9 +10,11 @@ type EditBrandPageProps = {
 
 export default async function EditBrandPage({ params }: EditBrandPageProps) {
   const { id } = await params
-  const brand = await getBrand(id)
-
-  if (!brand) {
+  let brand
+  try {
+    const record = await getRecord(AIRTABLE_TABLES.brands, id)
+    brand = parseBrand(record)
+  } catch {
     redirect('/settings/brand')
   }
 

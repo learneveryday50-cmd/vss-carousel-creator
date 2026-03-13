@@ -61,6 +61,10 @@ export async function createRecord(
   })
 }
 
+export async function deleteRecord(tableId: string, recordId: string): Promise<void> {
+  await airtableFetch(`/${tableId}/${recordId}`, { method: 'DELETE' })
+}
+
 export async function updateRecord(
   tableId: string,
   recordId: string,
@@ -102,6 +106,8 @@ function brandToAirtableFields(input: BrandSyncInput): Record<string, unknown> {
     'Brand Color': input.primaryColor,
     'Voice Guidelines': input.voiceGuidelines ?? '',
     'Product & Audience': productAndAudience,
+    'Product Description': input.productDescription ?? '',
+    'Audience Description': input.audienceDescription ?? '',
     'CTA Text': input.ctaText ?? '',
     'Supabase ID': input.supabaseId,
   }
@@ -130,6 +136,11 @@ export type AirtableBrand = {
   id: string
   name: string
   primaryColor: string
+  secondaryColor: string | null
+  voiceGuidelines: string | null
+  productDescription: string | null
+  audienceDescription: string | null
+  ctaText: string | null
 }
 
 export type AirtableTemplate = {
@@ -155,6 +166,11 @@ export function parseBrand(record: AirtableRecord): AirtableBrand {
     id: record.id,
     name: String(f['Brand Name'] ?? ''),
     primaryColor: String(f['Brand Color'] ?? '#000000'),
+    secondaryColor: (f['Secondary Color'] as string) ?? null,
+    voiceGuidelines: (f['Voice Guidelines'] as string) ?? null,
+    productDescription: (f['Product Description'] as string) ?? null,
+    audienceDescription: (f['Audience Description'] as string) ?? null,
+    ctaText: (f['CTA Text'] as string) ?? null,
   }
 }
 

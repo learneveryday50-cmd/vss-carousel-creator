@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import { getBrands } from '@/lib/supabase/brands'
+import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
 import { deleteBrandAction } from './actions'
 import { Button } from '@/components/ui/button'
 
 export default async function BrandSettingsPage() {
-  const brands = await getBrands()
+  const records = await listRecords(AIRTABLE_TABLES.brands)
+  const brands = records.map(parseBrand)
 
   return (
     <main className="min-h-screen bg-white">
@@ -43,15 +44,12 @@ export default async function BrandSettingsPage() {
                 {/* Color swatch */}
                 <div
                   className="w-9 h-9 rounded-full shrink-0 border border-zinc-200"
-                  style={{ backgroundColor: brand.primary_color }}
+                  style={{ backgroundColor: brand.primaryColor }}
                 />
 
-                {/* Name + date */}
+                {/* Name */}
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-zinc-900 truncate">{brand.name}</p>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Created {new Date(brand.created_at).toLocaleDateString()}
-                  </p>
                 </div>
 
                 {/* Actions */}

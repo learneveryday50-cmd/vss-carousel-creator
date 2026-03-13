@@ -3,12 +3,12 @@ import { useActionState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import type { Brand } from '@/lib/supabase/brands'
+import type { AirtableBrand } from '@/lib/airtable'
 
 type ActionState = { error?: string } | null
 
 type BrandFormProps = {
-  brand?: Brand
+  brand?: AirtableBrand
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>
   submitLabel?: string
   redirectTo?: string
@@ -54,7 +54,7 @@ export function BrandForm({
           </Label>
           <ColorField
             name="primary_color"
-            defaultValue={brand?.primary_color ?? '#000000'}
+            defaultValue={brand?.primaryColor ?? '#000000'}
             placeholder="#000000"
           />
         </div>
@@ -63,7 +63,7 @@ export function BrandForm({
           <Label className="text-sm font-medium text-zinc-700">Secondary color</Label>
           <ColorField
             name="secondary_color"
-            defaultValue={brand?.secondary_color ?? '#ffffff'}
+            defaultValue={brand?.secondaryColor ?? '#ffffff'}
             placeholder="#ffffff"
           />
         </div>
@@ -84,7 +84,7 @@ export function BrandForm({
             name="voice_guidelines"
             rows={3}
             maxLength={3000}
-            defaultValue={brand?.voice_guidelines ?? ''}
+            defaultValue={brand?.voiceGuidelines ?? ''}
             placeholder="We speak with confidence and clarity..."
             className="flex w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
           />
@@ -99,7 +99,7 @@ export function BrandForm({
             name="product_description"
             rows={3}
             maxLength={1500}
-            defaultValue={brand?.product_description ?? ''}
+            defaultValue={brand?.productDescription ?? ''}
             placeholder="Describe your product or service..."
             className="flex w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
           />
@@ -113,7 +113,7 @@ export function BrandForm({
             id="audience_description"
             name="audience_description"
             rows={3}
-            defaultValue={brand?.audience_description ?? ''}
+            defaultValue={brand?.audienceDescription ?? ''}
             placeholder="Describe your target audience..."
             className="flex w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
           />
@@ -133,7 +133,7 @@ export function BrandForm({
           <Input
             id="cta_text"
             name="cta_text"
-            defaultValue={brand?.cta_text ?? ''}
+            defaultValue={brand?.ctaText ?? ''}
             placeholder="Start your free trial"
             className="h-11"
           />
