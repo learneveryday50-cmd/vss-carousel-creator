@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
-import { getBrands } from '@/lib/supabase/brands'
+import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
 import { AppShell } from '@/components/layout/app-shell'
 
 export default async function ProtectedLayout({
@@ -18,7 +18,7 @@ export default async function ProtectedLayout({
     redirect('/login')
   }
 
-  const brands = await getBrands()
+  const brands = (await listRecords(AIRTABLE_TABLES.brands)).map(parseBrand)
 
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value

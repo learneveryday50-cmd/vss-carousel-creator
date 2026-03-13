@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { BrandForm } from '@/components/brand/brand-form'
-import type { Brand } from '@/lib/supabase/brands'
+import type { Brand } from '@/types/catalog'
 
 type ActionState = { error?: string } | null
 

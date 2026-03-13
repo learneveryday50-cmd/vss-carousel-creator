@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, XCircle } from 'lucide-react'
-import type { Template, HookStyle } from '@/lib/supabase/catalog'
+import type { Template, HookStyle } from '@/types/catalog'
 import type { SlideCount } from '@/components/slide-count/slide-count-selector'
 
 type GenerationMode = 'config' | 'processing' | 'completed' | 'failed'

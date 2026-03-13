@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import type { Template } from '@/lib/supabase/catalog'
+import type { Template } from '@/types/catalog'
 import { TemplatePreview } from './template-preview'
 
 const DESCRIPTIONS: Record<string, string> = {

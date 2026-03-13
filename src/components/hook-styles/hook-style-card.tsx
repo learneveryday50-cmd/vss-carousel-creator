@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import type { HookStyle } from '@/lib/supabase/catalog'
+import type { HookStyle } from '@/types/catalog'
 
 type Props = {
   style: HookStyle

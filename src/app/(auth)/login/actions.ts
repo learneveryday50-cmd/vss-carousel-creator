@@ -2,6 +2,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { listRecords, AIRTABLE_TABLES } from '@/lib/airtable'
 
 type ActionState = { error?: string } | null
 
@@ -12,9 +13,8 @@ export async function signInAction(_prevState: ActionState, formData: FormData) 
     password: formData.get('password') as string,
   })
   if (error) return { error: error.message }
-  // Check if user has a brand to determine redirect
-  const { data: brand } = await supabase.from('brands').select('id').single()
-  redirect(brand ? '/dashboard' : '/onboarding')
+  const brands = await listRecords(AIRTABLE_TABLES.brands)
+  redirect(brands.length > 0 ? '/dashboard' : '/onboarding')
 }
 
 export async function signInWithGoogleAction() {

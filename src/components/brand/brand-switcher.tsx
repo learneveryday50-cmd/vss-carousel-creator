@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import type { Brand } from '@/lib/supabase/brands'
+import type { AirtableBrand } from '@/lib/airtable'
 import { setBrandAction } from '@/app/(protected)/dashboard/actions'
 
 interface BrandSwitcherProps {
-  brands: Brand[]
+  brands: AirtableBrand[]
   selectedBrandId: string | null
 }
 
@@ -49,7 +49,7 @@ export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
         {selectedBrand && (
           <span
             className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
-            style={{ backgroundColor: selectedBrand.primary_color }}
+            style={{ backgroundColor: selectedBrand.primaryColor }}
           />
         )}
         <span>{selectedBrand?.name ?? 'Select brand'}</span>
@@ -81,7 +81,7 @@ export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
                   >
                     <span
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
-                      style={{ backgroundColor: brand.primary_color }}
+                      style={{ backgroundColor: brand.primaryColor }}
                     />
                     {brand.name}
                     {isSelected && (

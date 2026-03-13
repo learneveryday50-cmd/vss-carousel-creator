@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import type { TemplateAsset } from '@/lib/supabase/catalog'
+import type { TemplateAsset } from '@/types/catalog'
 import { TemplateAssetCard } from './template-asset-card'
 
 const container = {

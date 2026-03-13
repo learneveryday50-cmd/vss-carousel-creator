@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import type { TemplateAsset } from '@/lib/supabase/catalog'
+import type { TemplateAsset } from '@/types/catalog'
 
 type Props = {
   asset: TemplateAsset

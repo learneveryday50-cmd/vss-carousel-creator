@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import type { DesignStyle } from '@/lib/supabase/catalog'
+import type { DesignStyle } from '@/types/catalog'
 
 type Props = {
   style: DesignStyle

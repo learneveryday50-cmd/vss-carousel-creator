@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import type { Template } from '@/lib/supabase/catalog'
+import type { Template } from '@/types/catalog'
 import { TemplateCard } from './template-card'
 
 const container = {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import type { DesignStyle } from '@/lib/supabase/catalog'
+import type { DesignStyle } from '@/types/catalog'
 import { DesignStyleCard } from './design-style-card'
 
 const container = {

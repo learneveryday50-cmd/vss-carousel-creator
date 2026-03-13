@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { listRecords, AIRTABLE_TABLES } from '@/lib/airtable'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
@@ -10,9 +11,8 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      // Check if user has a brand to route correctly
-      const { data: brand } = await supabase.from('brands').select('id').single()
-      const destination = brand ? next : '/onboarding'
+      const brands = await listRecords(AIRTABLE_TABLES.brands)
+      const destination = brands.length > 0 ? next : '/onboarding'
       return NextResponse.redirect(`${origin}${destination}`)
     }
   }

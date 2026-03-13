@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Sidebar } from './sidebar'
 import { Header } from './header'
-import type { Brand } from '@/lib/supabase/brands'
+import type { AirtableBrand } from '@/lib/airtable'
 
 interface CreditData {
   plan: 'free' | 'pro'
@@ -12,7 +12,7 @@ interface CreditData {
 }
 
 interface Props {
-  brands: Brand[]
+  brands: AirtableBrand[]
   selectedBrandId: string | null
   userEmail?: string | null
   creditData: CreditData

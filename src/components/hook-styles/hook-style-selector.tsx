@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import type { HookStyle } from '@/lib/supabase/catalog'
+import type { HookStyle } from '@/types/catalog'
 import { HookStyleCard } from './hook-style-card'
 
 const container = {

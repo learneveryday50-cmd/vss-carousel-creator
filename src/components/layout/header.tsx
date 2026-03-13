@@ -2,7 +2,7 @@
 
 import { Menu, CreditCard } from 'lucide-react'
 import Link from 'next/link'
-import type { Brand } from '@/lib/supabase/brands'
+import type { AirtableBrand } from '@/lib/airtable'
 import { BrandSwitcher } from '@/components/brand/brand-switcher'
 import { CreditBadge } from '@/components/billing/credit-badge'
 import {
@@ -20,7 +20,7 @@ interface CreditData {
 }
 
 interface HeaderProps {
-  brands: Brand[]
+  brands: AirtableBrand[]
   selectedBrandId: string | null
   userEmail?: string | null
   creditData: CreditData

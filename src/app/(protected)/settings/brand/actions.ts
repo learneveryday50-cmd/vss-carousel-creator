@@ -27,8 +27,6 @@ export async function updateBrandAction(
       'Brand Color': formData.get('primary_color') as string,
       'Voice Guidelines': voiceGuidelines ?? '',
       'Product & Audience': productAndAudience,
-      'Product Description': productDescription ?? '',
-      'Audience Description': audienceDescription ?? '',
       'CTA Text': (formData.get('cta_text') as string) || '',
     })
     revalidatePath('/settings/brand')

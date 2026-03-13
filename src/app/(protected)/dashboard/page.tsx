@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
-import { getBrands } from '@/lib/supabase/brands'
-import { getTemplates, getDesignStyles, getHookStyles } from '@/lib/supabase/catalog'
 import { createClient } from '@/lib/supabase/server'
+import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -13,13 +12,13 @@ export default async function DashboardPage() {
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
-  const [brands, templates, designStyles, hookStyles] = await Promise.all([
-    getBrands(),
-    getTemplates(),
-    getDesignStyles(),
-    getHookStyles(),
+  const [brandRecords, templateRecords, designStyleRecords] = await Promise.all([
+    listRecords(AIRTABLE_TABLES.brands),
+    listRecords(AIRTABLE_TABLES.templates),
+    listRecords(AIRTABLE_TABLES.designStyles),
   ])
 
+  const brands = brandRecords.map(parseBrand)
   const activeBrand =
     brands.find((b) => b.id === cookieBrandId) ?? brands[0] ?? null
 
@@ -64,7 +63,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* Card 1 — Active Brand */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3 xl:col-span-2">
@@ -72,7 +71,7 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-2.5">
             <span
               className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
-              style={{ backgroundColor: activeBrand.primary_color }}
+              style={{ backgroundColor: activeBrand.primaryColor }}
             />
             <span className="font-bold text-xl text-gray-900 truncate">{activeBrand.name}</span>
           </div>
@@ -87,7 +86,7 @@ export default async function DashboardPage() {
         {/* Card 2 — Templates */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Templates</p>
-          <p className="font-bold text-2xl text-gray-900">{templates.length}</p>
+          <p className="font-bold text-2xl text-gray-900">{templateRecords.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
           </Link>
@@ -96,16 +95,7 @@ export default async function DashboardPage() {
         {/* Card 3 — Design Styles */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Design styles</p>
-          <p className="font-bold text-2xl text-gray-900">{designStyles.length}</p>
-          <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
-            Browse &rarr;
-          </Link>
-        </div>
-
-        {/* Card 4 — Hook styles */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Hook styles</p>
-          <p className="font-bold text-2xl text-gray-900">{hookStyles.length}</p>
+          <p className="font-bold text-2xl text-gray-900">{designStyleRecords.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
           </Link>

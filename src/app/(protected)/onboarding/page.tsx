@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation'
-import { getBrands } from '@/lib/supabase/brands'
+import { listRecords, AIRTABLE_TABLES } from '@/lib/airtable'
 import { createBrandAction } from './actions'
 import { BrandForm } from '@/components/brand/brand-form'
 import { OnboardingPanels } from './panels'
 
 export default async function OnboardingPage() {
-  const brands = await getBrands()
+  const brands = await listRecords(AIRTABLE_TABLES.brands)
   if (brands.length > 0) {
     redirect('/dashboard')
   }
