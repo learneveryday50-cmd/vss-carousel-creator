@@ -1,5 +1,6 @@
 import { type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { getRecord, AIRTABLE_TABLES } from '@/lib/airtable'
 
 export async function GET(request: NextRequest) {
@@ -18,7 +19,27 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: 'Missing required query parameter: id' }, { status: 400 })
   }
 
-  // 3. Fetch the Ideas record and check System Message
+  // 3. Check Supabase first — n8n webhook may have already updated the row
+  const admin = createAdminClient()
+  const { data: carousel } = await admin
+    .from('carousels')
+    .select('status, slide_urls, post_body')
+    .eq('airtable_record_id', recordId)
+    .maybeSingle()
+
+  if (carousel?.status === 'completed') {
+    return Response.json({
+      status: 'completed',
+      post_body: carousel.post_body ?? '',
+      slide_urls: (carousel.slide_urls as string[]) ?? [],
+    })
+  }
+
+  if (carousel?.status === 'failed') {
+    return Response.json({ status: 'failed' })
+  }
+
+  // 4. Fall back to Airtable polling (in case webhook hasn't fired yet)
   let ideaRecord: { id: string; fields: Record<string, unknown> }
   try {
     ideaRecord = await getRecord(AIRTABLE_TABLES.ideas, recordId)
@@ -29,9 +50,8 @@ export async function GET(request: NextRequest) {
 
   const systemMessage = String(ideaRecord.fields['System Message'] ?? '')
 
-  // Completed signal
+  // Completed signal from Airtable
   if (systemMessage.includes('(3/3) Draft Post Completed')) {
-    // Read linked draft IDs directly from the idea record
     const linkedDraftIds = (ideaRecord.fields['📝 Draft Posts'] as string[] | undefined) ?? []
     const draftId = linkedDraftIds[0]
 
@@ -46,6 +66,12 @@ export async function GET(request: NextRequest) {
       const postBody = String(draft.fields['Post Body'] ?? '')
       const attachments = (draft.fields['Generated Carousel'] as Attachment[] | undefined) ?? []
       const slideUrls = attachments.map((a) => a.url)
+
+      // Cache result in Supabase so next poll returns instantly (fire-and-forget)
+      void admin
+        .from('carousels')
+        .update({ status: 'completed', slide_urls: slideUrls, post_body: postBody, updated_at: new Date().toISOString() })
+        .eq('airtable_record_id', recordId)
 
       return Response.json({
         status: 'completed',

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // 3. Parse and validate request body
+  // 2. Parse and validate request body
   let body: {
     brand_id?: string
     template_id?: string
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // 4. Atomic credit deduction (Supabase)
+  // 3. Atomic credit deduction (Supabase)
   const admin = createAdminClient()
   const { data: creditResult, error: creditError } = await admin.rpc('consume_credit', {
     p_user_id: user.id,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Insufficient credits' }, { status: 402 })
   }
 
-  // 5. Create Airtable idea record
+  // 4. Create Airtable idea record
   const ideaFields: Record<string, unknown> = {
     'Idea': idea_text,
     '❗Brand Voice': [brand_id],
@@ -67,6 +67,24 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[generate] Airtable createRecord failed:', err)
     return Response.json({ error: 'Failed to create generation job' }, { status: 500 })
+  }
+
+  // 5. Create a tracking row in Supabase so status can be resolved instantly
+  //    via the n8n callback webhook (no polling needed)
+  try {
+    await admin
+      .from('carousels')
+      .insert({
+        user_id: user.id,
+        brand_id: null,          // Airtable brand, not Supabase brand
+        template_id: null,       // Airtable template, not Supabase template
+        idea_text,
+        status: 'processing',
+        airtable_record_id: record.id,
+      })
+      .throwOnError()
+  } catch (err) {
+    console.error('[generate] Supabase carousels insert failed:', err)
   }
 
   // 6. Fire-and-forget n8n webhook

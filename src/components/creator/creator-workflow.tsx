@@ -18,13 +18,34 @@ type Props = {
 
 type GenerationState = 'idle' | 'loading' | 'processing' | 'completed' | 'failed'
 
+function SuccessToast({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-white border border-green-200 shadow-lg rounded-xl px-4 py-3 max-w-sm animate-in slide-in-from-top-2 duration-300">
+      <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7l3.5 3.5 6.5-7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-gray-900">Carousel ready!</p>
+        <p className="text-xs text-gray-500">Your slides and caption are ready to download.</p>
+      </div>
+      <button onClick={onClose} className="text-gray-400 hover:text-gray-600 flex-shrink-0" aria-label="Dismiss">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
+      </button>
+    </div>
+  )
+}
+
 const STEPS = [
   { n: 1, tag: 'Idea',          label: 'What is your carousel idea?' },
   { n: 2, tag: 'Visual Style',  label: 'Choose a visual style' },
   { n: 3, tag: 'Template',      label: 'Choose a template' },
 ]
 
-const POLL_INTERVAL_MS = 2500
+const POLL_INTERVAL_MS = 1500
 const POLL_TIMEOUT_MS = 6 * 60 * 1000
 
 export function CreatorWorkflow({ brands, templates, designStyles, selectedBrandId, creditData }: Props) {
@@ -41,6 +62,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
   const [processingStep, setProcessingStep] = useState<1 | 2 | 3>(1)
   const [slideUrls, setSlideUrls] = useState<string[]>([])
   const [postBody, setPostBody] = useState<string>('')
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
 
   const canGenerate = topic.trim().length > 0 && !!templateId && !!activeBrandId && !!designId
 
@@ -120,6 +142,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
           setSlideUrls(data.slide_urls ?? [])
           setPostBody(data.post_body ?? '')
           setGenerationState('completed')
+          setShowSuccessToast(true)
           router.refresh()
         } else if (data.status === 'failed') {
           clearInterval(interval)
@@ -149,6 +172,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
 
   return (
     <>
+    {showSuccessToast && <SuccessToast onClose={() => setShowSuccessToast(false)} />}
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-10 items-start">
 
       {/* ── Left: Config flow ─────────────────────────────────── */}
