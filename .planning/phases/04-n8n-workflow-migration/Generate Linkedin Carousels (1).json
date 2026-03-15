@@ -13,36 +13,8 @@
         1968,
         608
       ],
-      "id": "e395dc08-4fcf-45c0-ae0b-2e7c6346a52d",
+      "id": "048bc977-8120-490d-83e1-499783566fb9",
       "name": "Split Out"
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json[\"output.variations[0].carousel_content_slide_prompts\"] }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        2576,
-        608
-      ],
-      "id": "156c3816-a1d4-4376-8df4-3ce9fba46522",
-      "name": "Edit an image",
-      "retryOnFail": true,
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CpM7OmU6GIqcoc9Z",
-          "name": "Google Gemini(PaLM) Api account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -54,36 +26,8 @@
         3216,
         608
       ],
-      "id": "1b667455-b471-49ce-9795-d170ff255c79",
+      "id": "70f6a90e-63dc-4dde-928c-adcdf34530c8",
       "name": "MergeImageURLs"
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json.output.variations[0].carousel_front_page_prompt }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        2576,
-        432
-      ],
-      "id": "9ea09a52-ed93-4401-92b1-f8aec456fc7a",
-      "name": "Edit an image1",
-      "retryOnFail": true,
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CpM7OmU6GIqcoc9Z",
-          "name": "Google Gemini(PaLM) Api account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -96,7 +40,7 @@
         2400,
         432
       ],
-      "id": "5ab69242-cbb3-44f9-8a17-3c78dc030d9f",
+      "id": "5febfb01-2fe8-481d-bbd7-b49827d3214f",
       "name": "GetTemplateFront"
     },
     {
@@ -107,36 +51,8 @@
         2256,
         432
       ],
-      "id": "607fd886-273b-4695-9811-3237bb19c1b3",
+      "id": "24dd9047-bba5-4824-b79c-ac17319e96ec",
       "name": "Limit1"
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json.output.variations[0].carousel_cta_page_prompt }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        2576,
-        768
-      ],
-      "id": "fa5ff977-9430-44c4-b656-ad1a1e16cf94",
-      "name": "Edit an image2",
-      "retryOnFail": true,
-      "credentials": {
-        "googlePalmApi": {
-          "id": "CpM7OmU6GIqcoc9Z",
-          "name": "Google Gemini(PaLM) Api account 2"
-        }
-      }
     },
     {
       "parameters": {},
@@ -146,7 +62,7 @@
         2256,
         768
       ],
-      "id": "260384d6-9af0-457c-ad94-00dc7f64cb2c",
+      "id": "8b3c3964-c26f-4647-8890-eefb287f4b7b",
       "name": "Limit2"
     },
     {
@@ -160,7 +76,7 @@
         2400,
         768
       ],
-      "id": "58d06a02-80f2-4a34-a0c5-00ee7e9470e6",
+      "id": "ada557d8-6eee-4ef6-9a6d-d4009458da2e",
       "name": "GetTemplateCTA"
     },
     {
@@ -174,7 +90,7 @@
         2400,
         608
       ],
-      "id": "9c290706-2ce4-4099-acd0-4647652e1eab",
+      "id": "1839d3ee-603e-420f-9d94-bb6dbeea1870",
       "name": "GetTemplateContent"
     },
     {
@@ -187,7 +103,7 @@
         3024,
         592
       ],
-      "id": "8b7c762b-cbf6-4b33-a9fa-986e9cac6ccc",
+      "id": "2b4c0f96-2126-4d36-b48e-d9f0c734e8e4",
       "name": "Merge1"
     },
     {
@@ -203,7 +119,7 @@
         1936,
         400
       ],
-      "id": "c1a7f94c-64fd-40d5-ad28-363f0c650064",
+      "id": "b4d88222-7cbd-481d-8bde-e0d3ac718c99",
       "name": "Sticky Note3"
     },
     {
@@ -219,7 +135,7 @@
             {
               "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "edited"
+              "inputDataFieldName": "data"
             }
           ]
         },
@@ -231,12 +147,12 @@
         2752,
         432
       ],
-      "id": "86e2a305-db3e-4ffe-980b-04160b89a2d8",
+      "id": "9cd9483d-f141-49b4-9b51-f6214c9ca832",
       "name": "Get Carousel Front Img URL",
       "credentials": {
         "httpQueryAuth": {
-          "id": "XQODXzRjPbDFG2pR",
-          "name": "SerpAPI"
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
         }
       }
     },
@@ -253,7 +169,7 @@
             {
               "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "edited"
+              "inputDataFieldName": "data"
             }
           ]
         },
@@ -265,8 +181,14 @@
         2752,
         608
       ],
-      "id": "39330a1f-aedc-4c86-b2db-7533029efb4d",
-      "name": "Get Carousel Content Img URL"
+      "id": "0888abe1-2993-4b61-bba0-ca376a08f169",
+      "name": "Get Carousel Content Img URL",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
     },
     {
       "parameters": {
@@ -281,7 +203,7 @@
             {
               "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "edited"
+              "inputDataFieldName": "data"
             }
           ]
         },
@@ -293,8 +215,14 @@
         2752,
         768
       ],
-      "id": "c25cfb51-0151-44a5-a8b8-9496232d4774",
-      "name": "Get Carousel CTA Img URL"
+      "id": "49fe4bf0-b465-4e41-bbf3-a4b83fde14d3",
+      "name": "Get Carousel CTA Img URL",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
     },
     {
       "parameters": {
@@ -569,12 +497,12 @@
         3408,
         608
       ],
-      "id": "f273d1bc-cbe8-42d7-b544-dbd512ab1b59",
+      "id": "370ee877-ea77-44ed-bad4-eaf7534b1c62",
       "name": "Update Draft Posts",
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       }
     },
@@ -652,7 +580,7 @@
         1024,
         608
       ],
-      "id": "15f3fe0e-e791-41d6-9eff-1f2b7c2b417c",
+      "id": "c9c9daab-66ff-4615-ae5f-13f4ec5f556d",
       "name": "Standardize Inputs"
     },
     {
@@ -669,36 +597,14 @@
         1328,
         768
       ],
-      "id": "c632e573-136d-4816-a61a-6fde5813e519",
+      "id": "1bf80201-5e74-4bf4-93f2-ec21625cc9b5",
       "name": "Gemini-3-pro",
       "credentials": {
         "googlePalmApi": {
-          "id": "CpM7OmU6GIqcoc9Z",
-          "name": "Google Gemini(PaLM) Api account 2"
+          "id": "JXpi4JCGvi7TiNuv",
+          "name": "Google add card"
         }
       }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "value": "claude-opus-4-1-20250805",
-          "mode": "list",
-          "cachedResultName": "Claude Opus 4.1"
-        },
-        "options": {
-          "maxTokensToSample": 64000,
-          "thinking": true
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
-      "typeVersion": 1.3,
-      "position": [
-        1472,
-        768
-      ],
-      "id": "044720ae-5d76-40eb-83d5-1c5f92392dae",
-      "name": "Opus-4.1-thinking3"
     },
     {
       "parameters": {
@@ -718,8 +624,14 @@
         1632,
         880
       ],
-      "id": "62818627-fdef-497b-91d4-6b2f3fb2f017",
-      "name": "gpt-5-mini2"
+      "id": "c5b3aced-0bcc-4853-bd91-84eecadac2a4",
+      "name": "gpt-5-mini2",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Lj2DKcCIFwhG8O6",
+          "name": "OpenAi account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -734,7 +646,7 @@
         1296,
         400
       ],
-      "id": "e3d719af-f4da-4c07-ad55-8415a0ab65d2",
+      "id": "690b6e17-90f1-4c34-92a4-ddd5cbde676e",
       "name": "Sticky Note63"
     },
     {
@@ -749,7 +661,7 @@
         1584,
         768
       ],
-      "id": "0f31e612-7aea-40be-9a35-33213313ddbb",
+      "id": "1f6d687e-1250-4962-ab21-ee863c58862e",
       "name": "Post and Prompt Generator Output Parser"
     },
     {
@@ -765,7 +677,7 @@
         1248,
         320
       ],
-      "id": "dfcb8748-b2e8-4e17-b1bc-16dd43997cec",
+      "id": "7ae11640-d85d-49fb-884c-2cb61b4a58fc",
       "name": "Sticky Note"
     },
     {
@@ -779,7 +691,7 @@
         80,
         608
       ],
-      "id": "1dda39c4-6b9a-4966-aadb-3717305b775c",
+      "id": "2396a7c4-1ab8-48e5-8a8c-50670f1a8e5e",
       "name": "Webhook",
       "webhookId": "601ee2d2-2ac6-48c1-8d49-8bd94875aeb4"
     },
@@ -796,7 +708,7 @@
         48,
         400
       ],
-      "id": "8c4f2b1f-e164-4ffb-a51a-0cca14a2ad82",
+      "id": "c898ba80-ca62-4b13-8430-e15675970eba",
       "name": "Sticky Note13"
     },
     {
@@ -812,7 +724,7 @@
         400,
         608
       ],
-      "id": "0ba59725-e137-478c-9838-e8f87d8bd9d8",
+      "id": "433ba084-0e7f-4bcd-9c10-84a5b7dab4d5",
       "name": "InputTableUrls"
     },
     {
@@ -836,13 +748,13 @@
         640,
         480
       ],
-      "id": "f88068b3-cd7c-4b17-a661-910c8c40d572",
+      "id": "cbdea0cb-95c2-4255-bc94-390dd575d3ff",
       "name": "Get Brand",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       }
     },
@@ -859,7 +771,7 @@
         864,
         592
       ],
-      "id": "6e16e6ff-e11c-40e5-b0ae-8474a9f6d8ff",
+      "id": "14a3790a-9e77-451d-8fbd-e8ff730a6382",
       "name": "Merge Inputs"
     },
     {
@@ -883,13 +795,13 @@
         640,
         736
       ],
-      "id": "efa1ac2e-e4f9-4f88-bc0f-ed398ef38f6b",
+      "id": "090a81bf-c1b5-4cd9-bad3-b681926a7bd9",
       "name": "Get Visual Style",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       }
     },
@@ -914,14 +826,14 @@
         224,
         608
       ],
-      "id": "a4e079b5-ce46-4204-be70-25ac5db00f81",
+      "id": "df611c27-4b25-4982-82b3-075c42762f03",
       "name": "Get Idea",
       "alwaysOutputData": false,
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       }
     },
@@ -946,13 +858,13 @@
         640,
         608
       ],
-      "id": "d96209e6-2b33-4a88-8f65-8d786a536c18",
+      "id": "13f824ef-2c95-40d7-9e71-1083b3204b7f",
       "name": "Get Carousel Template",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       }
     },
@@ -977,7 +889,7 @@
         1344,
         608
       ],
-      "id": "650c47ae-3ee8-446c-ad53-42f533eb87ec",
+      "id": "a945969f-a33e-42e7-ba41-c5cc49f28641",
       "name": "Body & Carousel Prompts",
       "executeOnce": false
     },
@@ -1267,13 +1179,13 @@
         1360,
         480
       ],
-      "id": "43d7922b-2723-44fc-857e-4bc529f5a97a",
+      "id": "4bbfb9cf-ff31-42e6-81c9-12ee35a705d7",
       "name": "System Message",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       },
       "onError": "continueRegularOutput"
@@ -1312,85 +1224,19 @@
               "removed": false
             },
             {
-              "id": "Headline",
-              "displayName": "Headline",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Category",
-              "displayName": "Category",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Why it matters",
-              "displayName": "Why it matters",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Key Points",
-              "displayName": "Key Points",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Source",
-              "displayName": "Source",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Date",
-              "displayName": "Date",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "dateTime",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Created",
-              "displayName": "Created",
+              "id": "Post Id",
+              "displayName": "Post Id",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "System Message",
-              "displayName": "System Message",
+              "id": "Idea",
+              "displayName": "Idea",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -1400,8 +1246,8 @@
               "removed": false
             },
             {
-              "id": "Activate",
-              "displayName": "Activate",
+              "id": "Date",
+              "displayName": "Date",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -1411,15 +1257,70 @@
               "removed": true
             },
             {
-              "id": "Type_Content",
-              "displayName": "Type_Content",
+              "id": "❗Carousel Template",
+              "displayName": "❗Carousel Template",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "❗Design Style",
+              "displayName": "❗Design Style",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Front Page (from Carousel_Template)",
+              "displayName": "Front Page (from Carousel_Template)",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
-              "readOnly": false,
-              "removed": true
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Content Page (from Carousel_Template)",
+              "displayName": "Content Page (from Carousel_Template)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "CTA Page (from Carousel_Template)",
+              "displayName": "CTA Page (from Carousel_Template)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Examples (from Design Style)",
+              "displayName": "Examples (from Design Style)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
             },
             {
               "id": "❗Brand Voice",
@@ -1433,37 +1334,15 @@
               "removed": true
             },
             {
-              "id": "Carousel",
-              "displayName": "Carousel",
+              "id": "❗Custom Instructions",
+              "displayName": "❗Custom Instructions",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "boolean",
+              "type": "string",
               "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Image",
-              "displayName": "Image",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "boolean",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Infographic",
-              "displayName": "Infographic",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "boolean",
-              "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
               "id": "Number of Drafts",
@@ -1477,8 +1356,30 @@
               "removed": true
             },
             {
-              "id": "Research Type",
-              "displayName": "Research Type",
+              "id": "Generate Draft Post",
+              "displayName": "Generate Draft Post",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "System Message",
+              "displayName": "System Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Idea Status",
+              "displayName": "Idea Status",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -1486,71 +1387,273 @@
               "type": "options",
               "options": [
                 {
-                  "name": "Deep",
-                  "value": "Deep"
+                  "name": "Draft",
+                  "value": "Draft"
                 },
                 {
-                  "name": "Standard",
-                  "value": "Standard"
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Not interested",
+                  "value": "Not interested"
                 }
               ],
               "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "Research Instructions",
-              "displayName": "Research Instructions",
+              "id": "Link-posts",
+              "displayName": "Link-posts",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "Generate Research",
-              "displayName": "Generate Research",
+              "id": "Link-Post-Content",
+              "displayName": "Link-Post-Content",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "Research (Output)",
-              "displayName": "Research (Output)",
+              "id": "Link-Post-Type",
+              "displayName": "Link-Post-Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Media",
+              "displayName": "Link-Post-Media",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Transcript",
+              "displayName": "Link-Post-Transcript",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Date Published",
+              "displayName": "Link-Post-Date Published",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Likes",
+              "displayName": "Link-Post-Likes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Comments",
+              "displayName": "Link-Post-Comments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Shares",
+              "displayName": "Link-Post-Shares",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Post-Creator Name",
+              "displayName": "Link-Post-Creator Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-videos",
+              "displayName": "Link-videos",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "Brand",
-              "displayName": "Brand",
+              "id": "Link-Video-Title",
+              "displayName": "Link-Video-Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Video-Summary",
+              "displayName": "Link-Video-Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-Video-Thumbnail",
+              "displayName": "Link-Video-Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Link-news",
+              "displayName": "Link-news",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Link-ideas",
+              "displayName": "Link-ideas",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
-              "id": "🌱 Ideas",
-              "displayName": "🌱 Ideas",
+              "id": "Source (from Link-News)",
+              "displayName": "Source (from Link-News)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Key Points (from Link-News)",
+              "displayName": "Key Points (from Link-News)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Primary Hook",
+              "displayName": "Primary Hook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Variations",
+              "displayName": "Variations",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Logic",
+              "displayName": "Logic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "📝 Draft Posts",
+              "displayName": "📝 Draft Posts",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": true
+              "removed": false
+            },
+            {
+              "id": "From field: Link-ExistingIdea",
+              "displayName": "From field: Link-ExistingIdea",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -1564,13 +1667,13 @@
         3616,
         608
       ],
-      "id": "2aefdb18-5b6a-499d-9932-e580656b89dd",
+      "id": "6cd91063-6601-4d9d-9162-01c193baf4c0",
       "name": "System Message2",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       },
       "onError": "continueRegularOutput"
@@ -1588,7 +1691,7 @@
         0,
         320
       ],
-      "id": "13b5ee45-a74a-4225-985d-2c9fbd758695",
+      "id": "20176490-ceef-434f-aed9-816475cbe2f5",
       "name": "Sticky Note1"
     },
     {
@@ -1603,7 +1706,7 @@
         0,
         0
       ],
-      "id": "6b8785eb-75bd-471e-b370-4ec89324749a",
+      "id": "f4b8d003-45fe-43d4-8d27-e2c4b7fa8291",
       "name": "Sticky Note31"
     },
     {
@@ -1892,16 +1995,159 @@
         1744,
         480
       ],
-      "id": "2cb8e834-de02-447b-af1c-e8d8ed8eba7e",
+      "id": "1029702c-426a-4509-b261-31f9177d93ab",
       "name": "System Message1",
       "notesInFlow": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "TCUClZYIAw20eTBs",
-          "name": "Airtable Personal Access Token account"
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
         }
       },
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        848
+      ],
+      "id": "90a1e419-b706-4fd3-8573-b82caf763dcd",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "Jl4QJ3Pl3fjfGaPt",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "prompt": "={{ $json.output.variations[0].carousel_front_page_prompt }}",
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        432
+      ],
+      "id": "9d00a670-6cf3-46a7-a689-0db2f9f2aa67",
+      "name": "Edit image",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Lj2DKcCIFwhG8O6",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "prompt": "={{ $json[\"output.variations[0].carousel_content_slide_prompts\"] }}",
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        2576,
+        608
+      ],
+      "id": "75cad215-326b-4f93-b31c-7c81437e09ff",
+      "name": "Edit image1",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Lj2DKcCIFwhG8O6",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "prompt": "={{ $json.output.variations[0].carousel_cta_page_prompt }}",
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        2576,
+        768
+      ],
+      "id": "ae906381-5e9e-4280-a748-f2bc0677fb20",
+      "name": "Edit image2",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Lj2DKcCIFwhG8O6",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/webhook/generation-done",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-webhook-secret",
+              "value": "vss-carousel-webhook-2026"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "record_id": "={{ $('Webhook').first().json.query.record_id }}",
+          "status": "completed",
+          "post_body": "={{ $('Body & Carousel Prompts').first().json.output.variations[0].post_body }}",
+          "slide_urls": "={{ $('MergeImageURLs').first().json.attachments.map(a => a.url) }}"
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3856,
+        608
+      ],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "name": "Notify App (Webhook)"
     }
   ],
   "pinData": {
@@ -1909,37 +2155,24 @@
       {
         "json": {
           "headers": {
-            "host": "n8n-x3ktx-u28170.vm.elestio.app",
-            "x-real-ip": "87.74.56.94",
-            "x-forwarded-for": "87.74.56.94",
+            "host": "ovobvc.ezn8n.com",
+            "x-real-ip": "103.176.152.15",
+            "x-forwarded-for": "103.176.152.15",
             "x-forwarded-proto": "https",
-            "x-forwarded-port": "443",
-            "connection": "close",
-            "sec-ch-ua": "\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"macOS\"",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "sec-fetch-site": "cross-site",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-user": "?1",
-            "sec-fetch-dest": "document",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "en-US,en-GB;q=0.9,en;q=0.8",
-            "if-none-match": "W/\"22-6OS7cK0FzqnV2NeDHdOSGS1bVUs\"",
-            "priority": "u=0, i",
-            "cookie": "ajs_anonymous_id=%22937ad884-b448-4279-a6cb-b4a81ce6e066%22; auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkwYTUyZmI4LTAxMjctNDU5ZC1hMTgwLTQ1ZGE1MTRkMjhkYSIsImVtYWlsIjoic2ltb25jb3RvbjYwMkBnb29nbGVtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJEx0ekNFR3duM3ZGN3Y1YmI3bmdFOGVpN1pjN1haM3FMSnZFYUtaYUR2L3BlVEJXU0FQeTNXIiwicHJvdmlkZXJOYW1lIjoiTE9DQUwiLCJuYW1lIjpudWxsLCJsYXN0TmFtZSI6bnVsbCwiaXNTdXBlckFkbWluIjpmYWxzZSwiYmlvIjpudWxsLCJhdWRpZW5jZSI6MCwicGljdHVyZUlkIjpudWxsLCJwcm92aWRlcklkIjoiIiwidGltZXpvbmUiOjAsImNyZWF0ZWRBdCI6IjIwMjUtMDYtMThUMTk6NTQ6NTYuMDY2WiIsInVwZGF0ZWRBdCI6IjIwMjUtMDYtMThUMTk6NTQ6NTYuMDY2WiIsImxhc3RSZWFkTm90aWZpY2F0aW9ucyI6IjIwMjUtMDYtMThUMTk6NTQ6NTYuMDY2WiIsImludml0ZUlkIjpudWxsLCJhY3RpdmF0ZWQiOnRydWUsIm1hcmtldHBsYWNlIjp0cnVlLCJhY2NvdW50IjpudWxsLCJjb25uZWN0ZWRBY2NvdW50IjpmYWxzZSwibGFzdE9ubGluZSI6IjIwMjUtMDYtMThUMTk6NTQ6NTYuMDY2WiIsImlwIjoiMTcyLjE4LjAuMSIsImFnZW50IjoiTW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTVfNykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzNS4wLjAuMCBTYWZhcmkvNTM3LjM2IiwiaWF0IjoxNzUwMjc2NDk2fQ.zLKSzL2wUMLL1qfuRneC6hIZUWTQ_a_juA16olJmJPk; rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2BYfZr%2BZN3uMwqfhlRbtUcwJlDgX7rDTsE%3D; rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX19aY1XSMwqilemQdy8fgOsxqIC7Fc1XQOI%3D; rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BxZbZhW62xVq%2BnqTvwh1aCz7VPBI0y8OPS7j1ohFUfS7hyqH3Zi7TJuVriEKaDMzkpTQnpUJAQiQ%3D%3D; rl_user_id=RudderEncrypt%3AU2FsdGVkX19XNccZaTIC1wlAc5f4RH%2FGE0GuXA6h7yyhns8DaoeO%2FKjyoOxZMDXIJCNC4VoCTmj%2FR4gd51058JLYYnaKkuMqhoIbBv%2FUkjmL47cBcHOnp16OLg%2BLOjXjJFmt%2FB2utXlU3Xdz3AE9KFjsVvxPx6vzhYD4IRXJJuo%3D; rl_trait=RudderEncrypt%3AU2FsdGVkX19EVuzEW%2F7DeKsc67mhyJEBdsGciwtWjnd5dzVDZIobpiubnOl7CB6dvJbN3knnCN7ozAPwVkt1s5hzT6IIJ4S3aNVuzCTrs4TcRi3jMif9YsR3KbrnIdGsUIHXtSCGYaxOfAZx2xgFIr19t6PBUZBwXNTp63LT3Z4%3D; rl_session=RudderEncrypt%3AU2FsdGVkX1%2BT0nZtMAGQCjMbVkUSfTPsw6j4qCT%2B78DLsGZUtotssElSc1x%2Bl4sH9ilJBNdHIzZrGYSAH7wQM4DRBQ3yjFm0GL8AdGeU9crw3v8EhbA4SKVy%2FLfaW5a7ju4EC%2F5JTvbv5TI2nD7JUg%3D%3D; ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22%24device_id%22%3A%221c31bdd3959f20b29703ee6045bfda4606ac65f3d65da283faa72f91d82ac3d7%23be89c162-c62b-451f-8809-da1d3ee32770%22%2C%22distinct_id%22%3A%22d05891c9c1c0cecb625804bb9d22a4440e272bd131c67e72279fe01a34de7800%235002df05-9e6f-4ecd-acf8-7b994ca318b6%22%2C%22%24sesid%22%3A%5B1768932393871%2C%22019bdc96-4390-74f8-9f43-26e52d9117de%22%2C1768932393871%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Fn8n-4ixah-u29378.vm.elestio.app%2Fsignin%3Fredirect%3D%25252Fhome%25252Fworkflows%22%7D%7D"
+            "connection": "Upgrade",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "user-agent": "node",
+            "accept-encoding": "br, gzip, deflate"
           },
           "params": {},
           "query": {
             "table_url": "https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide",
-            "record_id": "recmx3vLyvsQpslRn",
-            "path": "create-carousel",
-            "origin": "ideas"
+            "record_id": "recwWys3My6BxgPBw"
           },
           "body": {},
-          "webhookUrl": "https://n8n-x3ktx-u28170.vm.elestio.app/webhook/create-carousel",
+          "webhookUrl": "https://ovobvc.ezn8n.com/webhook/create-carousel",
           "executionMode": "production"
         }
       }
@@ -1967,17 +2200,6 @@
         ]
       ]
     },
-    "Edit an image": {
-      "main": [
-        [
-          {
-            "node": "Get Carousel Content Img URL",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "MergeImageURLs": {
       "main": [
         [
@@ -1989,22 +2211,11 @@
         ]
       ]
     },
-    "Edit an image1": {
-      "main": [
-        [
-          {
-            "node": "Get Carousel Front Img URL",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "GetTemplateFront": {
       "main": [
         [
           {
-            "node": "Edit an image1",
+            "node": "Edit image",
             "type": "main",
             "index": 0
           }
@@ -2016,17 +2227,6 @@
         [
           {
             "node": "GetTemplateFront",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit an image2": {
-      "main": [
-        [
-          {
-            "node": "Get Carousel CTA Img URL",
             "type": "main",
             "index": 0
           }
@@ -2048,7 +2248,7 @@
       "main": [
         [
           {
-            "node": "Edit an image2",
+            "node": "Edit image2",
             "type": "main",
             "index": 0
           }
@@ -2059,7 +2259,7 @@
       "main": [
         [
           {
-            "node": "Edit an image",
+            "node": "Edit image1",
             "type": "main",
             "index": 0
           }
@@ -2128,17 +2328,6 @@
             "node": "Body & Carousel Prompts",
             "type": "ai_languageModel",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Opus-4.1-thinking3": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Body & Carousel Prompts",
-            "type": "ai_languageModel",
-            "index": 1
           }
         ]
       ]
@@ -2283,16 +2472,72 @@
           }
         ]
       ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Body & Carousel Prompts",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit image2": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel CTA Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit image1": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Content Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit image": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Front Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "System Message2": {
+      "main": [
+        [
+          {
+            "node": "Notify App (Webhook)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "42f6aef5-20ea-4406-9c0f-400326c8f998",
+  "versionId": "749a8909-f294-4c09-b80e-e7293131ca7b",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
   },
-  "id": "4SiYKgHrk1AxzuWa",
+  "id": "r9RJQFVuN3mPClSU",
   "tags": []
 }
