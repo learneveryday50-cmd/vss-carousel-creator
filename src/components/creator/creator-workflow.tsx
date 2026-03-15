@@ -45,8 +45,8 @@ const STEPS = [
   { n: 3, tag: 'Template',      label: 'Choose a template' },
 ]
 
-const POLL_INTERVAL_MS = 1500
-const POLL_TIMEOUT_MS = 6 * 60 * 1000
+const POLL_INTERVAL_MS = 2000
+const POLL_TIMEOUT_MS = 10 * 60 * 1000
 
 export function CreatorWorkflow({ brands, templates, designStyles, selectedBrandId, creditData }: Props) {
   const router = useRouter()
@@ -120,8 +120,6 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
     if (!carouselId || generationState !== 'processing') return
 
     const startTime = Date.now()
-    const stepTimer1 = setTimeout(() => setProcessingStep(2), 8000)
-    const stepTimer2 = setTimeout(() => setProcessingStep(3), 20000)
 
     const interval = setInterval(async () => {
       if (Date.now() - startTime > POLL_TIMEOUT_MS) {
@@ -137,8 +135,6 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
         const data = await res.json()
         if (data.status === 'completed') {
           clearInterval(interval)
-          clearTimeout(stepTimer1)
-          clearTimeout(stepTimer2)
           setSlideUrls(data.slide_urls ?? [])
           setPostBody(data.post_body ?? '')
           setGenerationState('completed')
@@ -146,8 +142,6 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
           router.refresh()
         } else if (data.status === 'failed') {
           clearInterval(interval)
-          clearTimeout(stepTimer1)
-          clearTimeout(stepTimer2)
           setGenerationState('failed')
         } else if (data.step) {
           setProcessingStep(data.step as 1 | 2 | 3)
@@ -159,8 +153,6 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
 
     return () => {
       clearInterval(interval)
-      clearTimeout(stepTimer1)
-      clearTimeout(stepTimer2)
     }
   }, [carouselId, generationState, router])
 

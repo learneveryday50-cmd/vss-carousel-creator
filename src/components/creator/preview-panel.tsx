@@ -63,10 +63,10 @@ const CONTENT_SLIDES: Record<string, Array<{ title: string; body: string }>> = {
 
 const FALLBACK_SLUG = 'hook-insight-cta'
 
-const PROCESSING_STEPS = [
-  'Writing carousel content',
-  'Generating slides',
-  'Rendering images',
+const GAME_STEPS = [
+  { label: 'Writing your content', sub: 'AI is crafting your carousel copy' },
+  { label: 'Building your slides', sub: 'Assembling the carousel layout' },
+  { label: 'Rendering your images', sub: 'Generating the final slides' },
 ]
 
 export function PreviewPanel({
@@ -223,67 +223,103 @@ export function PreviewPanel({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col items-center justify-center gap-6 py-10 px-6"
+            transition={{ duration: 0.3 }}
+            className="p-6 flex flex-col gap-5"
           >
-            {/* Pulsing amber spinner */}
-            <motion.div
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-10 h-10 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"
-              style={{ animation: undefined }}
-            >
+            {/* Header */}
+            <div className="text-center space-y-2">
               <motion.div
-                className="w-full h-full rounded-full border-2 border-amber-400 border-t-transparent"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              />
-            </motion.div>
+                animate={{ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 shadow-sm"
+              >
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                  <path d="M13 2L4 13h7l-2 7 9-11h-7l2-7z" fill="#f59e0b" stroke="#d97706" strokeWidth="1.2" strokeLinejoin="round"/>
+                </svg>
+              </motion.div>
+              <div>
+                <p className="font-bold text-gray-900 text-sm">Building your carousel</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">Step {processingStep} of {GAME_STEPS.length}</p>
+              </div>
+            </div>
 
-            {/* Step rows */}
-            <div className="w-full flex flex-col gap-3">
-              {PROCESSING_STEPS.map((label, i) => {
-                const stepNum = (i + 1) as 1 | 2 | 3
-                const isActive = processingStep === stepNum
-                const isDone = processingStep > stepNum
+            {/* Progress bar */}
+            <div className="space-y-1">
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400"
+                  initial={{ width: '5%' }}
+                  animate={{ width: `${Math.round((processingStep / GAME_STEPS.length) * 100)}%` }}
+                  transition={{ duration: 0.9, ease: 'easeOut' }}
+                />
+              </div>
+              <p className="text-right text-[10px] text-gray-400 tabular-nums">
+                {Math.round((processingStep / GAME_STEPS.length) * 100)}%
+              </p>
+            </div>
+
+            {/* Step cards */}
+            <div className="flex flex-col gap-2">
+              {GAME_STEPS.map((step, i) => {
+                const n = (i + 1) as 1 | 2 | 3
+                const isActive = processingStep === n
+                const isDone = processingStep > n
 
                 return (
                   <motion.div
-                    key={label}
-                    className="flex items-center gap-3"
-                    animate={isActive ? { scale: [1, 1.02, 1] } : {}}
-                    transition={isActive ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}}
+                    key={step.label}
+                    animate={isActive ? { scale: [1, 1.01, 1] } : { scale: 1 }}
+                    transition={isActive ? { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.2 }}
+                    className={[
+                      'flex items-start gap-3 rounded-xl px-3.5 py-3 border transition-colors',
+                      isActive ? 'bg-amber-50 border-amber-200 shadow-sm' :
+                      isDone   ? 'bg-green-50 border-green-100' :
+                                 'bg-gray-50 border-gray-100',
+                    ].join(' ')}
                   >
-                    {/* Circle indicator */}
-                    {isDone ? (
-                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                          <path d="M1.5 5l2.5 2.5 4.5-5" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                    ) : isActive ? (
-                      <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[9px] font-bold text-white">{stepNum}</span>
-                      </div>
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                        <span className="text-[9px] font-bold text-gray-400">{stepNum}</span>
-                      </div>
-                    )}
-
-                    {/* Label */}
-                    <span className={[
-                      'text-sm font-medium',
-                      isDone ? 'text-gray-400' : isActive ? 'text-amber-600' : 'text-gray-300',
+                    {/* Step icon */}
+                    <div className={[
+                      'w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5',
+                      isActive ? 'bg-amber-500' :
+                      isDone   ? 'bg-green-500' :
+                                 'bg-gray-200',
                     ].join(' ')}>
-                      {label}
-                    </span>
+                      {isDone ? (
+                        <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
+                          <path d="M1 4.5l2.5 2.5 4.5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : isActive ? (
+                        <motion.div
+                          className="w-2 h-2 rounded-full bg-white"
+                          animate={{ opacity: [1, 0.3, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+                        />
+                      ) : (
+                        <span className="text-[9px] font-bold text-gray-400">{n}</span>
+                      )}
+                    </div>
+
+                    {/* Step text */}
+                    <div className="min-w-0">
+                      <p className={[
+                        'text-xs font-semibold leading-snug flex items-center gap-1',
+                        isActive ? 'text-amber-700' :
+                        isDone   ? 'text-green-700' :
+                                   'text-gray-300',
+                      ].join(' ')}>
+                        {step.label}
+                        {isActive && <AnimatedEllipsis />}
+                      </p>
+                      {isActive && (
+                        <p className="text-[10px] text-amber-500 mt-0.5">{step.sub}</p>
+                      )}
+                    </div>
                   </motion.div>
                 )
               })}
             </div>
 
-            <p className="text-xs text-gray-400">This usually takes 30&ndash;60 seconds</p>
+            <p className="text-center text-[11px] text-gray-400">Usually takes 30&ndash;90 seconds</p>
           </motion.div>
         )}
 
@@ -415,6 +451,23 @@ function stripMarkdown(text: string): string {
     .replace(/^\s*[-*+]\s+/gm, '• ')         // - list → bullet
     .replace(/\n{3,}/g, '\n\n')              // collapse excess newlines
     .trim()
+}
+
+function AnimatedEllipsis() {
+  return (
+    <span className="inline-flex gap-px" aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: 'easeInOut' }}
+          className="text-amber-500 font-bold"
+        >
+          .
+        </motion.span>
+      ))}
+    </span>
+  )
 }
 
 function SlideShell({ number, tag, tagStyle, children }: {
