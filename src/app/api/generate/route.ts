@@ -91,8 +91,12 @@ export async function POST(request: NextRequest) {
   const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL
   if (n8nWebhookUrl) {
     const webhookUrl = `${n8nWebhookUrl}?table_url=${encodeURIComponent(IDEAS_TABLE_URL)}&record_id=${record.id}`
+    console.log('[generate] firing n8n:', webhookUrl)
     fetch(webhookUrl)
+      .then((r) => console.log('[generate] n8n response:', r.status))
       .catch((err) => console.error('[generate] n8n fire failed:', err))
+  } else {
+    console.warn('[generate] N8N_WEBHOOK_URL not set — skipping webhook')
   }
 
   // 7. Return immediately with Airtable record_id
