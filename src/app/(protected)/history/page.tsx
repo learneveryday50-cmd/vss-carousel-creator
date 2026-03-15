@@ -10,7 +10,7 @@ export default async function HistoryPage() {
   const { data: carousels } = user
     ? await supabase
         .from('carousels')
-        .select('id, idea_text, status, slide_urls, post_body, created_at, slide_count')
+        .select('id, idea_text, status, slide_urls, post_body, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50)

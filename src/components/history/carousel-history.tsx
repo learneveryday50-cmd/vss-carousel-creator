@@ -10,7 +10,6 @@ type Carousel = {
   slide_urls: string[] | null
   post_body: string | null
   created_at: string
-  slide_count: number | null
 }
 
 function stripMarkdown(text: string): string {
@@ -115,7 +114,7 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
             <div className="p-4 flex flex-col gap-3 flex-1">
               <div>
                 <p className="text-sm font-semibold text-gray-900 line-clamp-2">{c.idea_text}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{date} · {slides.length || c.slide_count || '?'} slides</p>
+                <p className="text-xs text-gray-400 mt-0.5">{date} · {slides.length || '?'} slides</p>
               </div>
 
               {/* Expand button */}
