@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, XCircle } from 'lucide-react'
 import type { Template, HookStyle } from '@/types/catalog'
@@ -90,6 +90,14 @@ export function PreviewPanel({
   const [currentSlide, setCurrentSlide] = useState(0)
   const [copied, setCopied] = useState(false)
   const [downloading, setDownloading] = useState(false)
+
+  // Preload all slides as soon as URLs arrive so navigation is instant
+  useEffect(() => {
+    slideUrls.forEach((url) => {
+      const img = new Image()
+      img.src = url
+    })
+  }, [slideUrls])
 
   const cleanCaption = stripMarkdown(postBody)
 

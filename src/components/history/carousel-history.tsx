@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Carousel = {
@@ -36,6 +36,17 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [slideIndex, setSlideIndex] = useState<Record<string, number>>({})
   const [copied, setCopied] = useState<string | null>(null)
+
+  // Preload first slide of each carousel for fast thumbnails
+  useEffect(() => {
+    carousels.forEach((c) => {
+      const urls = Array.isArray(c.slide_urls) ? c.slide_urls : []
+      if (urls[0]) {
+        const img = new Image()
+        img.src = urls[0]
+      }
+    })
+  }, [carousels])
 
   if (carousels.length === 0) {
     return (
