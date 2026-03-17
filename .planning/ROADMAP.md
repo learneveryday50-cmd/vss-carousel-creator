@@ -113,11 +113,11 @@ Plans:
   3. User can copy the post body text of any historical carousel to clipboard
   4. User can download individual carousel slides as PNG/JPG files
   5. User can download a full carousel as a PDF containing all slides
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: History page (server-rendered, RLS-scoped carousel list, entry metadata display, delete action)
-- [ ] 06-02: Downloads and export (server-side proxy route for ImageBB slide downloads to avoid CORS, client-side PDF generation, copy-to-clipboard post text)
+- [ ] 06-01-PLAN.md — DB migration (brand_name/template_name columns), extended history query, delete Server Action, metadata display + optimistic delete UI in CarouselHistory
+- [ ] 06-02-PLAN.md — /api/download image proxy route (ImageBB CORS fix), jsPDF PDF export, per-slide download button, proxy-routed bulk download
 
 ### Phase 7: Landing Page and Polish
 **Goal**: The product has a public marketing presence that converts visitors to sign-ups, and the entire application meets the Resume.io-quality visual bar with animations
