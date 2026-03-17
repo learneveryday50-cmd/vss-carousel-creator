@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-08T08:59:10.929Z"
+status: in_progress
+last_updated: "2026-03-17T00:00:00.000Z"
 progress:
-  total_phases: 5
-  completed_phases: 4
-  total_plans: 13
-  completed_plans: 12
+  total_phases: 7
+  completed_phases: 5
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Turn a raw idea into a branded, ready-to-post LinkedIn carousel in under a minute — without ever opening a design tool.
-**Current focus:** Phase 4 — AI Generation (Phase 3 complete)
+**Current focus:** Phase 6 — History, Downloads, and Export (Phase 5 complete)
 
 ## Current Position
 
-Phase: 5 of 7 (Generation Dashboard) — IN PROGRESS
-Plan: 2 of 3 complete
-Status: Phase 5 Plan 02 complete — POST /api/generate and GET /api/generate/status routes created; Plan 03 (generation dashboard UI) is next
-Last activity: 2026-03-08 — 05-02 complete: generate API routes with credit gate, fire-and-forget n8n, and user-scoped status polling
+Phase: 6 of 7 (History, Downloads, and Export) — READY TO PLAN
+Plan: 0 of 2
+Status: Phase 5 complete — full generation loop working (credit gate → generate → polling → slide viewer → history). Phase 6 plans history/downloads/PDF export.
+Last activity: 2026-03-08 — Phase 05 complete: generation UI wired, UX fixes applied, /history page added
 
-Progress: [███████░░░] 64%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [███████░░░] 64%
 | Phase 03-billing-and-credits P03-03 | 2 | 2 tasks | 8 files |
 | Phase 05-generation-dashboard P01 | 5 | 1 tasks | 1 files |
 | Phase 05-generation-dashboard P02 | 1 | 2 tasks | 2 files |
+| Phase 05-generation-dashboard P03 | 30 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -114,12 +115,12 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 4]: Verify n8n Cloud plan supports HTTP Request node + service role key credential storage before implementation
-- [Phase 5]: Verify current Supabase Realtime postgres_changes filter syntax before writing subscription code
+- [Phase 4]: Verify n8n Cloud plan supports HTTP Request node + service role key credential storage before implementation
 - [Phase 3]: Verify whether pg_cron is available on active Supabase plan tier — if not, monthly credit reset requires Vercel Cron Job with last_reset_at idempotency guard
-- [Phase 5]: Verify react-konva compatibility with React 19 before committing to it for carousel preview
+- [Phase 6]: ImageBB URLs may expire — server-side proxy route needed for reliable slide downloads; evaluate Supabase Storage migration for v2
 
 ## Session Continuity
 
-Last session: 2026-03-08
-Stopped at: Completed 05-02-PLAN.md — POST /api/generate and GET /api/generate/status routes created, type-safe, all guards enforced. Requirements GEN-04, GEN-10, N8N-02, N8N-03, N8N-04, TMPL-03, STYLE-03 satisfied.
-Resume file: .planning/phases/05-generation-dashboard/05-03-PLAN.md (Phase 5 Plan 03 — Generation Dashboard UI)
+Last session: 2026-03-17
+Stopped at: Phase 05 closed out — 05-03-SUMMARY.md updated, STATE.md updated, .continue-here.md removed. Ready to plan Phase 6.
+Resume file: none

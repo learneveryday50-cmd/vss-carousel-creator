@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
     .from('carousels')
     .select('status, slide_urls, post_body')
     .eq('airtable_record_id', recordId)
+    .eq('user_id', user.id)
     .maybeSingle()
 
   if (carousel?.status === 'completed') {

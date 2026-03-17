@@ -39,17 +39,9 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // 3. Atomic credit deduction (Supabase)
   const admin = createAdminClient()
-  const { data: creditResult, error: creditError } = await admin.rpc('consume_credit', {
-    p_user_id: user.id,
-  })
 
-  if (creditError || !creditResult?.success) {
-    return Response.json({ error: 'Insufficient credits' }, { status: 402 })
-  }
-
-  // 4. Create Airtable idea record
+  // 3. Create Airtable idea record first — credit is only deducted if this succeeds
   const ideaFields: Record<string, unknown> = {
     'Idea': idea_text,
     '❗Brand Voice': [brand_id],
@@ -67,6 +59,15 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[generate] Airtable createRecord failed:', err)
     return Response.json({ error: 'Failed to create generation job' }, { status: 500 })
+  }
+
+  // 4. Atomic credit deduction (Supabase) — after Airtable succeeds so failures don't consume credits
+  const { data: creditResult, error: creditError } = await admin.rpc('consume_credit', {
+    p_user_id: user.id,
+  })
+
+  if (creditError || !creditResult?.success) {
+    return Response.json({ error: 'Insufficient credits' }, { status: 402 })
   }
 
   // 5. Create a tracking row in Supabase so status can be resolved instantly

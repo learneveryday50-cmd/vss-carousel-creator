@@ -30,7 +30,9 @@ tech-stack:
     - "Polling cleanup: clearInterval + clearTimeout in useEffect return to prevent memory leaks on unmount/terminal state"
 
 key-files:
-  created: []
+  created:
+    - src/app/(protected)/history/page.tsx
+    - src/components/creator/carousel-history.tsx
   modified:
     - src/components/creator/preview-panel.tsx
     - src/components/creator/creator-workflow.tsx
@@ -48,8 +50,17 @@ patterns-established:
 
 requirements-completed: [GEN-01, GEN-02, GEN-05, GEN-08, GEN-09]
 
+# Post-checkpoint fixes (4621a4b)
+post-checkpoint-changes:
+  - "Generation modal: popup overlay (fixed inset-0 z-50) instead of inline PreviewPanel swap"
+  - "Download all slides button added to completed mode"
+  - "stripMarkdown() applied to captions in PreviewPanel and CarouselHistory — n8n returns markdown"
+  - "Auto-select first brand when no cookie set in templates/page.tsx"
+  - "/history page added (server component + CarouselHistory client component)"
+  - "n8n payload changed from nested to flat field names matching Standardize Inputs node"
+
 # Metrics
-duration: 3min
+duration: ~30min (including post-checkpoint UX fixes)
 completed: 2026-03-08
 ---
 
@@ -59,10 +70,11 @@ completed: 2026-03-08
 
 ## Performance
 
-- **Duration:** ~3 min
+- **Duration:** ~30 min (including post-checkpoint UX fixes)
 - **Started:** 2026-03-08T08:54:45Z
-- **Completed:** 2026-03-08T08:58:09Z
-- **Tasks:** 2 of 3 (Task 3 is human-verify checkpoint — pending)
+- **Completed:** 2026-03-08
+- **Tasks:** 3 of 3 (Task 3 human verification complete; UX fixes applied inline)
+- **Files created:** 2
 - **Files modified:** 3
 
 ## Accomplishments
@@ -106,11 +118,24 @@ None.
 
 None — no external service configuration required for these UI changes. The API routes (Plan 02) already require `N8N_WEBHOOK_URL` and `N8N_WEBHOOK_SECRET`.
 
+## Post-Checkpoint UX Fixes (4621a4b)
+
+User verification found 3 issues, all fixed inline:
+1. **Popup modal** — generation states (processing/completed/failed) moved to fixed `inset-0 z-50` overlay; prevents layout shift
+2. **Download All button** — added to completed mode in PreviewPanel
+3. **Markdown in captions** — n8n returns markdown-formatted post bodies; `stripMarkdown()` added to PreviewPanel and CarouselHistory
+
+Additional improvements:
+- **Auto-select first brand** — `templates/page.tsx` falls back to first brand when no cookie set
+- **/history page** — `/history` route added (server component + `CarouselHistory` client component with expand/collapse, slide viewer, Copy Caption, individual slide download)
+- **n8n flat payload** — changed from `{ brand: { name } }` to flat `brand_name`, `brand_color` etc. to match Standardize Inputs node
+
 ## Next Phase Readiness
 
-- Plan 03 human-verify checkpoint (Task 3) is pending — user must verify the end-to-end generation flow works in browser
-- After checkpoint approval, the plan is complete and Phase 5 is done
-- No code changes required after checkpoint — it is purely a verification step
+- Phase 5 is complete. All three plans delivered.
+- Phase 6 (History, Downloads, Export) has a head start: `/history` page is already built.
+  Phase 6 extends it with server-side CORS proxy for ImageBB downloads and PDF export.
+- No blockers for Phase 6.
 
 ---
 *Phase: 05-generation-dashboard*
