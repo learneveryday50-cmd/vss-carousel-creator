@@ -7,7 +7,6 @@ import {
   Layers,
   Palette,
   CreditCard,
-  Sparkles,
   History,
   X,
 } from 'lucide-react'
@@ -120,21 +119,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             label="Billing"
             onClick={onClose}
           />
-          <p className="px-3 pt-2 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-gray-300">
-            Coming Soon
-          </p>
-          <NavItem
-            href="#"
-            icon={<Sparkles className="w-4 h-4 flex-shrink-0" />}
-            label="Generate"
-            disabled
-          />
         </div>
       </nav>
 
       {/* Footer */}
       <div className="p-4 border-t border-gray-100">
-        <p className="text-[11px] text-gray-400 px-2">v0.1 &mdash; pre-launch</p>
+        <p className="text-[11px] text-gray-400 px-2">v1.0</p>
       </div>
     </>
   )
