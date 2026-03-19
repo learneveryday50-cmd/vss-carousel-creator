@@ -166,8 +166,8 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Supabase Storage bucket setup (migration SQL + bucket policy) + webhook updated to re-upload images before storing URLs
-- [ ] 08-02-PLAN.md — Update /api/download allowlist for Supabase Storage URLs; update carousel-history to skip proxy for Supabase URLs (direct src); smoke test end-to-end
+- [ ] 08-01-PLAN.md — SQL migration creates carousel-slides bucket + public policy; webhook downloads ImageBB slides and re-uploads to Supabase Storage before writing slide_urls; per-slide fallback on failure
+- [ ] 08-02-PLAN.md — Update /api/download allowlist to accept Supabase Storage URLs; rename proxyUrl param; both old ImageBB and new Supabase Storage slides download correctly
 
 ### Progress
 
