@@ -79,6 +79,11 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
     setProcessingStep(1)
 
     try {
+      // Derive human-readable names for history metadata (HIST-02)
+      const brandName = brands.find((b) => b.id === activeBrandId)?.name ?? undefined
+      const templateName = templates.find((t) => t.id === templateId)?.name ?? undefined
+      const designStyleName = designStyles.find((d) => d.id === designId)?.name ?? undefined
+
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,6 +92,9 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
           template_id: templateId,
           design_style_id: designId ?? null,
           idea_text: topic,
+          brand_name: brandName,
+          template_name: templateName,
+          design_style_name: designStyleName,
         }),
       })
 
@@ -113,6 +121,14 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
     setPostBody('')
     setProcessingStep(1)
     await submitGeneration()
+  }
+
+  function handleReset() {
+    setGenerationState('idle')
+    setCarouselId(null)
+    setSlideUrls([])
+    setPostBody('')
+    setProcessingStep(1)
   }
 
   // Polling — reads Airtable System Message via status route
@@ -364,6 +380,26 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
               >
                 {generationState === 'loading' ? 'Starting\u2026' : 'Generate carousel'}
                 <ArrowRightIcon />
+              </button>
+            )}
+
+            {generationState === 'completed' && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
+              >
+                ← Generate another carousel
+              </button>
+            )}
+
+            {generationState === 'failed' && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                ← Start over
               </button>
             )}
           </div>
