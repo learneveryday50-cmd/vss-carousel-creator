@@ -11,6 +11,7 @@ import {
   type AirtableTemplate,
   type AirtableDesignStyle,
 } from '@/lib/airtable'
+import { PageWrapper } from '@/components/layout/page-wrapper'
 
 export const metadata = {
   title: 'Generate LinkedIn Carousel',
@@ -48,6 +49,7 @@ export default async function TemplatesPage() {
     : (brands[0]?.id ?? null)
 
   return (
+    <PageWrapper>
     <div className="w-full max-w-7xl">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
@@ -68,5 +70,6 @@ export default async function TemplatesPage() {
         creditData={creditData}
       />
     </div>
+    </PageWrapper>
   )
 }

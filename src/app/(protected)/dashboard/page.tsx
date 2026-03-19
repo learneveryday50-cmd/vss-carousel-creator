@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
+import { PageWrapper } from '@/components/layout/page-wrapper'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
 
   if (!activeBrand) {
     return (
+      <PageWrapper>
       <div className="max-w-lg mx-auto mt-12">
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-10 text-center">
           <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-4">
@@ -45,10 +47,12 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </div>
+      </PageWrapper>
     )
   }
 
   return (
+    <PageWrapper>
     <div className="max-w-4xl space-y-8">
 
       {/* Heading */}
@@ -122,10 +126,10 @@ export default async function DashboardPage() {
               <path d="M2.5 7h9M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Link>
-          <span className="text-xs text-gray-500">AI generation coming in Phase 5</span>
         </div>
       </div>
 
     </div>
+    </PageWrapper>
   )
 }
