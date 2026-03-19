@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
+milestone: v2.0
+milestone_name: Supabase Storage Migration
 status: in_progress
-last_updated: "2026-03-17T00:00:00.000Z"
+last_updated: "2026-03-19T00:00:00.000Z"
 progress:
-  total_phases: 7
-  completed_phases: 5
-  total_plans: 14
-  completed_plans: 13
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 2
+  completed_plans: 0
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Turn a raw idea into a branded, ready-to-post LinkedIn carousel in under a minute — without ever opening a design tool.
-**Current focus:** Phase 7 — Polish & Edge Cases (Phase 6 complete)
+**Current focus:** v2.0 — Phase 8: Supabase Storage Migration (v1.0 complete)
 
 ## Current Position
 
-Phase: 7 of 7 (Landing Page and Polish) — COMPLETE
-Plan: 2 of 2
-Status: Phase 7 complete — landing page live, sidebar cleaned, page animations, history stagger, creator workflow reset button.
-Last activity: 2026-03-19 — Phase 07 complete: both plans executed and verified
+Phase: 8 of 8 (Supabase Storage Migration) — READY TO PLAN
+Plan: 0 of 2
+Status: v1.0 complete. v2.0 scoped — migrate ImageBB to Supabase Storage via webhook interception.
+Last activity: 2026-03-19 — v2.0 milestone started, requirements and roadmap written
 
 Progress: [█████████░] 88%
 

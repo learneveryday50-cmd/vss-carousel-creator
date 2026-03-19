@@ -149,3 +149,28 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | 5. Generation Dashboard | 3/3 | Complete   | 2026-03-08 |
 | 6. History, Downloads, and Export | 2/2 | Complete   | 2026-03-18 |
 | 7. Landing Page and Polish | 2/2 | Complete   | 2026-03-19 |
+
+---
+
+## v2.0 — Supabase Storage Migration
+
+### Phase 8: Supabase Storage Migration
+**Goal**: Replace ImageBB with Supabase Storage for all new carousel slides. Intercept in the generation-done webhook — download from ImageBB, re-upload to Supabase Storage, store permanent URLs. Legacy carousels retain ImageBB URLs with proxy fallback.
+**Depends on**: Phase 5 (generation webhook)
+**Requirements**: STORE-01, STORE-02, STORE-03, STORE-04, STORE-05
+**Success Criteria**:
+  1. New carousels have `slide_urls` pointing to Supabase Storage (`supabase.co/storage/...`), not ImageBB
+  2. Old carousels with ImageBB URLs still load correctly in /history (proxy fallback)
+  3. Download button works for both new (Supabase) and legacy (ImageBB) slides
+  4. Webhook responds within 30s; upload failures fall back to ImageBB URL for that slide
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Supabase Storage bucket setup (migration SQL + bucket policy) + webhook updated to re-upload images before storing URLs
+- [ ] 08-02-PLAN.md — Update /api/download allowlist for Supabase Storage URLs; update carousel-history to skip proxy for Supabase URLs (direct src); smoke test end-to-end
+
+### Progress
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 8. Supabase Storage Migration | 0/2 | Not started | - |
