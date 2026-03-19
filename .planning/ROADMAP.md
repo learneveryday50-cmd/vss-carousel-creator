@@ -130,8 +130,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 07-01: Landing page (hero, features, pricing section, sign-up CTAs, Resume.io aesthetic)
-- [ ] 07-02: UI polish (Framer Motion slide transitions, loading/error states audit, mobile-responsive layout verification)
+- [ ] 07-01-PLAN.md — Landing page (hero, features, pricing Free vs Pro, sign-up CTAs, zinc-950 hero, Resume.io aesthetic) + sidebar cleanup
+- [ ] 07-02-PLAN.md — UI polish (PageWrapper Framer Motion page transitions, dashboard stale copy fix, history card stagger, creator workflow reset button)
 
 ## Progress
 
@@ -147,5 +147,5 @@ Note: Phases 2, 3, and 4 all depend on Phase 1 but not on each other. Phase 3 an
 | 3. Billing and Credits | 3/3 | Complete   | 2026-03-06 |
 | 4. n8n Workflow Migration | 0/1 | Not started | - |
 | 5. Generation Dashboard | 3/3 | Complete   | 2026-03-08 |
-| 6. History, Downloads, and Export | 0/2 | Not started | - |
-| 7. Landing Page and Polish | 0/2 | Not started | - |
+| 6. History, Downloads, and Export | 2/2 | Complete   | 2026-03-18 |
+| 7. Landing Page and Polish | 2/2 | Complete   | 2026-03-19 |
