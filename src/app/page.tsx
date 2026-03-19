@@ -151,39 +151,42 @@ export default async function LandingPage() {
       </section>
 
       {/* ── How it works ────────────────────────────────────────── */}
-      <section className="bg-white py-24">
+      <section className="bg-gradient-to-b from-zinc-950 to-zinc-900 py-20 md:py-28">
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600">How it works</p>
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight mt-2">Three steps to your next post</h2>
+          <p className="text-xs font-bold uppercase tracking-wide text-amber-500">How it works</p>
+          <h2 className="text-3xl font-bold text-zinc-100 tracking-tight mt-2">Three steps to your next post</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
             {[
               {
                 step: 'Step 1',
-                icon: <Lightbulb className="w-5 h-5 text-amber-600" />,
+                icon: <Lightbulb className="w-5 h-5 text-amber-400" />,
                 title: 'Describe your idea',
                 body: 'Enter your topic or paste your raw thoughts. No need to structure it — AI handles that.',
               },
               {
                 step: 'Step 2',
-                icon: <Sparkles className="w-5 h-5 text-amber-600" />,
+                icon: <Sparkles className="w-5 h-5 text-amber-400" />,
                 title: 'AI generates your carousel',
                 body: 'Pick your template, image style, and brand. One click generates slides with AI-written copy and visuals.',
               },
               {
                 step: 'Step 3',
-                icon: <Download className="w-5 h-5 text-amber-600" />,
+                icon: <Download className="w-5 h-5 text-amber-400" />,
                 title: 'Download and post',
                 body: 'Export individual slides as PNG or download a full PDF carousel ready for LinkedIn.',
               },
             ].map(({ step, icon, title, body }) => (
-              <div key={step} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600">{step}</p>
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center mt-3">
+              <div
+                key={step}
+                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-amber-500/30 hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-amber-500">{step}</p>
+                <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center mt-4 p-3">
                   {icon}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mt-3">{title}</h3>
-                <p className="text-sm text-gray-500 mt-2 leading-relaxed">{body}</p>
+                <h3 className="text-lg font-semibold text-zinc-100 mt-4">{title}</h3>
+                <p className="text-sm text-zinc-400 mt-2 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
