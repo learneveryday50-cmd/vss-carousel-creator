@@ -80,16 +80,16 @@ export default async function LandingPage() {
             </div>
             <span className="text-gray-900 font-semibold text-sm tracking-tight">VSS Creator</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
+              className="hidden sm:block text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
             >
               Sign in
             </Link>
             <Link
               href="/signup"
-              className="bg-gray-900 text-white rounded-xl px-4 py-2 text-sm font-semibold hover:bg-gray-800 transition-colors"
+              className="bg-gray-900 text-white rounded-xl px-4 py-2 text-sm font-semibold hover:bg-gray-800 transition-colors whitespace-nowrap"
             >
               Get started free
             </Link>
@@ -144,7 +144,7 @@ export default async function LandingPage() {
           </div>
 
           {/* Preview */}
-          <div className="hidden lg:block">
+          <div className="flex justify-center">
             <CarouselPreview />
           </div>
         </div>
