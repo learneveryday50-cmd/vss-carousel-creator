@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 ## Current Position
 
-Phase: 8 of 8 (Supabase Storage Migration) — READY TO EXECUTE
-Plan: 0 of 2
-Status: Phase 8 planned — 08-01 (bucket + webhook re-upload), 08-02 (download route + history component).
-Last activity: 2026-03-19 — Phase 08 plans created: 08-01-PLAN.md and 08-02-PLAN.md
+Phase: 8 of 8 (Supabase Storage Migration) — COMPLETE
+Plan: 2 of 2
+Status: Phase 8 complete — all STORE requirements met. v2.0 milestone complete.
+Last activity: 2026-03-20 — 08-02 complete: download route + history component updated for Supabase Storage URLs
 
 Progress: [█████████░] 88%
 

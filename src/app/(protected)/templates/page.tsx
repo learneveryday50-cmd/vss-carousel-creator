@@ -17,7 +17,8 @@ export const metadata = {
   title: 'Generate LinkedIn Carousel',
 }
 
-export default async function TemplatesPage() {
+export default async function TemplatesPage({ searchParams }: { searchParams: Promise<{ idea?: string }> }) {
+  const { idea } = await searchParams
   const cookieStore = await cookies()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -68,6 +69,7 @@ export default async function TemplatesPage() {
         designStyles={designStyles}
         selectedBrandId={selectedBrandId}
         creditData={creditData}
+        initialIdea={idea ?? ''}
       />
     </div>
     </PageWrapper>

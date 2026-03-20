@@ -2,9 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { AnimatePresence, motion } from 'framer-motion'
 import { PreviewPanel } from '@/components/creator/preview-panel'
 import { CreditGate } from '@/components/billing/credit-gate'
 import type { AirtableBrand, AirtableTemplate, AirtableDesignStyle } from '@/lib/airtable'
+
+const TEMPLATE_SLIDES: Record<string, { front: string; content: string; cta: string }> = {
+  'hook-insight-cta':  { front: 'Bold hook that stops the scroll', content: 'Key insight or takeaway per slide', cta: 'Strong call-to-action to follow or engage' },
+  'problem-solution':  { front: 'Relatable problem your audience faces', content: 'Clear solution breakdown slide by slide', cta: 'Invite them to take the next step' },
+  'step-by-step':      { front: 'Promise: here\'s exactly how to do X', content: 'Numbered steps — one action per slide', cta: 'Encourage saves and shares' },
+  'story-thread':      { front: 'Hook with the end result first', content: 'Narrative arc: setup → struggle → win', cta: 'Connect and share your own story' },
+  'case-study':        { front: 'The situation and the goal', content: 'Actions taken + measurable results', cta: 'Drive DMs or profile visits' },
+}
 
 type CreditData = { plan: 'free' | 'pro'; creditsRemaining: number; creditsLimit: number }
 
@@ -14,13 +23,14 @@ type Props = {
   designStyles: AirtableDesignStyle[]
   selectedBrandId: string | null
   creditData: CreditData
+  initialIdea?: string
 }
 
 type GenerationState = 'idle' | 'loading' | 'processing' | 'completed' | 'failed'
 
 function SuccessToast({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed top-4 right-4 z-[60] flex items-center gap-3 bg-white border border-green-200 shadow-lg rounded-xl px-4 py-3 max-w-sm animate-in slide-in-from-top-2 duration-300">
+    <div className="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 z-[60] flex items-center gap-3 bg-white border border-green-200 shadow-lg rounded-xl px-4 py-3 max-w-sm sm:max-w-sm mx-auto sm:mx-0 animate-in slide-in-from-top-2 duration-300">
       <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M2 7l3.5 3.5 6.5-7" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -48,11 +58,11 @@ const STEPS = [
 const POLL_INTERVAL_MS = 2000
 const POLL_TIMEOUT_MS = 10 * 60 * 1000
 
-export function CreatorWorkflow({ brands, templates, designStyles, selectedBrandId, creditData }: Props) {
+export function CreatorWorkflow({ brands, templates, designStyles, selectedBrandId, creditData, initialIdea = '' }: Props) {
   const router = useRouter()
 
   const [activeBrandId, setActiveBrandId] = useState<string | null>(selectedBrandId)
-  const [topic, setTopic] = useState('')
+  const [topic, setTopic] = useState(initialIdea)
   const [designId, setDesignId] = useState<string | undefined>()
   const [templateId, setTemplateId] = useState<string | undefined>()
 
@@ -213,7 +223,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
                       type="button"
                       onClick={() => setActiveBrandId(b.id)}
                       className={[
-                        'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all',
+                        'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all',
                         isActive
                           ? 'bg-amber-50 border-amber-400 text-amber-700 ring-2 ring-amber-400/30'
                           : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
@@ -301,6 +311,36 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
               )
             })}
           </div>
+
+          {/* Style detail — shown when a visual style is selected */}
+          <AnimatePresence>
+            {designId && (() => {
+              const style = designStyles.find((s) => s.id === designId)
+              if (!style) return null
+              return (
+                <motion.div
+                  key={designId}
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="mt-4 rounded-xl border border-amber-100 bg-amber-50/40 p-4"
+                >
+                  {/* Example image — full width, no text */}
+                  <div className="w-full aspect-video rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                    {style.exampleUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={style.exampleUrl} alt={style.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <DesignPreview name={style.name} />
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )
+            })()}
+          </AnimatePresence>
         </ConfigSection>
 
         <SectionDivider />
@@ -325,7 +365,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
                   {/* Preview row */}
                   <div className="grid grid-cols-3 gap-1 p-2 bg-gray-50">
                     {[t.frontPageUrl, t.contentPageUrl, t.ctaPageUrl].map((url, i) => (
-                      <div key={i} className="aspect-[4/3] rounded-md overflow-hidden bg-gray-200">
+                      <div key={i} className="aspect-square rounded-md overflow-hidden bg-gray-200">
                         {url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={url} alt="" className="w-full h-full object-cover" />
@@ -346,6 +386,45 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
               )
             })}
           </div>
+
+          {/* Slide breakdown — shown when a template is selected */}
+          <AnimatePresence>
+            {templateId && (() => {
+              const t = templates.find((t) => t.id === templateId)
+              if (!t) return null
+              const slides = TEMPLATE_SLIDES[t.slug]
+              const slideData = [
+                { label: 'Cover Slide', sublabel: 'First impression', desc: slides?.front ?? 'Hook your audience immediately', url: t.frontPageUrl, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+                { label: 'Content Slides', sublabel: 'Body of the carousel', desc: slides?.content ?? 'Deliver your core message slide by slide', url: t.contentPageUrl, color: 'text-blue-600 bg-blue-50 border-blue-200' },
+                { label: 'CTA Slide', sublabel: 'Final slide', desc: slides?.cta ?? 'Convert attention into action', url: t.ctaPageUrl, color: 'text-green-600 bg-green-50 border-green-200' },
+              ]
+              return (
+                <motion.div
+                  key={templateId}
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="mt-4 rounded-xl border border-amber-100 bg-amber-50/40 p-4"
+                >
+                  <div className="grid grid-cols-3 gap-3">
+                    {slideData.map(({ label, url }) => (
+                      <div key={label} className="rounded-xl overflow-hidden bg-gray-100 border border-gray-200 aspect-square">
+                        {url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={url} alt={label} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-300">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/><path d="M6 10h8M10 6v8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )
+            })()}
+          </AnimatePresence>
         </ConfigSection>
 
         <SectionDivider />
@@ -432,7 +511,7 @@ export function CreatorWorkflow({ brands, templates, designStyles, selectedBrand
               setPostBody('')
               setProcessingStep(1)
             }}
-            className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
             aria-label="Close"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -480,7 +559,7 @@ function ConfigSection({ step, tag, title, description, done, children }: {
           {description && <p className="text-sm text-gray-500 mt-0.5">{description}</p>}
         </div>
       </div>
-      <div className="ml-11">
+      <div className="ml-9 sm:ml-11">
         {children}
       </div>
     </section>

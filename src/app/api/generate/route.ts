@@ -22,6 +22,9 @@ export async function POST(request: NextRequest) {
     template_id?: string
     design_style_id?: string
     idea_text?: string
+    brand_name?: string
+    template_name?: string
+    design_style_name?: string
   }
 
   try {
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { brand_id, template_id, design_style_id, idea_text } = body
+  const { brand_id, template_id, design_style_id, idea_text, brand_name, template_name, design_style_name } = body
 
   if (!brand_id || !template_id || !idea_text) {
     return Response.json(
@@ -82,6 +85,9 @@ export async function POST(request: NextRequest) {
         idea_text,
         status: 'processing',
         airtable_record_id: record.id,
+        brand_name: brand_name ?? null,
+        template_name: template_name ?? null,
+        design_style_name: design_style_name ?? null,
       })
       .throwOnError()
   } catch (err) {
