@@ -74,10 +74,10 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Close menu"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         )}
       </div>

@@ -351,14 +351,14 @@ export function PreviewPanel({
                 />
 
                 {/* Nav row */}
-                <div className="flex items-center justify-between px-1">
+                <div className="flex items-center justify-between">
                   <button
                     onClick={() => setCurrentSlide((s) => Math.max(0, s - 1))}
                     disabled={currentSlide === 0}
-                    className="p-1 rounded-lg text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-2.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     aria-label="Previous slide"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-5 h-5" />
                   </button>
                   <span className="text-xs text-gray-500">
                     Slide {currentSlide + 1} of {slideUrls.length}
@@ -366,10 +366,10 @@ export function PreviewPanel({
                   <button
                     onClick={() => setCurrentSlide((s) => Math.min(slideUrls.length - 1, s + 1))}
                     disabled={currentSlide === slideUrls.length - 1}
-                    className="p-1 rounded-lg text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="p-2.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     aria-label="Next slide"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
 

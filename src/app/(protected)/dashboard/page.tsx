@@ -13,11 +13,22 @@ export default async function DashboardPage() {
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
-  const [brandRecords, templateRecords, designStyleRecords] = await Promise.all([
+  const [brandRecords, templateRecords, designStyleRecords, recentResult] = await Promise.all([
     listRecords(AIRTABLE_TABLES.brands).catch(() => []),
     listRecords(AIRTABLE_TABLES.templates).catch(() => []),
     listRecords(AIRTABLE_TABLES.designStyles).catch(() => []),
+    user
+      ? supabase
+          .from('carousels')
+          .select('id, idea_text, slide_urls, created_at')
+          .eq('user_id', user.id)
+          .eq('status', 'completed')
+          .order('created_at', { ascending: false })
+          .limit(3)
+      : Promise.resolve({ data: [] }),
   ])
+
+  const recentCarousels = (recentResult as { data: { id: string; idea_text: string; slide_urls: string[] | null; created_at: string }[] | null }).data ?? []
 
   const brands = brandRecords.map(parseBrand)
   const activeBrand =
@@ -106,6 +117,40 @@ export default async function DashboardPage() {
         </div>
 
       </div>
+
+      {/* Recent Carousels */}
+      {recentCarousels.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Recently Created</p>
+            <Link href="/history" className="text-xs text-amber-600 hover:text-amber-700 font-medium">View all →</Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {recentCarousels.map((c) => {
+              const thumb = Array.isArray(c.slide_urls) ? c.slide_urls[0] : null
+              const date = new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+              return (
+                <Link key={c.id} href="/history" className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-amber-300 hover:shadow-md transition-all">
+                  <div className="aspect-video bg-gray-50 overflow-hidden">
+                    {thumb ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={thumb} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/></svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <p className="text-xs font-semibold text-gray-900 line-clamp-1">{c.idea_text}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{date}</p>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* CTA Block */}
       <div className="rounded-2xl bg-gray-900 text-white p-8 flex flex-col sm:flex-row sm:items-center gap-6">

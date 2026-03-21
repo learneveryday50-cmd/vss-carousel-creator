@@ -144,6 +144,7 @@ export type AirtableBrand = {
 export type AirtableTemplate = {
   id: string
   name: string
+  slug: string
   frontPageUrl: string | null
   contentPageUrl: string | null
   ctaPageUrl: string | null
@@ -177,9 +178,12 @@ export function parseTemplate(record: AirtableRecord): AirtableTemplate {
   const front   = (f['Front Page']   as Attachment[] | undefined)?.[0]?.url ?? null
   const content = (f['Content Page'] as Attachment[] | undefined)?.[0]?.url ?? null
   const cta     = (f['CTA Page']     as Attachment[] | undefined)?.[0]?.url ?? null
+  const name = String(f['Name'] ?? f['Template Name'] ?? record.id)
+  const slug = String(f['Slug'] ?? name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   return {
     id: record.id,
-    name: String(f['Name'] ?? f['Template Name'] ?? record.id),
+    name,
+    slug,
     frontPageUrl: front,
     contentPageUrl: content,
     ctaPageUrl: cta,

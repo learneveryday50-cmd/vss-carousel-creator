@@ -1,0 +1,2977 @@
+{
+  "name": "Generate Linkedin Carousels",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.variations[0].carousel_content_slide_prompts",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        608
+      ],
+      "id": "048bc977-8120-490d-83e1-499783566fb9",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get all incoming items\nconst allItems = $input.all();\n\n// 2. Filter: Keep ONLY items that actually contain image data\n// This ignores the \"carousel_slide_prompts\" items that caused the crash\nconst imageItems = allItems.filter(item => item.json.data && item.json.data.url);\n\n// 3. Format the valid images for Airtable\nconst attachments = imageItems.map(item => {\n  return {\n    \"url\": item.json.data.url,\n    \"filename\": item.json.data.url\n  };\n});\n\n// 4. Get the Post Body from the previous node\n// We use a try/catch or logical OR to prevent crashing if the node isn't found\nlet postBody = \"\";\ntry {\n    // Attempt to grab post_body from the Loop or Split node\n    // Make sure 'Split Out Prompts' matches your node name exactly\n    postBody = $('Split Out').first().json.post_body;\n} catch (error) {\n    postBody = \"Post body not found or node name incorrect\";\n}\n\n// 5. Return combined data\nreturn [\n  {\n    json: {\n      post_body: postBody,\n      attachments: attachments\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4112,
+        592
+      ],
+      "id": "70f6a90e-63dc-4dde-928c-adcdf34530c8",
+      "name": "MergeImageURLs"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Carousel Template').first().json[\"Front Page\"][0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2640,
+        432
+      ],
+      "id": "5febfb01-2fe8-481d-bbd7-b49827d3214f",
+      "name": "GetTemplateFront"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2496,
+        432
+      ],
+      "id": "24dd9047-bba5-4824-b79c-ac17319e96ec",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        784
+      ],
+      "id": "8b3c3964-c26f-4647-8890-eefb287f4b7b",
+      "name": "Limit2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Carousel Template').first().json[\"CTA Page\"][0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2608,
+        784
+      ],
+      "id": "ada557d8-6eee-4ef6-9a6d-d4009458da2e",
+      "name": "GetTemplateCTA"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Carousel Template').first().json[\"Content Page\"][0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2240,
+        608
+      ],
+      "id": "1839d3ee-603e-420f-9d94-bb6dbeea1870",
+      "name": "GetTemplateContent"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3920,
+        576
+      ],
+      "id": "2b4c0f96-2126-4d36-b48e-d9f0c734e8e4",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "content": "## Generate Carousels\n\n1. Front page\n2. Content slides (1 per slide)\n3. CTA page",
+        "height": 608,
+        "width": 1856,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        400
+      ],
+      "id": "b4d88222-7cbd-481d-8bde-e0d3ac718c99",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3584,
+        448
+      ],
+      "id": "9cd9483d-f141-49b4-9b51-f6214c9ca832",
+      "name": "Get Carousel Front Img URL",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3632,
+        608
+      ],
+      "id": "0888abe1-2993-4b61-bba0-ca376a08f169",
+      "name": "Get Carousel Content Img URL",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3568,
+        784
+      ],
+      "id": "49fe4bf0-b465-4e41-bbf3-a4b83fde14d3",
+      "name": "Get Carousel CTA Img URL",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'draft posts').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'draft posts').table_url }}",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Post Body": "={{ $('Body & Carousel Prompts').first().json.output.variations[0].post_body }}",
+            "Generated Carousel": "={{ $json.attachments }}",
+            "Brand": "=['{{ $('Get Brand').first().json.id }}']",
+            "Idea": "=['{{ $('Get Idea').first().json.id }}']"
+          },
+          "matchingColumns": [
+            "Origin Id"
+          ],
+          "schema": [
+            {
+              "id": "Post Id",
+              "displayName": "Post Id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Post Body",
+              "displayName": "Post Body",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Generated Carousel",
+              "displayName": "Generated Carousel",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Brand",
+              "displayName": "Brand",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "System Message",
+              "displayName": "System Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Idea",
+              "displayName": "Idea",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachments",
+              "displayName": "Attachments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Linked Post",
+              "displayName": "Linked Post",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Link to Post",
+              "displayName": "Link to Post",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Delete",
+              "displayName": "Delete",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "🌱 Ideas copy",
+              "displayName": "🌱 Ideas copy",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": false
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4304,
+        592
+      ],
+      "id": "370ee877-ea77-44ed-bad4-eaf7534b1c62",
+      "name": "Update Draft Posts",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05d8e4a8-1adc-40d8-a8f1-0b8fcd7278b7",
+              "name": "Brand Voice",
+              "value": "={{ $json['Voice Guidelines'] }}",
+              "type": "string"
+            },
+            {
+              "id": "19d0abe3-1129-4917-9c89-27fa7ea70807",
+              "name": "Product",
+              "value": "={{ $json['Product & Audience'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6b985890-eeba-482f-bbe9-2524881b47b6",
+              "name": "Brand Name",
+              "value": "={{ $json['Brand Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e329a395-356a-4562-865f-a9d1d65bd722",
+              "name": "Brand Color",
+              "value": "={{ $json['Brand Color'] }}",
+              "type": "string"
+            },
+            {
+              "id": "54d7056c-d9fb-426e-aa08-299898ad3786",
+              "name": "Number of Drafts",
+              "value": "={{ $('Get Idea').item.json['Number of Drafts'] || 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "a802605f-c0cf-4eae-aa24-f969d42fa044",
+              "name": "CTA Text",
+              "value": "={{ $json['CTA Text'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9241928c-eb6d-4e5b-9060-46ca10793210",
+              "name": "Style Name",
+              "value": "={{ $json['Style Name (from Design Style)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6131a80e-4e3f-4bda-82c9-94dd98b8eb45",
+              "name": "Design Style",
+              "value": "={{ $json['Design Style (from Design Style)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7a8fd5c5-dd15-4ec2-985f-f23c7f8b76ff",
+              "name": "Idea",
+              "value": "={{ $('Get Idea').item.json.Idea }}",
+              "type": "string"
+            },
+            {
+              "id": "c234bce7-3f16-49d3-bd1f-d9065543cdc6",
+              "name": "Custom Instructions",
+              "value": "={{ $('Get Idea')?.item?.json[\"❗Custom Instructions\"]  }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        608
+      ],
+      "id": "c9c9daab-66ff-4615-ae5f-13f4ec5f556d",
+      "name": "Standardize Inputs"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {
+          "maxOutputTokens": 64000,
+          "temperature": 0.4
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        768
+      ],
+      "id": "1bf80201-5e74-4bf4-93f2-ec21625cc9b5",
+      "name": "Gemini-3-pro",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "JXpi4JCGvi7TiNuv",
+          "name": "Google add card"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "openai/gpt-5-mini"
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1632,
+        880
+      ],
+      "id": "c5b3aced-0bcc-4853-bd91-84eecadac2a4",
+      "name": "gpt-5-mini2",
+      "credentials": {
+        "openAiApi": {
+          "id": "3Lj2DKcCIFwhG8O6",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Post & Image Prompt Generation\nGenerates text portion of the post",
+        "height": 608,
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        400
+      ],
+      "id": "690b6e17-90f1-4c34-92a4-ddd5cbde676e",
+      "name": "Sticky Note63"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "={\n  \"type\": \"object\",\n  \"properties\": {\n    \"variations\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"variation_number\": {\n            \"type\": \"integer\"\n          },\n          \"post_body\": {\n            \"type\": \"string\",\n            \"description\": \"The main caption text for the LinkedIn post.\"\n          },\n          \"carousel_front_page_prompt\": {\n            \"type\": \"string\",\n            \"description\": \"A specific prompt to edit image_0.png for the cover slide. Replaces title and curiosity subhead using original font/color. Replaces Brand Name.\"\n          },\n          \"carousel_content_slide_prompts\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            },\n            \"description\": \"An array of template-editing prompts. Replaces text with original font/color and inserts 'Sketchbook style' illustration prompts into the image box.\"\n          },\n          \"carousel_cta_page_prompt\": {\n            \"type\": \"string\",\n            \"description\": \"A specific prompt to edit image_0.png for the final slide. Sets the CTA text in original color and sets Brand Name.\"\n          }\n        },\n        \"required\": [\n          \"variation_number\",\n          \"post_body\",\n          \"carousel_front_page_prompt\",\n          \"carousel_content_slide_prompts\",\n          \"carousel_cta_page_prompt\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"variations\"\n  ]\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1584,
+        768
+      ],
+      "id": "1f6d687e-1250-4962-ab21-ee863c58862e",
+      "name": "Post and Prompt Generator Output Parser"
+    },
+    {
+      "parameters": {
+        "content": "##  Generate Linkedin Carousels",
+        "height": 720,
+        "width": 2592,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        320
+      ],
+      "id": "7ae11640-d85d-49fb-884c-2cb61b4a58fc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "path": "create-carousel",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        608
+      ],
+      "id": "2396a7c4-1ab8-48e5-8a8c-50670f1a8e5e",
+      "name": "Webhook",
+      "webhookId": "601ee2d2-2ac6-48c1-8d49-8bd94875aeb4"
+    },
+    {
+      "parameters": {
+        "content": "## Get Record & Brand Details\n- Pass webhook data\n- Get record data\n- Pass prompt data",
+        "height": 576,
+        "width": 1136,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        48,
+        400
+      ],
+      "id": "c898ba80-ca62-4b13-8430-e15675970eba",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"inputs\":[\n{\n \"input\":\"brand\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblSCEQFDEhDCYNv5/viwLJFTWUrIp9ftAJ?blocks=hide\"\n},\n{    \n \"input\":\"ideas\", \"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide\"\n  },\n{\n  \"input\": \"draft posts\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblIgtemiB5mTwqzW/viwDYdnQkFLaTuQD0?blocks=hide\"\n},\n{\n  \"input\": \"asset templates\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tblWYBupbcSaGFhUJ/viwUAeEQaXsFEmj3f?blocks=hide\"\n}, \n{\n  \"input\": \"asset design styles\",\n\"table_url\":\"https://airtable.com/appI5nS17LKNdDYGe/tbl7sY5329RH6CMAF/viw54Bfu1Urc4jOJb?blocks=hide\"\n}\n  ]\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        608
+      ],
+      "id": "433ba084-0e7f-4bcd-9c10-84a5b7dab4d5",
+      "name": "InputTableUrls"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'brand').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'brand').table_url }}",
+          "mode": "url"
+        },
+        "id": "={{ $('Get Idea').item.json[\"❗Brand Voice\"][0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        480
+      ],
+      "id": "cbdea0cb-95c2-4255-bc94-390dd575d3ff",
+      "name": "Get Brand",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        864,
+        592
+      ],
+      "id": "14a3790a-9e77-451d-8fbd-e8ff730a6382",
+      "name": "Merge Inputs"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "={{ $json.query.table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $json.query.table_url }}",
+          "mode": "url"
+        },
+        "id": "={{ $json.query.record_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        608
+      ],
+      "id": "df611c27-4b25-4982-82b3-075c42762f03",
+      "name": "Get Idea",
+      "alwaysOutputData": false,
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset templates').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset templates').table_url }}",
+          "mode": "url"
+        },
+        "id": "={{ $('Get Idea').item.json[\"❗Carousel Template\"][0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        608
+      ],
+      "id": "13f824ef-2c95-40d7-9e71-1083b3204b7f",
+      "name": "Get Carousel Template",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# Inputs\n* **Idea:**\n    * Content: \n`{{ $json['Idea'] }}`\n  \n* **Brand Details:**\n    * Brand Name:\n`{{ $json['Brand Name'] }}`\n    * Brand Colors:\n`{{ $json['Brand Color'] }}`\n    * Brand Voice: \n`{{ $json['Brand Voice'] }}`\n    * Product Info: \n`{{ $json.Product }}`\n    * Custom Instructions: \n`{{ $json['Custom Instructions'] }}`\n    * CTA Text:\n`{{ $json['CTA Text'] }}`\n\n* **Creative Inputs:**\n    * Visual Philosophy (name): \n`{{ $json['Style Name'] }}`\n    * Design Style: \n`{{ $json['Design Style'] }}`\n\n* Generate exactly **{{ $json['Number of Drafts'] ? $json['Number of Drafts'] : 1 }}** creative variations**.",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Role\nYou are an expert **LinkedIn Content Strategist**. Your specialty is transforming diverse source material into high-performing LinkedIn **Carousel Sequences**. You excel at breaking down complex logic into digestible, slide-by-slide lessons while maintaining a strict visual identity for the generated image prompts within those slides.\n\n# Visual Philosophy / Design Style\n**ALL** illustrative image prompts within the carousel slides must share this exact style:\n* **Brand colors in inputs**\n* **Design style in inputs**\n\n# Constraints\n* **Each variation must include exactly these asset groups:**\n    1. **Post Body:** The main LinkedIn text caption.\n    2. **Carousel Sequence:** A Front Page prompt, a series of Content Slide prompts (5-10 slides), and a CTA Page prompt.\n\n# Instructions\n\n1. **Analyze the Idea:**\n    * Extract the \"Golden Nugget\" (the single most valuable insight) or do some research to determine a framing if one is not clear.\n    * Identify the logical flow (Problem → Solution → Proof) and key steps for the slides.\n\n2. **Read the Custom Instructions:**\n    * Based on the custom instructions, determine the direction for the content piece. Follow these over the original content (e.g., if reframing is requested, apply it).\n\n3. **Drafting the Assets (For EACH Variation):**\n\n    * **A) Post Body:**\n        * Hook (under 2 lines) that stops the scroll.\n        * Value-rich body optimized for readability using bullet points and white space.\n        * Conversational Call to Action (CTA).\n\n    * **B) Carousel Sequence (The \"Lesson\"):**\n        * **Goal:** Create a sequence (Front + 5-10 Content Slides + CTA) that teaches the concept.\n        * **Method:** Generate prompts to **EDIT** the provided template (`attached image`).\n        * **Font for ALL text edits:** Original (from the attached image).\n        * **Text Color:** **ALWAYS** maintain the original text color found in the template. Do not change text to brand color.\n\n        * **i. Front Page Prompt:**\n            * *Action:* Edit `attached image`.\n            * *Title:* Replace \"Write title across these lines\" with a short, punchy Headline.\n            * *Subheading:* Replace the subheading area with a concise, curiosity-inducing sub-header.\n            * *Branding:* Replace 'firstname' and 'surname' with 'Brand Name' from inputs.\n            * *Image:* **Do not** generate an image request for this slide. Keep the visual clean.\n\n        * **ii. Content Slide Prompts (Array):**\n            * *Action:* Edit `attached image` for each step of the lesson.\n            * *Title:* Replace \"Write Title Here\" with the step title (original font, original text color).\n            * *Body:* Replace \"text paragraph goes here\" with 2-4 lines of educational text (original font, original text color).\n            * *Image:* Inside the \"image goes here\" box, generate an image prompt based on the **Design Style** from the input. Specify that the image background should blend with the slide background.\n\n        * **iii. CTA Page Prompt:**\n            * *Action:* Edit `image_0.png`.\n            * *Text:* Replace the main text/title areas with the Call To Action (original font, original text color).\n            * *Content:* Use specific CTA text if provided. If empty, default to: \"Share your thoughts in the comments below\".\n\n4. **Quality Control:**\n    * Does it strictly maintain the **original text color** (not brand color) for the template edits?\n    * Is the Front Page prompt distinct (Headline + Curiosity Subhead + No Image)?\n    * Does the output follow the JSON schema exactly?\n\n# Output Schema\nOutput a JSON object containing exactly the number of variations requested."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1344,
+        608
+      ],
+      "id": "a945969f-a33e-42e7-ba41-c5cc49f28641",
+      "name": "Body & Carousel Prompts",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Idea').item.json.id }}",
+            "System Message": "(1/3) Generating Post Content..."
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Why it matters",
+              "displayName": "Why it matters",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Key Points",
+              "displayName": "Key Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "System Message",
+              "displayName": "System Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Activate",
+              "displayName": "Activate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Type_Content",
+              "displayName": "Type_Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "❗Brand Voice",
+              "displayName": "❗Brand Voice",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Carousel",
+              "displayName": "Carousel",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Infographic",
+              "displayName": "Infographic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Number of Drafts",
+              "displayName": "Number of Drafts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Research Type",
+              "displayName": "Research Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Deep",
+                  "value": "Deep"
+                },
+                {
+                  "name": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Research Instructions",
+              "displayName": "Research Instructions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Research",
+              "displayName": "Generate Research",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Research (Output)",
+              "displayName": "Research (Output)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Brand",
+              "displayName": "Brand",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "🌱 Ideas",
+              "displayName": "🌱 Ideas",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        480
+      ],
+      "id": "4bbfb9cf-ff31-42e6-81c9-12ee35a705d7",
+      "name": "System Message",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Idea').first().json.id }}",
+            "System Message": "(3/3) Draft Post Completed."
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Post Id",
+              "displayName": "Post Id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Idea",
+              "displayName": "Idea",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "❗Carousel Template",
+              "displayName": "❗Carousel Template",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "❗Design Style",
+              "displayName": "❗Design Style",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Front Page (from Carousel_Template)",
+              "displayName": "Front Page (from Carousel_Template)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Content Page (from Carousel_Template)",
+              "displayName": "Content Page (from Carousel_Template)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "CTA Page (from Carousel_Template)",
+              "displayName": "CTA Page (from Carousel_Template)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Examples (from Design Style)",
+              "displayName": "Examples (from Design Style)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "❗Brand Voice",
+              "displayName": "❗Brand Voice",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "❗Custom Instructions",
+              "displayName": "❗Custom Instructions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Number of Drafts",
+              "displayName": "Number of Drafts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Draft Post",
+              "displayName": "Generate Draft Post",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "System Message",
+              "displayName": "System Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Idea Status",
+              "displayName": "Idea Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Draft",
+                  "value": "Draft"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Not interested",
+                  "value": "Not interested"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Link-posts",
+              "displayName": "Link-posts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Content",
+              "displayName": "Link-Post-Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Type",
+              "displayName": "Link-Post-Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Media",
+              "displayName": "Link-Post-Media",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Transcript",
+              "displayName": "Link-Post-Transcript",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Date Published",
+              "displayName": "Link-Post-Date Published",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Likes",
+              "displayName": "Link-Post-Likes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Comments",
+              "displayName": "Link-Post-Comments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Shares",
+              "displayName": "Link-Post-Shares",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Post-Creator Name",
+              "displayName": "Link-Post-Creator Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-videos",
+              "displayName": "Link-videos",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Link-Video-Title",
+              "displayName": "Link-Video-Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Video-Summary",
+              "displayName": "Link-Video-Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-Video-Thumbnail",
+              "displayName": "Link-Video-Thumbnail",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Link-news",
+              "displayName": "Link-news",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Link-ideas",
+              "displayName": "Link-ideas",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source (from Link-News)",
+              "displayName": "Source (from Link-News)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Key Points (from Link-News)",
+              "displayName": "Key Points (from Link-News)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Primary Hook",
+              "displayName": "Primary Hook",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Variations",
+              "displayName": "Variations",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Logic",
+              "displayName": "Logic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "📝 Draft Posts",
+              "displayName": "📝 Draft Posts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "From field: Link-ExistingIdea",
+              "displayName": "From field: Link-ExistingIdea",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4512,
+        592
+      ],
+      "id": "6cd91063-6601-4d9d-9162-01c193baf4c0",
+      "name": "System Message2",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "##  Get record details",
+        "height": 720,
+        "width": 1216,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        320
+      ],
+      "id": "20176490-ceef-434f-aed9-816475cbe2f5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Setup Order\n1. Duplicate Airtable base\n2. Set up Airtable credentials and share access to the  base: https://airtable.com/create/tokens\n3. Get the table URLS from each table in Airtable and add it to the `InputTableURLs` node \n4. Airtable setup (in the data view)\n    * Copy the production URL from the Webhook node\n    * Run through each Airtable table, looking for buttons - any button activates the webhook - go into the formula and update 1) the webhook address and 2) the table URL with the new URL\n5. Publish the n8n workflow\n6. Add ideas to the `Ideas` sheet and start creating carousels! \n\n\nP.S. the more detailed your ideas... the better the outputs",
+        "height": 304,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f4b8d003-45fe-43d4-8d27-e2c4b7fa8291",
+      "name": "Sticky Note31"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'ideas').table_url }}",
+          "mode": "url"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Idea').item.json.id }}",
+            "System Message": "(2/3) Generating Carousel Slides..."
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Why it matters",
+              "displayName": "Why it matters",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Key Points",
+              "displayName": "Key Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "System Message",
+              "displayName": "System Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Activate",
+              "displayName": "Activate",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Type_Content",
+              "displayName": "Type_Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "❗Brand Voice",
+              "displayName": "❗Brand Voice",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Carousel",
+              "displayName": "Carousel",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Infographic",
+              "displayName": "Infographic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Number of Drafts",
+              "displayName": "Number of Drafts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Research Type",
+              "displayName": "Research Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Deep",
+                  "value": "Deep"
+                },
+                {
+                  "name": "Standard",
+                  "value": "Standard"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Research Instructions",
+              "displayName": "Research Instructions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Research",
+              "displayName": "Generate Research",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Research (Output)",
+              "displayName": "Research (Output)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Brand",
+              "displayName": "Brand",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "🌱 Ideas",
+              "displayName": "🌱 Ideas",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1744,
+        480
+      ],
+      "id": "1029702c-426a-4509-b261-31f9177d93ab",
+      "name": "System Message1",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        848
+      ],
+      "id": "90a1e419-b706-4fd3-8573-b82caf763dcd",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "Jl4QJ3Pl3fjfGaPt",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://unpoised-lauri-besiegingly.ngrok-free.dev/api/webhook/generation-done",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-webhook-secret",
+              "value": "vss-carousel-webhook-2026"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "record_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "status",
+              "value": "completed"
+            },
+            {
+              "name": "post_body",
+              "value": "={{ $('Body & Carousel Prompts').first().json.output.variations[0].post_body }}"
+            },
+            {
+              "name": "slide_urls",
+              "value": "={{ $('Merge1').all().map(item => item.json.data.url) }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4736,
+        592
+      ],
+      "id": "4a5e9393-2bde-4f30-923a-a7d823df443d",
+      "name": "Notify App (Webhook)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\": {{ JSON.stringify($('Body & Carousel Prompts').item.json.output.variations[0].carousel_front_page_prompt) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2960,
+        432
+      ],
+      "id": "1a2cce24-ae07-4f70-bd4b-d2d070961a9a",
+      "name": "KIE",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
+          "mode": "url"
+        },
+        "id": "={{ $('Get Idea').item.json[\"❗Design Style\"][0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        736
+      ],
+      "id": "090a81bf-c1b5-4cd9-bad3-b681926a7bd9",
+      "name": "Get Visual Style",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        432
+      ],
+      "id": "a4c27d7d-42fd-4980-82fa-7b268f185450",
+      "name": "Get Carousel Front Img URL1",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3248,
+        432
+      ],
+      "id": "31ee52f9-c77b-4cd1-9f0f-3a3eb3aac658",
+      "name": "KIE1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        432
+      ],
+      "id": "a4a03c42-168e-4a61-8e20-70d0d04eb4b1",
+      "name": "Wait4",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\":{{ JSON.stringify($('Split Out1').item.json['[\\'output.variations[0].carousel_content_slide_prompts\\']']) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2960,
+        608
+      ],
+      "id": "30e790c5-6cab-4b52-82df-de0ed8c14408",
+      "name": "KIE2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        608
+      ],
+      "id": "46b6b49d-9c1f-4f8a-95a9-3341d109bbb8",
+      "name": "Get Carousel Front Img URL2",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE2').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3248,
+        608
+      ],
+      "id": "d3994cf1-7f0e-472b-84b8-5ed72401fd9c",
+      "name": "KIE3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 100
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        608
+      ],
+      "id": "1e8f6d81-9104-4fc4-84e6-bc0093bbc60e",
+      "name": "Wait",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\": {{ JSON.stringify($('Body & Carousel Prompts').item.json.output.variations[0].carousel_cta_page_prompt) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2928,
+        784
+      ],
+      "id": "38ce9ddf-5cf4-4c74-9c12-ce69d70f94da",
+      "name": "KIE4",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2768,
+        784
+      ],
+      "id": "121c80d0-8a15-4a05-92f3-786698bf67d9",
+      "name": "Get Carousel Front Img URL3",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE4').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3216,
+        784
+      ],
+      "id": "f84a0a6b-5020-453b-be2f-a734412540e6",
+      "name": "KIE5",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3072,
+        784
+      ],
+      "id": "c69d3c6c-af27-46ca-a61d-343e463f2a21",
+      "name": "Wait5",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "['output.variations[0].carousel_content_slide_prompts']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        608
+      ],
+      "id": "8ed5b451-66af-4b66-ab88-92c8dadc9fc3",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3392,
+        432
+      ],
+      "id": "e988050d-15f9-4088-91be-97611e5dc86c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3424,
+        608
+      ],
+      "id": "f2f85bcf-c7ab-4826-9460-eff6916375ad",
+      "name": "If1",
+      "retryOnFail": true,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3392,
+        784
+      ],
+      "id": "9458c66d-fed0-4c3b-ada1-7054ecb93718",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Carousel Template').first().json[\"Content Page\"][0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2640,
+        608
+      ],
+      "id": "6c744132-bfbb-4b4c-9fc8-89389267457a",
+      "name": "GetTemplateContent1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "GetTemplateContent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Limit2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MergeImageURLs": {
+      "main": [
+        [
+          {
+            "node": "Update Draft Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemplateFront": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Front Img URL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "GetTemplateFront",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit2": {
+      "main": [
+        [
+          {
+            "node": "GetTemplateCTA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemplateCTA": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Front Img URL3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemplateContent": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "MergeImageURLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Content Img URL": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get Carousel CTA Img URL": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Update Draft Posts": {
+      "main": [
+        [
+          {
+            "node": "System Message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini-3-pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Body & Carousel Prompts",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-5-mini2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Post and Prompt Generator Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post and Prompt Generator Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Body & Carousel Prompts",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Idea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "InputTableUrls": {
+      "main": [
+        [
+          {
+            "node": "Get Brand",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Carousel Template",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Visual Style",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Brand": {
+      "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standardize Inputs": {
+      "main": [
+        [
+          {
+            "node": "Body & Carousel Prompts",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "System Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Inputs": {
+      "main": [
+        [
+          {
+            "node": "Standardize Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Idea": {
+      "main": [
+        [
+          {
+            "node": "InputTableUrls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Template": {
+      "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Body & Carousel Prompts": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "System Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Body & Carousel Prompts",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "System Message2": {
+      "main": [
+        [
+          {
+            "node": "Notify App (Webhook)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Visual Style": {
+      "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL1": {
+      "main": [
+        [
+          {
+            "node": "KIE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "KIE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL2": {
+      "main": [
+        [
+          {
+            "node": "KIE2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "KIE3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE4": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL3": {
+      "main": [
+        [
+          {
+            "node": "KIE4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "KIE5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE5": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "GetTemplateContent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Carousel Front Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Carousel Content Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Carousel CTA Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemplateContent1": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Front Img URL2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60487b0c-e77b-4182-badd-8ece59071537",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "r9RJQFVuN3mPClSU",
+  "tags": []
+}
