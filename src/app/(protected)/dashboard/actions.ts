@@ -1,9 +1,7 @@
 'use server'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
-export async function setBrandAction(formData: FormData): Promise<void> {
-  const brandId = formData.get('brand_id') as string
+export async function setBrandAction(brandId: string): Promise<void> {
   if (!brandId) return
   const cookieStore = await cookies()
   cookieStore.set('selected_brand_id', brandId, {
@@ -12,5 +10,4 @@ export async function setBrandAction(formData: FormData): Promise<void> {
     maxAge: 60 * 60 * 24 * 30,
     sameSite: 'lax',
   })
-  redirect('/dashboard')
 }

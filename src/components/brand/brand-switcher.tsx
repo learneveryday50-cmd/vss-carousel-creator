@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { AirtableBrand } from '@/lib/airtable'
 import { setBrandAction } from '@/app/(protected)/dashboard/actions'
@@ -12,7 +13,17 @@ interface BrandSwitcherProps {
 
 export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
   const [open, setOpen] = useState(false)
+  const [, startTransition] = useTransition()
+  const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
+
+  function handleSelect(brandId: string) {
+    setOpen(false)
+    startTransition(async () => {
+      await setBrandAction(brandId)
+      router.refresh()
+    })
+  }
 
   const selectedBrand = brands.find((b) => b.id === selectedBrandId) ?? brands[0] ?? null
 
@@ -67,32 +78,30 @@ export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
             {brands.map((brand) => {
               const isSelected = brand.id === (selectedBrand?.id ?? null)
               return (
-                <form key={brand.id} action={setBrandAction}>
-                  <input type="hidden" name="brand_id" value={brand.id} />
-                  <button
-                    type="submit"
-                    onClick={() => setOpen(false)}
-                    className={[
-                      'w-full px-3 py-2 text-sm text-left rounded-lg cursor-pointer flex items-center gap-2.5 transition-colors',
-                      isSelected
-                        ? 'bg-amber-50 text-amber-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-50',
-                    ].join(' ')}
-                  >
-                    <span
-                      className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
-                      style={{ backgroundColor: brand.primaryColor }}
-                    />
-                    {brand.name}
-                    {isSelected && (
-                      <span className="ml-auto">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M1.5 6l3.5 3.5 5.5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                    )}
-                  </button>
-                </form>
+                <button
+                  key={brand.id}
+                  type="button"
+                  onClick={() => handleSelect(brand.id)}
+                  className={[
+                    'w-full px-3 py-2 text-sm text-left rounded-lg cursor-pointer flex items-center gap-2.5 transition-colors',
+                    isSelected
+                      ? 'bg-amber-50 text-amber-700 font-medium'
+                      : 'text-gray-600 hover:bg-gray-50',
+                  ].join(' ')}
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
+                    style={{ backgroundColor: brand.primaryColor }}
+                  />
+                  {brand.name}
+                  {isSelected && (
+                    <span className="ml-auto">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M1.5 6l3.5 3.5 5.5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                  )}
+                </button>
               )
             })}
           </div>
