@@ -13,26 +13,28 @@ export default async function DashboardPage() {
   const cookieStore = await cookies()
   const cookieBrandId = cookieStore.get('selected_brand_id')?.value
 
-  const [brandRecords, templateRecords, designStyleRecords, recentResult] = await Promise.all([
+  const [brandRecords, templateRecords, designStyleRecords] = await Promise.all([
     listRecords(AIRTABLE_TABLES.brands).catch(() => []),
     listRecords(AIRTABLE_TABLES.templates).catch(() => []),
     listRecords(AIRTABLE_TABLES.designStyles).catch(() => []),
-    user
-      ? supabase
-          .from('carousels')
-          .select('id, idea_text, slide_urls, created_at')
-          .eq('user_id', user.id)
-          .eq('status', 'completed')
-          .order('created_at', { ascending: false })
-          .limit(3)
-      : Promise.resolve({ data: [] }),
   ])
-
-  const recentCarousels = (recentResult as { data: { id: string; idea_text: string; slide_urls: string[] | null; created_at: string }[] | null }).data ?? []
 
   const brands = brandRecords.map(parseBrand)
   const activeBrand =
     brands.find((b) => b.id === cookieBrandId) ?? brands[0] ?? null
+
+  const recentResult = user && activeBrand
+    ? await supabase
+        .from('carousels')
+        .select('id, idea_text, slide_urls, created_at, brand_name')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+        .eq('brand_name', activeBrand.name)
+        .order('created_at', { ascending: false })
+        .limit(3)
+    : { data: [] }
+
+  const recentCarousels = (recentResult as { data: { id: string; idea_text: string; slide_urls: string[] | null; created_at: string }[] | null }).data ?? []
 
   const displayName = user?.email?.split('@')[0] ?? 'there'
 
@@ -122,7 +124,9 @@ export default async function DashboardPage() {
       {recentCarousels.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Recently Created</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              Recent — {activeBrand.name}
+            </p>
             <Link href="/history" className="text-xs text-amber-600 hover:text-amber-700 font-medium">View all →</Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
