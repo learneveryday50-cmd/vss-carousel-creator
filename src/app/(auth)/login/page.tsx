@@ -1,5 +1,5 @@
 'use client'
-import { Suspense } from 'react'
+import { Suspense, useTransition } from 'react'
 import { useActionState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -8,6 +8,13 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { signInAction, signInWithGoogleAction } from './actions'
+
+const Spinner = () => (
+  <svg className="animate-spin w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+  </svg>
+)
 
 type FormState = { error?: string } | null
 
@@ -81,6 +88,7 @@ export default function LoginPage() {
 
 function LoginPageInner() {
   const [state, formAction, isPending] = useActionState<FormState, FormData>(signInAction, null)
+  const [isGooglePending, startGoogleTransition] = useTransition()
   const searchParams = useSearchParams()
   const urlError = searchParams.get('error')
 
@@ -187,14 +195,15 @@ function LoginPageInner() {
           </div>
 
           {/* Google button */}
-          <form action={signInWithGoogleAction}>
+          <form onSubmit={(e) => { e.preventDefault(); startGoogleTransition(() => signInWithGoogleAction()) }}>
             <Button
               type="submit"
               variant="outline"
-              className="w-full h-11 text-sm font-medium border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+              disabled={isGooglePending}
+              className="w-full h-11 text-sm font-medium border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 disabled:opacity-70"
             >
-              <GoogleIcon />
-              Continue with Google
+              {isGooglePending ? <Spinner /> : <GoogleIcon />}
+              {isGooglePending ? 'Connecting…' : 'Continue with Google'}
             </Button>
           </form>
 
@@ -231,7 +240,8 @@ function LoginPageInner() {
               </div>
             )}
 
-            <Button type="submit" className="w-full h-11 text-sm font-medium mt-1" disabled={isPending}>
+            <Button type="submit" className="w-full h-11 text-sm font-medium mt-1 gap-2" disabled={isPending}>
+              {isPending && <Spinner />}
               {isPending ? 'Signing in…' : 'Sign in'}
             </Button>
           </form>
