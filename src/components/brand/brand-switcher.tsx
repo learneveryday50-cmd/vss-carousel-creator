@@ -59,7 +59,7 @@ export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
       >
         {selectedBrand && (
           <span
-            className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
+            className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-black/10 border border-white"
             style={{ backgroundColor: selectedBrand.primaryColor }}
           />
         )}
@@ -90,7 +90,7 @@ export function BrandSwitcher({ brands, selectedBrandId }: BrandSwitcherProps) {
                   ].join(' ')}
                 >
                   <span
-                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-black/10"
+                    className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-black/10 border border-white"
                     style={{ backgroundColor: brand.primaryColor }}
                   />
                   {brand.name}
