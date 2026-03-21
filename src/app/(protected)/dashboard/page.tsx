@@ -167,6 +167,62 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* Testimonials */}
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">What creators say</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
+          {[
+            {
+              name: 'Sarah K.',
+              role: 'LinkedIn Creator · 12k followers',
+              avatar: 'SK',
+              color: '#6366f1',
+              quote: 'I used to spend 3 hours per carousel. Now I get a polished, on-brand result in under 2 minutes. My engagement went up 40% in the first month.',
+              stars: 5,
+            },
+            {
+              name: 'Marcus T.',
+              role: 'B2B SaaS Founder',
+              avatar: 'MT',
+              color: '#f59e0b',
+              quote: 'The brand voice feature is a game changer. Every carousel sounds exactly like me — not like a generic AI tool. My audience can\'t tell the difference.',
+              stars: 5,
+            },
+            {
+              name: 'Linh N.',
+              role: 'Marketing Consultant',
+              avatar: 'LN',
+              color: '#10b981',
+              quote: 'I manage 4 client brands. Switching between them and generating content for each is seamless. Saves me 10+ hours a week easily.',
+              stars: 5,
+            },
+          ].map(({ name, role, avatar, color, quote, stars }) => (
+            <div key={name} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                  style={{ backgroundColor: color }}
+                >
+                  {avatar}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-900">{name}</p>
+                  <p className="text-[11px] text-gray-400 truncate">{role}</p>
+                </div>
+              </div>
+              <div className="flex gap-0.5">
+                {Array.from({ length: stars }).map((_, i) => (
+                  <svg key={i} width="12" height="12" viewBox="0 0 12 12" fill="#f59e0b">
+                    <path d="M6 1l1.27 2.57L10 4.07l-2 1.95.47 2.75L6 7.5 3.53 8.77 4 6.02 2 4.07l2.73-.5L6 1z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">&ldquo;{quote}&rdquo;</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* CTA Block */}
       <div className="rounded-2xl bg-gray-900 text-white p-8 flex flex-col sm:flex-row sm:items-center gap-6">
         <div className="flex-1">

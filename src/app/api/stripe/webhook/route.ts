@@ -48,16 +48,37 @@ export async function POST(req: Request) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
       const userId = session.metadata?.user_id
+      const type = session.metadata?.type
       const customerId = session.customer as string
-      const subscriptionId = session.subscription as string
-
-      console.log('[webhook] checkout.session.completed', { userId, customerId, subscriptionId, metadata: session.metadata })
 
       if (!userId) {
-        console.error('[webhook] No user_id in session metadata — skipping upsert')
+        console.error('[webhook] No user_id in session metadata — skipping')
         break
       }
 
+      // One-time credit top-up
+      if (type === 'credits') {
+        const creditsToAdd = parseInt(session.metadata?.credits ?? '10', 10)
+        const { data: current } = await admin
+          .from('usage_tracking')
+          .select('credits_remaining')
+          .eq('user_id', userId)
+          .single()
+
+        await admin
+          .from('usage_tracking')
+          .update({
+            credits_remaining: (current?.credits_remaining ?? 0) + creditsToAdd,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('user_id', userId)
+
+        console.log(`[webhook] Added ${creditsToAdd} credits to user ${userId}`)
+        break
+      }
+
+      // Subscription upgrade
+      const subscriptionId = session.subscription as string
       const { error } = await admin
         .from('usage_tracking')
         .upsert({
@@ -71,12 +92,7 @@ export async function POST(req: Request) {
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' })
 
-      if (error) {
-        console.error('[webhook] upsert failed:', error)
-      } else {
-        console.log('[webhook] upsert success for user_id:', userId)
-      }
-
+      if (error) console.error('[webhook] upsert failed:', error)
       break
     }
 
