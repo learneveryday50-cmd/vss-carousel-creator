@@ -1,6 +1,6 @@
 'use server'
 import { cookies } from 'next/headers'
-import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 export async function setBrandAction(formData: FormData): Promise<void> {
   const brandId = formData.get('brand_id') as string
@@ -12,5 +12,5 @@ export async function setBrandAction(formData: FormData): Promise<void> {
     maxAge: 60 * 60 * 24 * 30,
     sameSite: 'lax',
   })
-  revalidatePath('/dashboard')
+  redirect('/dashboard')
 }
