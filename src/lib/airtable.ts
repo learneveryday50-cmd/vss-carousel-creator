@@ -164,7 +164,7 @@ export function parseBrand(record: AirtableRecord): AirtableBrand {
   return {
     id: record.id,
     name: String(f['Brand Name'] ?? ''),
-    primaryColor: String(f['Brand Color'] ?? '#000000'),
+    primaryColor: String(f['Brand Color'] ?? '#000000').split(',')[0].trim(),
     secondaryColor: (f['Secondary Color'] as string) ?? null,
     voiceGuidelines: (f['Voice Guidelines'] as string) ?? null,
     productDescription: (f['Product & Audience'] as string) ?? null,
