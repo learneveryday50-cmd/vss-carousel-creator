@@ -4,8 +4,6 @@ import { Menu, CreditCard, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import type { AirtableBrand } from '@/lib/airtable'
-import { BrandSwitcher } from '@/components/brand/brand-switcher'
 import { CreditBadge } from '@/components/billing/credit-badge'
 import {
   DropdownMenu,
@@ -22,14 +20,12 @@ interface CreditData {
 }
 
 interface HeaderProps {
-  brands: AirtableBrand[]
-  selectedBrandId: string | null
   userEmail?: string | null
   creditData: CreditData
   onMenuClick?: () => void
 }
 
-export function Header({ brands, selectedBrandId, userEmail, creditData, onMenuClick }: HeaderProps) {
+export function Header({ userEmail, creditData, onMenuClick }: HeaderProps) {
   const initials = userEmail ? userEmail.charAt(0).toUpperCase() : '?'
   const router = useRouter()
 
@@ -51,10 +47,6 @@ export function Header({ brands, selectedBrandId, userEmail, creditData, onMenuC
       </button>
 
       <div className="flex-1" />
-
-      <BrandSwitcher brands={brands} selectedBrandId={selectedBrandId} />
-
-      <div className="w-px h-5 bg-gray-200 flex-shrink-0" />
 
       <CreditBadge
         plan={creditData.plan}

@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
 import { PageWrapper } from '@/components/layout/page-wrapper'
+import { BrandSwitcher } from '@/components/brand/brand-switcher'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -69,14 +70,17 @@ export default async function DashboardPage() {
     <div className="max-w-4xl space-y-8">
 
       {/* Heading */}
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-1">Dashboard</p>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Welcome back, <span className="text-amber-600">{displayName}</span>
-        </h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          Your brand is set up. Ready to create.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-1">Dashboard</p>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            Welcome back, <span className="text-amber-600">{displayName}</span>
+          </h1>
+          <p className="text-gray-500 mt-1 text-sm">
+            Your brand is set up. Ready to create.
+          </p>
+        </div>
+        <BrandSwitcher brands={brands} selectedBrandId={activeBrand?.id ?? null} />
       </div>
 
       {/* Summary Cards */}
