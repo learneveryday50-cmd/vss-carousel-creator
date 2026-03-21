@@ -152,43 +152,80 @@ export default async function LandingPage() {
 
       {/* ── How it works ────────────────────────────────────────── */}
       <section className="bg-gradient-to-b from-zinc-950 to-zinc-900 py-20 md:py-28">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <p className="text-xs font-bold uppercase tracking-wide text-amber-500">How it works</p>
-          <h2 className="text-3xl font-bold text-zinc-100 tracking-tight mt-2">Three steps to your next post</h2>
+          <h2 className="text-3xl font-bold text-zinc-100 tracking-tight mt-2">From idea to LinkedIn post in 4 steps</h2>
+          <p className="text-zinc-400 text-base mt-3">No design skills needed. No complicated setup. Just follow these steps.</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
+          <div className="mt-14 flex flex-col gap-0">
             {[
               {
-                step: 'Step 1',
+                step: '01',
+                icon: <Palette className="w-5 h-5 text-amber-400" />,
+                title: 'Set up your brand',
+                body: 'Create your brand profile with your company name, primary color, brand voice, target audience, and CTA. This is done once — every carousel you generate will automatically reflect your identity.',
+                detail: 'Go to Settings → Brand → Create brand',
+              },
+              {
+                step: '02',
+                icon: <LayoutTemplate className="w-5 h-5 text-amber-400" />,
+                title: 'Pick a template & image style',
+                body: 'Browse 5+ carousel templates and choose an image style (Technical, Notebook, Whiteboard, Comic Strip, and more). Your selection controls how the slides look and feel.',
+                detail: 'Go to Templates → select your layout and style',
+              },
+              {
+                step: '03',
                 icon: <Lightbulb className="w-5 h-5 text-amber-400" />,
-                title: 'Describe your idea',
-                body: 'Enter your topic or paste your raw thoughts. No need to structure it — AI handles that.',
+                title: 'Type your idea and generate',
+                body: 'Write your carousel topic in the idea box — just a sentence or two is enough. Hit Generate. AI writes the slide copy, creates visuals with DALL-E 3, and assembles the full carousel in under 2 minutes.',
+                detail: 'Go to Dashboard → type your idea → click Generate',
               },
               {
-                step: 'Step 2',
-                icon: <Sparkles className="w-5 h-5 text-amber-400" />,
-                title: 'AI generates your carousel',
-                body: 'Pick your template, image style, and brand. One click generates slides with AI-written copy and visuals.',
-              },
-              {
-                step: 'Step 3',
+                step: '04',
                 icon: <Download className="w-5 h-5 text-amber-400" />,
-                title: 'Download and post',
-                body: 'Export individual slides as PNG or download a full PDF carousel ready for LinkedIn.',
+                title: 'Download and post to LinkedIn',
+                body: 'Once generated, preview all your slides and copy the ready-to-post LinkedIn caption. Download individual slides as PNG or export the full carousel as a PDF. Upload to LinkedIn and you\'re done.',
+                detail: 'View result → Download slides or PDF → Copy caption → Post',
               },
-            ].map(({ step, icon, title, body }) => (
-              <div
-                key={step}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8 transition-all duration-300 hover:border-amber-500/30 hover:-translate-y-1 hover:shadow-2xl"
-              >
-                <p className="text-xs font-bold uppercase tracking-wide text-amber-500">{step}</p>
-                <div className="w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center mt-4 p-3">
-                  {icon}
+            ].map(({ step, icon, title, body, detail }, i, arr) => (
+              <div key={step} className="flex gap-6 md:gap-10">
+                {/* Left: step number + connector line */}
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+                    <span className="text-amber-400 font-bold text-sm">{step}</span>
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div className="w-px flex-1 bg-zinc-800 my-3" />
+                  )}
                 </div>
-                <h3 className="text-lg font-semibold text-zinc-100 mt-4">{title}</h3>
-                <p className="text-sm text-zinc-400 mt-2 leading-relaxed">{body}</p>
+
+                {/* Right: content */}
+                <div className={`pb-10 ${i < arr.length - 1 ? '' : ''}`}>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                      {icon}
+                    </div>
+                    <h3 className="text-lg font-semibold text-zinc-100">{title}</h3>
+                  </div>
+                  <p className="text-sm text-zinc-400 leading-relaxed max-w-xl">{body}</p>
+                  <div className="mt-3 inline-flex items-center gap-2 bg-zinc-800/60 border border-zinc-700/50 rounded-lg px-3 py-1.5">
+                    <span className="text-[11px] font-mono text-amber-400/80">{detail}</span>
+                  </div>
+                </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-4">
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 bg-amber-500 text-white hover:bg-amber-400 rounded-xl px-6 py-3 text-sm font-semibold transition-colors"
+            >
+              Start for free — no credit card needed
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7h9M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
