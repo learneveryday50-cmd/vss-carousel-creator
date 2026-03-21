@@ -1,6 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+
+const Spinner = () => (
+  <svg className="animate-spin w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+  </svg>
+)
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   DndContext,
@@ -326,8 +333,9 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
               <button
                 onClick={() => handleDelete(c.id)}
                 disabled={deletingId === c.id}
-                className="text-xs font-medium text-red-400 hover:text-red-600 self-start transition-colors disabled:opacity-50 mt-auto"
+                className="text-xs font-medium text-red-400 hover:text-red-600 self-start transition-colors disabled:opacity-50 mt-auto inline-flex items-center gap-1.5"
               >
+                {deletingId === c.id && <Spinner />}
                 {deletingId === c.id ? 'Deleting…' : 'Delete'}
               </button>
             </div>
@@ -410,9 +418,11 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
                           disabled={downloadingZip === c.id}
                           className="w-full flex items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 text-xs font-semibold transition-colors disabled:opacity-50"
                         >
-                          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                            <path d="M6.5 1v7.5M3.5 6l3 3 3-3M1 10.5v1a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
+                          {downloadingZip === c.id ? <Spinner /> : (
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                              <path d="M6.5 1v7.5M3.5 6l3 3 3-3M1 10.5v1a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          )}
                           {downloadingZip === c.id ? 'Zipping…' : `Download ZIP (${slides.length} slides)`}
                         </button>
 
@@ -422,10 +432,12 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
                           disabled={exportingPdf === c.id}
                           className="w-full flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-50"
                         >
-                          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                            <rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                            <path d="M4 5h5M4 7h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
+                          {exportingPdf === c.id ? <Spinner /> : (
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                              <rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                              <path d="M4 5h5M4 7h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                            </svg>
+                          )}
                           {exportingPdf === c.id ? 'Generating PDF…' : 'Export as PDF'}
                         </button>
                       </div>

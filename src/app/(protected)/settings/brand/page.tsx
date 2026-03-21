@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { listRecords, parseBrand, AIRTABLE_TABLES } from '@/lib/airtable'
-import { deleteBrandAction } from './actions'
 import { Button } from '@/components/ui/button'
+import { DeleteBrandButton } from './delete-brand-button'
 
 export default async function BrandSettingsPage() {
   const records = await listRecords(AIRTABLE_TABLES.brands)
@@ -58,17 +58,7 @@ export default async function BrandSettingsPage() {
                     <Link href={`/settings/brand/${brand.id}/edit`}>Edit</Link>
                   </Button>
 
-                  <form action={deleteBrandAction}>
-                    <input type="hidden" name="id" value={brand.id} />
-                    <Button
-                      type="submit"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 px-3 text-xs font-medium text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
-                    >
-                      Delete
-                    </Button>
-                  </form>
+                  <DeleteBrandButton brandId={brand.id} />
                 </div>
               </li>
             ))}

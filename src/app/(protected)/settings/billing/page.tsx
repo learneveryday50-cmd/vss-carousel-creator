@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { createCheckoutSession, createCreditTopupSession, redirectToCustomerPortal } from './actions'
+import { UpgradeButton, BuyCreditsButton, ManageBillingButton } from './billing-buttons'
 
 export const metadata = { title: 'Billing' }
 
@@ -90,14 +90,9 @@ export default async function BillingPage({
                 Example: you have {creditsRemaining} credits → buy 10 → total {creditsRemaining + 10} credits
               </p>
             </div>
-            <form action={createCreditTopupSession} className="flex-shrink-0">
-              <button
-                type="submit"
-                className="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap"
-              >
-                Buy 10 credits →
-              </button>
-            </form>
+            <div className="flex-shrink-0">
+              <BuyCreditsButton />
+            </div>
           </div>
         </div>
       )}
@@ -118,14 +113,9 @@ export default async function BillingPage({
                 ))}
               </ul>
             </div>
-            <form action={createCheckoutSession} className="flex-shrink-0">
-              <button
-                type="submit"
-                className="bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap"
-              >
-                Upgrade →
-              </button>
-            </form>
+            <div className="flex-shrink-0">
+              <UpgradeButton />
+            </div>
           </div>
         </div>
       )}
@@ -137,14 +127,7 @@ export default async function BillingPage({
             <h2 className="text-sm font-bold text-gray-900 mb-1">Manage Subscription</h2>
             <p className="text-sm text-gray-500">Update payment method, view invoices, or cancel.</p>
           </div>
-          <form action={redirectToCustomerPortal} className="flex-shrink-0">
-            <button
-              type="submit"
-              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
-            >
-              Manage Billing
-            </button>
-          </form>
+          <ManageBillingButton />
         </div>
       )}
 
