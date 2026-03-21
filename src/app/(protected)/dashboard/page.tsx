@@ -67,16 +67,16 @@ export default async function DashboardPage() {
 
   return (
     <PageWrapper>
-    <div className="max-w-4xl space-y-8">
+    <div className="max-w-4xl space-y-6 lg:space-y-8">
 
       {/* Heading */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-widest text-amber-600 mb-1">Dashboard</p>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
             Welcome back, <span className="text-amber-600">{displayName}</span>
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-gray-500 mt-1 text-sm hidden sm:block">
             Your brand is set up. Ready to create.
           </p>
         </div>
@@ -84,28 +84,30 @@ export default async function DashboardPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
 
         {/* Card 1 — Active Brand */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3 xl:col-span-2">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Active brand</p>
-          <div className="flex items-center gap-2.5">
-            <span
-              className="w-5 h-5 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
-              style={{ backgroundColor: activeBrand.primaryColor }}
-            />
-            <span className="font-bold text-xl text-gray-900 truncate">{activeBrand.name}</span>
+        <div className="col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 flex items-center justify-between gap-4">
+          <div className="space-y-1 min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Active brand</p>
+            <div className="flex items-center gap-2">
+              <span
+                className="w-4 h-4 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm border border-black/10"
+                style={{ backgroundColor: activeBrand.primaryColor }}
+              />
+              <span className="font-bold text-lg text-gray-900 truncate">{activeBrand.name}</span>
+            </div>
           </div>
           <Link
             href={`/settings/brand/${activeBrand.id}/edit`}
-            className="text-xs text-amber-600 hover:text-amber-700 font-medium"
+            className="text-xs text-amber-600 hover:text-amber-700 font-medium flex-shrink-0"
           >
-            Edit brand &rarr;
+            Edit &rarr;
           </Link>
         </div>
 
         {/* Card 2 — Templates */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-2">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Templates</p>
           <p className="font-bold text-2xl text-gray-900">{templateRecords.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
@@ -114,8 +116,8 @@ export default async function DashboardPage() {
         </div>
 
         {/* Card 3 — Design Styles */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-3">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Design styles</p>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Styles</p>
           <p className="font-bold text-2xl text-gray-900">{designStyleRecords.length}</p>
           <Link href="/templates" className="text-xs text-amber-600 hover:text-amber-700 font-medium">
             Browse &rarr;
@@ -133,25 +135,30 @@ export default async function DashboardPage() {
             </p>
             <Link href="/history" className="text-xs text-amber-600 hover:text-amber-700 font-medium">View all →</Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
             {recentCarousels.map((c) => {
               const thumb = Array.isArray(c.slide_urls) ? c.slide_urls[0] : null
               const date = new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
               return (
                 <Link key={c.id} href="/history" className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-amber-300 hover:shadow-md transition-all">
-                  <div className="aspect-video bg-gray-50 overflow-hidden">
+                  {/* Square container — shows full slide without cropping */}
+                  <div className="aspect-square bg-zinc-950 overflow-hidden flex items-center justify-center">
                     {thumb ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={thumb} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img
+                        src={thumb}
+                        alt=""
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/></svg>
+                      <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="2" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/><rect x="13" y="13" width="9" height="9" rx="1.5" fill="currentColor" opacity=".4"/></svg>
                       </div>
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="text-xs font-semibold text-gray-900 line-clamp-1">{c.idea_text}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{date}</p>
+                    <p className="text-xs font-semibold text-gray-900 line-clamp-2">{c.idea_text}</p>
+                    <p className="text-[10px] text-gray-400 mt-1">{date}</p>
                   </div>
                 </Link>
               )
