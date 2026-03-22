@@ -22,6 +22,13 @@ const STEPS: Step[] = [
     sidebarY: 112,
   },
   {
+    title: 'Set Up Your Brand First',
+    description:
+      'Before creating carousels, set your colors, fonts, and tone here. Every carousel will automatically match your brand — no editing needed.',
+    icon: <Palette className="w-5 h-5 text-amber-500" />,
+    sidebarY: 244,
+  },
+  {
     title: 'Create a Carousel',
     description:
       'Pick a hook style, choose a design template, and let AI write and design your slides — ready to post in minutes.',
@@ -34,13 +41,6 @@ const STEPS: Step[] = [
       "Every carousel you've created is saved here. Download, zoom in on individual slides, or regenerate any time.",
     icon: <History className="w-5 h-5 text-amber-500" />,
     sidebarY: 200,
-  },
-  {
-    title: 'Your Brand',
-    description:
-      'Set your colors, fonts, and tone once. Every carousel will automatically match your brand — no editing needed.',
-    icon: <Palette className="w-5 h-5 text-amber-500" />,
-    sidebarY: 244,
   },
 ]
 
