@@ -16,7 +16,6 @@ import {
   Image,
 } from 'lucide-react'
 import { DemoSection } from '@/components/landing/demo-section'
-import { createAdminClient } from '@/lib/supabase/admin'
 
 const LogoIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -80,19 +79,12 @@ export default async function LandingPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (user) redirect('/dashboard')
 
-  const admin = createAdminClient()
-
-  // Step 2: template asset preview images from template_assets table
-  const { data: templateAssets } = await admin
-    .from('template_assets')
-    .select('template_content_url')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-    .limit(6)
-
-  const demoImages: string[] = (templateAssets ?? [])
-    .map((a) => a.template_content_url)
-    .filter(Boolean) as string[]
+  // Step 2: hardcoded template asset images (Technical Annotation, Notebook, Whiteboard Diagram)
+  const demoImages = [
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/template-assets/technical-annotation-content.png',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/template-assets/notebook-content.png',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/template-assets/whiteboard-diagram-content.png',
+  ]
 
   // Step 4: hardcoded sample carousel — fixed, never changes automatically
   const demoSlides = [
