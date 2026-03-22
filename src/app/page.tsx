@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Image,
 } from 'lucide-react'
+import { DemoSection } from '@/components/landing/demo-section'
 
 const LogoIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -218,6 +219,8 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
+
+      <DemoSection />
 
       {/* ── How It Works ─────────────────────────────────────────── */}
       <section id="how-it-works" className="bg-gradient-to-b from-zinc-950 to-zinc-900 py-24">
