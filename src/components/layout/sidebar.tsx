@@ -9,6 +9,7 @@ import {
   CreditCard,
   History,
   X,
+  ScrollText,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -117,6 +118,12 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
             href="/settings/billing"
             icon={<CreditCard className="w-4 h-4 flex-shrink-0" />}
             label="Billing"
+            onClick={onClose}
+          />
+          <NavItem
+            href="/manifesto"
+            icon={<ScrollText className="w-4 h-4 flex-shrink-0" />}
+            label="Manifesto"
             onClick={onClose}
           />
         </div>
