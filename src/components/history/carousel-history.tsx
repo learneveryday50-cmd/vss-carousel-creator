@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const Spinner = () => (
   <svg className="animate-spin w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
@@ -63,15 +63,110 @@ const STATUS_STYLES: Record<string, string> = {
   failed:     'bg-red-50 text-red-600 border-red-200',
 }
 
+// --- Lightbox modal ---
+function LightboxModal({
+  slides,
+  index,
+  onClose,
+  onNavigate,
+}: {
+  slides: string[]
+  index: number
+  onClose: () => void
+  onNavigate: (index: number) => void
+}) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowRight') onNavigate((index + 1) % slides.length)
+      if (e.key === 'ArrowLeft') onNavigate((index - 1 + slides.length) % slides.length)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [index, slides.length, onClose, onNavigate])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      {/* Close */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
+      </button>
+
+      {/* Slide counter */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-xs font-semibold text-white/70 bg-black/40 rounded-full px-3 py-1.5">
+        {index + 1} / {slides.length}
+      </div>
+
+      {/* Prev */}
+      {slides.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate((index - 1 + slides.length) % slides.length) }}
+          className="absolute left-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M11 4L6 9l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
+
+      {/* Image */}
+      <div className="max-w-[90vw] max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={slides[index]}
+          alt={`Slide ${index + 1}`}
+          className="max-w-[90vw] max-h-[90vh] rounded-2xl shadow-2xl object-contain"
+          draggable={false}
+        />
+      </div>
+
+      {/* Next */}
+      {slides.length > 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate((index + 1) % slides.length) }}
+          className="absolute right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M7 4l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
+
+      {/* Dot indicators */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={(e) => { e.stopPropagation(); onNavigate(i) }}
+              className={`rounded-full transition-all ${i === index ? 'w-4 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/70'}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // --- Sortable slide card ---
 function SortableSlide({
   url,
   index,
   onRemove,
+  onZoom,
 }: {
   url: string
   index: number
   onRemove: () => void
+  onZoom: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: url })
@@ -108,11 +203,22 @@ function SortableSlide({
       >
         ×
       </button>
+      {/* Zoom button */}
+      <button
+        onClick={onZoom}
+        className="absolute bottom-1.5 right-1.5 z-10 w-6 h-6 rounded-md bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        title="View full size"
+      >
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <path d="M1 4V1h3M7 1h3v3M10 7v3H7M4 10H1V7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
         alt={`Slide ${index + 1}`}
-        className="w-full aspect-square object-cover rounded-lg border border-gray-200"
+        onClick={onZoom}
+        className="w-full aspect-square object-cover rounded-lg border border-gray-200 cursor-zoom-in"
         draggable={false}
       />
     </div>
@@ -126,8 +232,11 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
   const [localCarousels, setLocalCarousels] = useState(carousels)
   const [exportingPdf, setExportingPdf] = useState<string | null>(null)
   const [downloadingZip, setDownloadingZip] = useState<string | null>(null)
-  // Per-carousel slide order (for reordering + removal)
   const [slideOrders, setSlideOrders] = useState<Record<string, string[]>>({})
+  const [lightbox, setLightbox] = useState<{ slides: string[]; index: number } | null>(null)
+
+  const closeLightbox = useCallback(() => setLightbox(null), [])
+  const navigateLightbox = useCallback((index: number) => setLightbox((prev) => prev ? { ...prev, index } : null), [])
 
   const router = useRouter()
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
@@ -260,6 +369,15 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
   }
 
   return (
+    <>
+    {lightbox && (
+      <LightboxModal
+        slides={lightbox.slides}
+        index={lightbox.index}
+        onClose={closeLightbox}
+        onNavigate={navigateLightbox}
+      />
+    )}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {localCarousels.map((c, index) => {
         const originalSlides = Array.isArray(c.slide_urls) ? c.slide_urls : []
@@ -394,6 +512,7 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
                               url={url}
                               index={i}
                               onRemove={() => handleRemoveSlide(c.id, url)}
+                              onZoom={() => setLightbox({ slides, index: i })}
                             />
                           ))}
                         </div>
@@ -488,5 +607,6 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
         )
       })}
     </div>
+    </>
   )
 }
