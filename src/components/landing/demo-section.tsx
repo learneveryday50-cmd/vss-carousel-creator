@@ -52,7 +52,7 @@ function BrandScreen() {
   )
 }
 
-function TemplateScreen({ images }: { images: string[] }) {
+function TemplateScreen({ images = [] }: { images?: string[] }) {
   return (
     <div className="p-5 space-y-3.5 h-full overflow-hidden">
       <div>
@@ -131,7 +131,7 @@ function GenerateScreen() {
   )
 }
 
-function DownloadScreen({ slides }: { slides: string[] }) {
+function DownloadScreen({ slides = [] }: { slides?: string[] }) {
   return (
     <div className="p-5 space-y-3.5 h-full overflow-hidden">
       <div className="flex items-start justify-between">
@@ -222,7 +222,7 @@ export function DemoSection({ demoImages = [], demoSlides = [] }: { demoImages?:
     }, tick)
 
     intervalRef.current = setTimeout(() => {
-      setActive((prev) => (prev + 1) % screens.length)
+      setActive((prev) => (prev + 1) % screenComponents.length)
     }, STEP_DURATION)
   }
 
