@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 const Spinner = () => (
   <svg className="animate-spin w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none">
@@ -75,6 +75,17 @@ function LightboxModal({
   onClose: () => void
   onNavigate: (index: number) => void
 }) {
+  const touchStartX = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
+
+  // Lock body scroll
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [])
+
+  // Keyboard navigation
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -85,73 +96,134 @@ function LightboxModal({
     return () => window.removeEventListener('keydown', onKey)
   }, [index, slides.length, onClose, onNavigate])
 
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null || touchStartY.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    const dy = e.changedTouches[0].clientY - touchStartY.current
+    // Only trigger if horizontal swipe is dominant
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx < 0) onNavigate((index + 1) % slides.length)
+      else onNavigate((index - 1 + slides.length) % slides.length)
+    }
+    touchStartX.current = null
+    touchStartY.current = null
+  }
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm"
       onClick={onClose}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      {/* Close */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-        </svg>
-      </button>
-
-      {/* Slide counter */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-xs font-semibold text-white/70 bg-black/40 rounded-full px-3 py-1.5">
-        {index + 1} / {slides.length}
-      </div>
-
-      {/* Prev */}
-      {slides.length > 1 && (
+      {/* Top bar: counter + close */}
+      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 pt-4 pb-3 z-10">
+        <div className="text-xs font-semibold text-white/60 bg-black/30 rounded-full px-3 py-1.5">
+          {index + 1} / {slides.length}
+        </div>
         <button
-          onClick={(e) => { e.stopPropagation(); onNavigate((index - 1 + slides.length) % slides.length) }}
-          className="absolute left-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+          onClick={onClose}
+          className="w-11 h-11 rounded-full bg-white/10 active:bg-white/25 text-white flex items-center justify-center"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M11 4L6 9l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         </button>
-      )}
+      </div>
 
-      {/* Image */}
-      <div className="max-w-[90vw] max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+      {/* Image + side nav */}
+      <div className="flex items-center justify-center w-full px-14 sm:px-20" onClick={(e) => e.stopPropagation()}>
+        {/* Prev — hidden on mobile (use swipe), visible on sm+ */}
+        {slides.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onNavigate((index - 1 + slides.length) % slides.length) }}
+            className="hidden sm:flex absolute left-3 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white items-center justify-center transition-colors z-10"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M13 4L7 10l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
+
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={slides[index]}
           alt={`Slide ${index + 1}`}
-          className="max-w-[90vw] max-h-[90vh] rounded-2xl shadow-2xl object-contain"
+          className="w-full max-w-lg sm:max-w-2xl max-h-[75vh] rounded-xl sm:rounded-2xl shadow-2xl object-contain"
           draggable={false}
         />
+
+        {/* Next — hidden on mobile (use swipe), visible on sm+ */}
+        {slides.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onNavigate((index + 1) % slides.length) }}
+            className="hidden sm:flex absolute right-3 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white items-center justify-center transition-colors z-10"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        )}
       </div>
 
-      {/* Next */}
-      {slides.length > 1 && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onNavigate((index + 1) % slides.length) }}
-          className="absolute right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M7 4l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-      )}
+      {/* Bottom: swipe hint (mobile) + dot indicators */}
+      <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-3 pb-6 pt-3" onClick={(e) => e.stopPropagation()}>
+        {/* Swipe hint — mobile only */}
+        {slides.length > 1 && (
+          <p className="text-[11px] text-white/30 sm:hidden">Swipe left or right to navigate</p>
+        )}
 
-      {/* Dot indicators */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5">
-          {slides.map((_, i) => (
+        {/* Mobile prev/next tap zones — full-height side strips */}
+        {slides.length > 1 && (
+          <>
             <button
-              key={i}
-              onClick={(e) => { e.stopPropagation(); onNavigate(i) }}
-              className={`rounded-full transition-all ${i === index ? 'w-4 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/70'}`}
-            />
-          ))}
-        </div>
-      )}
+              onClick={(e) => { e.stopPropagation(); onNavigate((index - 1 + slides.length) % slides.length) }}
+              className="sm:hidden fixed left-0 top-16 bottom-20 w-14 flex items-center justify-start pl-2 z-10"
+              aria-label="Previous slide"
+            >
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-white"/>
+                </svg>
+              </div>
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onNavigate((index + 1) % slides.length) }}
+              className="sm:hidden fixed right-0 top-16 bottom-20 w-14 flex items-center justify-end pr-2 z-10"
+              aria-label="Next slide"
+            >
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-white"/>
+                </svg>
+              </div>
+            </button>
+          </>
+        )}
+
+        {/* Dot indicators — larger tap targets */}
+        {slides.length > 1 && (
+          <div className="flex gap-1 items-center">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); onNavigate(i) }}
+                className="p-2 flex items-center justify-center"
+                aria-label={`Go to slide ${i + 1}`}
+              >
+                <span className={`block rounded-full transition-all duration-200 ${
+                  i === index ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/35'
+                }`} />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -180,11 +252,11 @@ function SortableSlide({
 
   return (
     <div ref={setNodeRef} style={style} className="relative group">
-      {/* Drag handle */}
+      {/* Drag handle — always visible on mobile, hover on desktop */}
       <div
         {...attributes}
         {...listeners}
-        className="absolute top-1.5 left-1.5 z-10 p-1 rounded-md bg-black/40 text-white cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-1.5 left-1.5 z-10 p-1 rounded-md bg-black/40 text-white cursor-grab active:cursor-grabbing opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
       >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
           <circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/>
@@ -196,20 +268,20 @@ function SortableSlide({
       <div className="absolute top-1.5 right-7 z-10 text-[10px] font-bold text-white bg-black/50 rounded-full w-5 h-5 flex items-center justify-center">
         {index + 1}
       </div>
-      {/* Remove button */}
+      {/* Remove button — always visible on mobile */}
       <button
         onClick={onRemove}
-        className="absolute top-1 right-1 z-10 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+        className="absolute top-1 right-1 z-10 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity active:bg-red-600"
       >
         ×
       </button>
-      {/* Zoom button */}
+      {/* Zoom button — always visible on mobile */}
       <button
         onClick={onZoom}
-        className="absolute bottom-1.5 right-1.5 z-10 w-6 h-6 rounded-md bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute bottom-1.5 right-1.5 z-10 w-7 h-7 rounded-md bg-black/50 active:bg-black/70 text-white flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
         title="View full size"
       >
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+        <svg width="12" height="12" viewBox="0 0 11 11" fill="none">
           <path d="M1 4V1h3M7 1h3v3M10 7v3H7M4 10H1V7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
@@ -505,7 +577,7 @@ export function CarouselHistory({ carousels }: { carousels: Carousel[] }) {
                       onDragEnd={(e) => handleDragEnd(c.id, e)}
                     >
                       <SortableContext items={slides} strategy={rectSortingStrategy}>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {slides.map((url, i) => (
                             <SortableSlide
                               key={url}
