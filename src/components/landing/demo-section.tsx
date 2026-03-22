@@ -61,35 +61,27 @@ function TemplateScreen({ images }: { images: string[] }) {
         <p className="text-[11px] text-gray-400 mt-0.5">Real templates from your Airtable assets.</p>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {Array.from({ length: 6 }).map((_, i) => {
-          const imgUrl = images[i]
-          const selected = i === 0
-          return (
-            <div
-              key={i}
-              className={`aspect-[3/4] rounded-xl border-2 overflow-hidden transition-colors ${
-                selected
-                  ? 'border-amber-400 ring-2 ring-amber-200 shadow-md'
-                  : 'border-gray-200 shadow-sm'
-              }`}
-            >
-              {imgUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imgUrl}
-                  alt={`Template ${i + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className={`w-full h-full flex flex-col p-2 gap-1 ${selected ? 'bg-amber-50' : 'bg-gray-50'}`}>
-                  <div className={`h-2 rounded-full ${selected ? 'bg-amber-300' : 'bg-gray-300'} w-4/5`} />
-                  <div className={`h-1.5 rounded-full ${selected ? 'bg-amber-200' : 'bg-gray-200'} w-3/5`} />
-                  <div className={`flex-1 rounded-md mt-0.5 ${selected ? 'bg-amber-100' : 'bg-gray-200'}`} />
-                </div>
-              )}
+        {images.length > 0 ? images.map((imgUrl, i) => (
+          <div
+            key={i}
+            className={`aspect-[3/4] rounded-xl border-2 overflow-hidden transition-colors ${
+              i === 0
+                ? 'border-amber-400 ring-2 ring-amber-200 shadow-md'
+                : 'border-gray-200 shadow-sm'
+            }`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={imgUrl} alt={`Template ${i + 1}`} className="w-full h-full object-cover" />
+          </div>
+        )) : Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className={`aspect-[3/4] rounded-xl border-2 overflow-hidden ${i === 0 ? 'border-amber-400 bg-amber-50' : 'border-gray-200 bg-gray-50'}`}>
+            <div className="w-full h-full flex flex-col p-2 gap-1">
+              <div className={`h-2 rounded-full ${i === 0 ? 'bg-amber-300' : 'bg-gray-300'} w-4/5`} />
+              <div className={`h-1.5 rounded-full ${i === 0 ? 'bg-amber-200' : 'bg-gray-200'} w-3/5`} />
+              <div className={`flex-1 rounded-md mt-0.5 ${i === 0 ? 'bg-amber-100' : 'bg-gray-200'}`} />
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
     </div>
   )
