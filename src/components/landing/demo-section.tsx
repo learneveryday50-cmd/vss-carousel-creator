@@ -152,7 +152,7 @@ function GenerateScreen() {
   )
 }
 
-function DownloadScreen() {
+function DownloadScreen({ slides }: { slides: string[] }) {
   return (
     <div className="p-5 space-y-3.5 h-full overflow-hidden">
       <div className="flex items-start justify-between">
@@ -166,25 +166,35 @@ function DownloadScreen() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-green-600">Done!</p>
           </div>
           <h3 className="text-sm font-bold text-gray-900">Your carousel is ready</h3>
-          <p className="text-[11px] text-gray-400 mt-0.5">5 slides · LinkedIn caption included</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">{slides.length || 5} slides · LinkedIn caption included</p>
         </div>
       </div>
 
       {/* Slides strip */}
       <div className="flex gap-1.5">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className={`flex-1 aspect-square rounded-lg flex flex-col items-start justify-end p-1.5 ${
-              i === 0 ? 'bg-zinc-900 ring-2 ring-amber-400 ring-offset-1' : 'bg-zinc-800'
-            }`}
-          >
-            <div className="space-y-0.5 w-full">
-              <div className="h-1 rounded-full bg-white/80 w-4/5" />
-              <div className="h-1 rounded-full bg-white/30 w-3/5" />
+        {Array.from({ length: 5 }).map((_, i) => {
+          const imgUrl = slides[i]
+          return (
+            <div
+              key={i}
+              className={`flex-1 aspect-square rounded-lg overflow-hidden ${
+                i === 0 ? 'ring-2 ring-amber-400 ring-offset-1' : ''
+              }`}
+            >
+              {imgUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={imgUrl} alt={`Slide ${i + 1}`} className="w-full h-full object-cover" />
+              ) : (
+                <div className={`w-full h-full flex flex-col items-start justify-end p-1.5 ${i === 0 ? 'bg-zinc-900' : 'bg-zinc-800'}`}>
+                  <div className="space-y-0.5 w-full">
+                    <div className="h-1 rounded-full bg-white/80 w-4/5" />
+                    <div className="h-1 rounded-full bg-white/30 w-3/5" />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Caption preview */}
@@ -209,7 +219,7 @@ function DownloadScreen() {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function DemoSection({ demoImages = [] }: { demoImages?: string[] }) {
+export function DemoSection({ demoImages = [], demoSlides = [] }: { demoImages?: string[], demoSlides?: string[] }) {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -363,6 +373,8 @@ export function DemoSection({ demoImages = [] }: { demoImages?: string[] }) {
                 <div className="flex-1 overflow-hidden">
                   {active === 1
                     ? <TemplateScreen images={demoImages} />
+                    : active === 3
+                    ? <DownloadScreen slides={demoSlides} />
                     : <ActiveScreen />
                   }
                 </div>

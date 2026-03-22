@@ -78,7 +78,7 @@ export default async function LandingPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (user) redirect('/dashboard')
 
-  // Fetch up to 6 real carousel first-slides for the demo section
+  // Fetch real carousel images for the demo section
   const admin = createAdminClient()
   const { data: featuredCarousels } = await admin
     .from('carousels')
@@ -88,9 +88,17 @@ export default async function LandingPage() {
     .order('created_at', { ascending: false })
     .limit(6)
 
-  const demoImages: string[] = (featuredCarousels ?? [])
+  const allCarousels = featuredCarousels ?? []
+
+  // Step 2: first slide of each carousel for the template grid
+  const demoImages: string[] = allCarousels
     .map((c) => Array.isArray(c.slide_urls) && c.slide_urls[0] ? c.slide_urls[0] : null)
     .filter(Boolean) as string[]
+
+  // Step 4: all slides from the most recent carousel for the download strip
+  const demoSlides: string[] = Array.isArray(allCarousels[0]?.slide_urls)
+    ? (allCarousels[0].slide_urls as string[]).slice(0, 5)
+    : []
 
   return (
     <div className="min-h-screen bg-white">
@@ -235,7 +243,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <DemoSection demoImages={demoImages} />
+      <DemoSection demoImages={demoImages} demoSlides={demoSlides} />
 
       {/* ── How It Works ─────────────────────────────────────────── */}
       <section id="how-it-works" className="bg-gradient-to-b from-zinc-950 to-zinc-900 py-24">
