@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Sidebar } from './sidebar'
 import { Header } from './header'
+import { OnboardingTour } from './onboarding-tour'
 import type { AirtableBrand } from '@/lib/airtable'
 
 interface CreditData {
@@ -24,6 +25,7 @@ export function AppShell({ brands, selectedBrandId, userEmail, creditData, child
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      <OnboardingTour />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header
