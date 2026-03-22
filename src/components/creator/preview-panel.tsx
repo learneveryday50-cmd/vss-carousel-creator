@@ -327,7 +327,7 @@ export function PreviewPanel({
               })}
             </div>
 
-            <p className="text-center text-[11px] text-gray-400">Usually takes 30&ndash;90 seconds</p>
+            <p className="text-center text-[11px] text-gray-400">Usually takes 3&ndash;5 minutes &mdash; AI is writing your slides and generating visuals</p>
           </motion.div>
         )}
 
