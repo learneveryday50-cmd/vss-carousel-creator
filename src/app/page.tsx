@@ -14,6 +14,7 @@ import {
   Image,
 } from 'lucide-react'
 import { DemoSection } from '@/components/landing/demo-section'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const LogoIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -76,6 +77,20 @@ export default async function LandingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (user) redirect('/dashboard')
+
+  // Fetch up to 6 real carousel first-slides for the demo section
+  const admin = createAdminClient()
+  const { data: featuredCarousels } = await admin
+    .from('carousels')
+    .select('slide_urls')
+    .eq('status', 'completed')
+    .not('slide_urls', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(6)
+
+  const demoImages: string[] = (featuredCarousels ?? [])
+    .map((c) => Array.isArray(c.slide_urls) && c.slide_urls[0] ? c.slide_urls[0] : null)
+    .filter(Boolean) as string[]
 
   return (
     <div className="min-h-screen bg-white">
@@ -220,7 +235,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <DemoSection />
+      <DemoSection demoImages={demoImages} />
 
       {/* ── How It Works ─────────────────────────────────────────── */}
       <section id="how-it-works" className="bg-gradient-to-b from-zinc-950 to-zinc-900 py-24">

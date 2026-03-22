@@ -52,7 +52,7 @@ function BrandScreen() {
   )
 }
 
-function TemplateScreen() {
+function TemplateScreen({ images }: { images: string[] }) {
   return (
     <div className="p-5 space-y-3.5 h-full overflow-hidden">
       <div>
@@ -61,25 +61,33 @@ function TemplateScreen() {
         <p className="text-[11px] text-gray-400 mt-0.5">Controls how every slide looks and feels.</p>
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {[
-          { selected: true,  bars: ['w-4/5', 'w-3/5', 'w-full'] },
-          { selected: false, bars: ['w-3/5', 'w-4/5', 'w-full'] },
-          { selected: false, bars: ['w-full', 'w-2/3', 'w-3/4'] },
-          { selected: false, bars: ['w-1/2', 'w-3/4', 'w-full'] },
-          { selected: false, bars: ['w-4/5', 'w-1/2', 'w-3/5'] },
-          { selected: false, bars: ['w-3/5', 'w-full', 'w-4/5'] },
-        ].map(({ selected, bars }, i) => (
-          <div
-            key={i}
-            className={`aspect-square rounded-xl border-2 flex flex-col p-2 gap-1 transition-colors ${
-              selected ? 'border-amber-400 bg-amber-50' : 'border-gray-200 bg-gray-50'
-            }`}
-          >
-            <div className={`h-2 rounded-full ${selected ? 'bg-amber-400' : 'bg-gray-300'} ${bars[0]}`} />
-            <div className={`h-1.5 rounded-full ${selected ? 'bg-amber-200' : 'bg-gray-200'} ${bars[1]}`} />
-            <div className={`flex-1 rounded-md mt-0.5 ${selected ? 'bg-amber-100' : 'bg-gray-200'} ${bars[2]}`} />
-          </div>
-        ))}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const imgUrl = images[i]
+          const selected = i === 0
+          return (
+            <div
+              key={i}
+              className={`aspect-square rounded-xl border-2 overflow-hidden transition-colors ${
+                selected ? 'border-amber-400 ring-2 ring-amber-200' : 'border-gray-200'
+              }`}
+            >
+              {imgUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={imgUrl}
+                  alt={`Carousel preview ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className={`w-full h-full flex flex-col p-2 gap-1 ${selected ? 'bg-amber-50' : 'bg-gray-50'}`}>
+                  <div className={`h-2 rounded-full ${selected ? 'bg-amber-300' : 'bg-gray-300'} w-4/5`} />
+                  <div className={`h-1.5 rounded-full ${selected ? 'bg-amber-200' : 'bg-gray-200'} w-3/5`} />
+                  <div className={`flex-1 rounded-md mt-0.5 ${selected ? 'bg-amber-100' : 'bg-gray-200'}`} />
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
       <div>
         <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Image style</p>
@@ -199,11 +207,9 @@ function DownloadScreen() {
   )
 }
 
-const screens = [BrandScreen, TemplateScreen, GenerateScreen, DownloadScreen]
-
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function DemoSection() {
+export function DemoSection({ demoImages = [] }: { demoImages?: string[] }) {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -246,7 +252,8 @@ export function DemoSection() {
     setActive(i)
   }
 
-  const ActiveScreen = screens[active]
+  const screenComponents = [BrandScreen, TemplateScreen, GenerateScreen, DownloadScreen]
+  const ActiveScreen = screenComponents[active]
 
   return (
     <section className="bg-white py-24">
@@ -354,7 +361,10 @@ export function DemoSection() {
 
                 {/* Main content */}
                 <div className="flex-1 overflow-hidden">
-                  <ActiveScreen />
+                  {active === 1
+                    ? <TemplateScreen images={demoImages} />
+                    : <ActiveScreen />
+                  }
                 </div>
               </div>
             </div>
