@@ -15,7 +15,6 @@ import {
 } from 'lucide-react'
 import { DemoSection } from '@/components/landing/demo-section'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { unstable_cache } from 'next/cache'
 
 const LogoIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -93,23 +92,14 @@ export default async function LandingPage() {
     .map((a) => a.template_content_url)
     .filter(Boolean) as string[]
 
-  // Step 4: one fixed sample carousel, cached for 24h so it never changes on its own
-  const getSampleSlides = unstable_cache(
-    async () => {
-      const { data } = await admin
-        .from('carousels')
-        .select('slide_urls')
-        .eq('status', 'completed')
-        .not('slide_urls', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single()
-      return Array.isArray(data?.slide_urls) ? (data.slide_urls as string[]).slice(0, 5) : []
-    },
-    ['demo-sample-slides'],
-    { revalidate: 86400 } // 24 hours — effectively static
-  )
-  const demoSlides = await getSampleSlides()
+  // Step 4: hardcoded sample carousel — fixed, never changes automatically
+  const demoSlides = [
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/recbrtQPOd5c6vyOh/slide-0.jpg',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/recbrtQPOd5c6vyOh/slide-1.jpg',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/recbrtQPOd5c6vyOh/slide-2.jpg',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/recbrtQPOd5c6vyOh/slide-3.jpg',
+    'https://ihtowlmrgjhgwgnxgimy.supabase.co/storage/v1/object/public/carousel-slides/recbrtQPOd5c6vyOh/slide-4.jpg',
+  ]
 
   return (
     <div className="min-h-screen bg-white">
