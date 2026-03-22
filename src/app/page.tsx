@@ -89,6 +89,9 @@ export default async function LandingPage() {
             <span className="text-gray-900 font-semibold text-sm tracking-tight">VSS Creator</span>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/manifesto" className="hidden sm:block text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
+              Manifesto
+            </Link>
             <Link href="/login" className="hidden sm:block text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors">
               Sign in
             </Link>
