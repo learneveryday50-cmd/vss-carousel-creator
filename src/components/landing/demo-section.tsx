@@ -57,8 +57,8 @@ function TemplateScreen({ images }: { images: string[] }) {
     <div className="p-5 space-y-3.5 h-full overflow-hidden">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-widest text-amber-600">Templates</p>
-        <h3 className="text-sm font-bold text-gray-900 mt-0.5">Pick your layout & style</h3>
-        <p className="text-[11px] text-gray-400 mt-0.5">Controls how every slide looks and feels.</p>
+        <h3 className="text-sm font-bold text-gray-900 mt-0.5">Pick your design style</h3>
+        <p className="text-[11px] text-gray-400 mt-0.5">Real templates from your Airtable assets.</p>
       </div>
       <div className="grid grid-cols-3 gap-2">
         {Array.from({ length: 6 }).map((_, i) => {
@@ -67,15 +67,17 @@ function TemplateScreen({ images }: { images: string[] }) {
           return (
             <div
               key={i}
-              className={`aspect-square rounded-xl border-2 overflow-hidden transition-colors ${
-                selected ? 'border-amber-400 ring-2 ring-amber-200' : 'border-gray-200'
+              className={`aspect-[3/4] rounded-xl border-2 overflow-hidden transition-colors ${
+                selected
+                  ? 'border-amber-400 ring-2 ring-amber-200 shadow-md'
+                  : 'border-gray-200 shadow-sm'
               }`}
             >
               {imgUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={imgUrl}
-                  alt={`Carousel preview ${i + 1}`}
+                  alt={`Template ${i + 1}`}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -88,21 +90,6 @@ function TemplateScreen({ images }: { images: string[] }) {
             </div>
           )
         })}
-      </div>
-      <div>
-        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Image style</p>
-        <div className="grid grid-cols-4 gap-1.5">
-          {['Technical', 'Notebook', 'Whiteboard', 'Comic'].map((s, i) => (
-            <div
-              key={s}
-              className={`rounded-lg border py-1.5 text-center text-[10px] font-semibold ${
-                i === 0 ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-gray-200 text-gray-500 bg-gray-50'
-              }`}
-            >
-              {s}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   )

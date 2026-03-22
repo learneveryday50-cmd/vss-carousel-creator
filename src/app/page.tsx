@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { DemoSection } from '@/components/landing/demo-section'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { unstable_cache } from 'next/cache'
 
 const LogoIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -78,27 +79,37 @@ export default async function LandingPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (user) redirect('/dashboard')
 
-  // Fetch real carousel images for the demo section
   const admin = createAdminClient()
-  const { data: featuredCarousels } = await admin
-    .from('carousels')
-    .select('slide_urls')
-    .eq('status', 'completed')
-    .not('slide_urls', 'is', null)
-    .order('created_at', { ascending: false })
+
+  // Step 2: template asset preview images from template_assets table
+  const { data: templateAssets } = await admin
+    .from('template_assets')
+    .select('template_content_url')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
     .limit(6)
 
-  const allCarousels = featuredCarousels ?? []
-
-  // Step 2: first slide of each carousel for the template grid
-  const demoImages: string[] = allCarousels
-    .map((c) => Array.isArray(c.slide_urls) && c.slide_urls[0] ? c.slide_urls[0] : null)
+  const demoImages: string[] = (templateAssets ?? [])
+    .map((a) => a.template_content_url)
     .filter(Boolean) as string[]
 
-  // Step 4: all slides from the most recent carousel for the download strip
-  const demoSlides: string[] = Array.isArray(allCarousels[0]?.slide_urls)
-    ? (allCarousels[0].slide_urls as string[]).slice(0, 5)
-    : []
+  // Step 4: one fixed sample carousel, cached for 24h so it never changes on its own
+  const getSampleSlides = unstable_cache(
+    async () => {
+      const { data } = await admin
+        .from('carousels')
+        .select('slide_urls')
+        .eq('status', 'completed')
+        .not('slide_urls', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+      return Array.isArray(data?.slide_urls) ? (data.slide_urls as string[]).slice(0, 5) : []
+    },
+    ['demo-sample-slides'],
+    { revalidate: 86400 } // 24 hours — effectively static
+  )
+  const demoSlides = await getSampleSlides()
 
   return (
     <div className="min-h-screen bg-white">
