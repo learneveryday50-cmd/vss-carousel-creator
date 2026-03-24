@@ -24,7 +24,7 @@ export default async function BillingPage({
   const plan = usage?.plan ?? 'free'
   const creditsRemaining = usage?.credits_remaining ?? 0
   const isPro = plan === 'pro'
-  const creditsPackConfigured = !!process.env.STRIPE_CREDITS_PRICE_ID
+  const creditsPackConfigured = !!process.env.LEMONSQUEEZY_CREDITS_VARIANT_ID
 
   return (
     <div className="max-w-2xl space-y-6">
