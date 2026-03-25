@@ -10,7 +10,7 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1968,
+        1952,
         608
       ],
       "id": "048bc977-8120-490d-83e1-499783566fb9",
@@ -23,8 +23,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3216,
-        608
+        4112,
+        592
       ],
       "id": "70f6a90e-63dc-4dde-928c-adcdf34530c8",
       "name": "MergeImageURLs"
@@ -37,7 +37,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        2400,
+        2640,
         432
       ],
       "id": "5febfb01-2fe8-481d-bbd7-b49827d3214f",
@@ -48,7 +48,7 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        2256,
+        2496,
         432
       ],
       "id": "24dd9047-bba5-4824-b79c-ac17319e96ec",
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        2256,
-        768
+        2464,
+        784
       ],
       "id": "8b3c3964-c26f-4647-8890-eefb287f4b7b",
       "name": "Limit2"
@@ -73,8 +73,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        2400,
-        768
+        2608,
+        784
       ],
       "id": "ada557d8-6eee-4ef6-9a6d-d4009458da2e",
       "name": "GetTemplateCTA"
@@ -87,7 +87,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        2400,
+        2240,
         608
       ],
       "id": "1839d3ee-603e-420f-9d94-bb6dbeea1870",
@@ -100,8 +100,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3024,
-        592
+        3920,
+        576
       ],
       "id": "2b4c0f96-2126-4d36-b48e-d9f0c734e8e4",
       "name": "Merge1"
@@ -116,7 +116,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1936,
+        1968,
         400
       ],
       "id": "b4d88222-7cbd-481d-8bde-e0d3ac718c99",
@@ -133,9 +133,8 @@
         "bodyParameters": {
           "parameters": [
             {
-              "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "data"
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
             }
           ]
         },
@@ -144,8 +143,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2752,
-        432
+        3584,
+        448
       ],
       "id": "9cd9483d-f141-49b4-9b51-f6214c9ca832",
       "name": "Get Carousel Front Img URL",
@@ -167,9 +166,8 @@
         "bodyParameters": {
           "parameters": [
             {
-              "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "data"
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
             }
           ]
         },
@@ -178,7 +176,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2752,
+        3632,
         608
       ],
       "id": "0888abe1-2993-4b61-bba0-ca376a08f169",
@@ -201,9 +199,8 @@
         "bodyParameters": {
           "parameters": [
             {
-              "parameterType": "formBinaryData",
               "name": "image",
-              "inputDataFieldName": "data"
+              "value": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}"
             }
           ]
         },
@@ -212,8 +209,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2752,
-        768
+        3568,
+        784
       ],
       "id": "49fe4bf0-b465-4e41-bbf3-a4b83fde14d3",
       "name": "Get Carousel CTA Img URL",
@@ -283,81 +280,8 @@
               "removed": false
             },
             {
-              "id": "Generated Image",
-              "displayName": "Generated Image",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "array",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Generated Infographic",
-              "displayName": "Generated Infographic",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "array",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Infographic Research",
-              "displayName": "Infographic Research",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "❗Schedule For",
-              "displayName": "❗Schedule For",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "dateTime",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "❗Schedule Type",
-              "displayName": "❗Schedule Type",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "options",
-              "options": [
-                {
-                  "name": "Image",
-                  "value": "Image"
-                },
-                {
-                  "name": "Infographic",
-                  "value": "Infographic"
-                },
-                {
-                  "name": "Carousel",
-                  "value": "Carousel"
-                },
-                {
-                  "name": "Plain Text",
-                  "value": "Plain Text"
-                }
-              ],
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Schedule (Postiz)",
-              "displayName": "Schedule (Postiz)",
+              "id": "Created",
+              "displayName": "Created",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -367,33 +291,15 @@
               "removed": true
             },
             {
-              "id": "Scheduling Status",
-              "displayName": "Scheduling Status",
+              "id": "Brand",
+              "displayName": "Brand",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "options",
-              "options": [
-                {
-                  "name": "Draft",
-                  "value": "Draft"
-                },
-                {
-                  "name": "In progress",
-                  "value": "In progress"
-                },
-                {
-                  "name": "Scheduled",
-                  "value": "Scheduled"
-                },
-                {
-                  "name": "Live",
-                  "value": "Live"
-                }
-              ],
+              "type": "array",
               "readOnly": false,
-              "removed": true
+              "removed": false
             },
             {
               "id": "System Message",
@@ -435,24 +341,13 @@
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "array",
+              "type": "string",
               "readOnly": false,
               "removed": true
             },
             {
               "id": "Link to Post",
               "displayName": "Link to Post",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": true,
-              "removed": true
-            },
-            {
-              "id": "Created",
-              "displayName": "Created",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -473,13 +368,13 @@
               "removed": true
             },
             {
-              "id": "Brand",
-              "displayName": "Brand",
+              "id": "🌱 Ideas copy",
+              "displayName": "🌱 Ideas copy",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "array",
+              "type": "string",
               "readOnly": false,
               "removed": false
             }
@@ -494,8 +389,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        3408,
-        608
+        4304,
+        592
       ],
       "id": "370ee877-ea77-44ed-bad4-eaf7534b1c62",
       "name": "Update Draft Posts",
@@ -773,37 +668,6 @@
       ],
       "id": "14a3790a-9e77-451d-8fbd-e8ff730a6382",
       "name": "Merge Inputs"
-    },
-    {
-      "parameters": {
-        "base": {
-          "__rl": true,
-          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
-          "mode": "url"
-        },
-        "table": {
-          "__rl": true,
-          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
-          "mode": "url"
-        },
-        "id": "={{ $('Get Idea').item.json[\"❗Design Style\"][0] }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        640,
-        736
-      ],
-      "id": "090a81bf-c1b5-4cd9-bad3-b681926a7bd9",
-      "name": "Get Visual Style",
-      "notesInFlow": true,
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "okOhvQfWwyH5CNvd",
-          "name": "add"
-        }
-      }
     },
     {
       "parameters": {
@@ -1232,7 +1096,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Idea",
@@ -1243,7 +1107,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Date",
@@ -1265,7 +1129,7 @@
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "❗Design Style",
@@ -1276,7 +1140,7 @@
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Front Page (from Carousel_Template)",
@@ -1287,7 +1151,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Content Page (from Carousel_Template)",
@@ -1298,7 +1162,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "CTA Page (from Carousel_Template)",
@@ -1309,7 +1173,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Examples (from Design Style)",
@@ -1320,7 +1184,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "❗Brand Voice",
@@ -1342,7 +1206,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Number of Drafts",
@@ -1364,7 +1228,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "System Message",
@@ -1400,7 +1264,7 @@
                 }
               ],
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-posts",
@@ -1411,7 +1275,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Content",
@@ -1422,7 +1286,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Type",
@@ -1433,7 +1297,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Media",
@@ -1444,7 +1308,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Transcript",
@@ -1455,7 +1319,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Date Published",
@@ -1466,7 +1330,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Likes",
@@ -1477,7 +1341,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Comments",
@@ -1488,7 +1352,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Shares",
@@ -1499,7 +1363,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Post-Creator Name",
@@ -1510,7 +1374,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-videos",
@@ -1521,7 +1385,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Video-Title",
@@ -1532,7 +1396,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Video-Summary",
@@ -1543,7 +1407,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-Video-Thumbnail",
@@ -1554,7 +1418,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-news",
@@ -1565,7 +1429,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Link-ideas",
@@ -1576,7 +1440,7 @@
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Source (from Link-News)",
@@ -1587,7 +1451,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Key Points (from Link-News)",
@@ -1598,7 +1462,7 @@
               "display": true,
               "type": "string",
               "readOnly": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Primary Hook",
@@ -1609,7 +1473,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Variations",
@@ -1620,7 +1484,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "Logic",
@@ -1631,7 +1495,7 @@
               "display": true,
               "type": "string",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "📝 Draft Posts",
@@ -1642,7 +1506,7 @@
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": false
+              "removed": true
             },
             {
               "id": "From field: Link-ExistingIdea",
@@ -1653,7 +1517,7 @@
               "display": true,
               "type": "array",
               "readOnly": false,
-              "removed": false
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -1664,8 +1528,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        3616,
-        608
+        4512,
+        592
       ],
       "id": "6cd91063-6601-4d9d-9162-01c193baf4c0",
       "name": "System Message2",
@@ -2028,89 +1892,8 @@
     },
     {
       "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json.output.variations[0].carousel_front_page_prompt }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 2,
-      "position": [
-        2544,
-        432
-      ],
-      "id": "9d00a670-6cf3-46a7-a689-0db2f9f2aa67",
-      "name": "Edit image",
-      "credentials": {
-        "openAiApi": {
-          "id": "3Lj2DKcCIFwhG8O6",
-          "name": "OpenAi account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json[\"output.variations[0].carousel_content_slide_prompts\"] }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 2,
-      "position": [
-        2576,
-        608
-      ],
-      "id": "75cad215-326b-4f93-b31c-7c81437e09ff",
-      "name": "Edit image1",
-      "credentials": {
-        "openAiApi": {
-          "id": "3Lj2DKcCIFwhG8O6",
-          "name": "OpenAi account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "edit",
-        "prompt": "={{ $json.output.variations[0].carousel_cta_page_prompt }}",
-        "images": {
-          "values": [
-            {}
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 2,
-      "position": [
-        2576,
-        768
-      ],
-      "id": "ae906381-5e9e-4280-a748-f2bc0677fb20",
-      "name": "Edit image2",
-      "credentials": {
-        "openAiApi": {
-          "id": "3Lj2DKcCIFwhG8O6",
-          "name": "OpenAi account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "method": "POST",
-        "url": "http://localhost:3000/api/webhook/generation-done",
+        "url": "https://unpoised-lauri-besiegingly.ngrok-free.dev/api/webhook/generation-done",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -2125,12 +1908,25 @@
           ]
         },
         "sendBody": true,
-        "contentType": "json",
-        "body": {
-          "record_id": "={{ $('Webhook').first().json.query.record_id }}",
-          "status": "completed",
-          "post_body": "={{ $('Body & Carousel Prompts').first().json.output.variations[0].post_body }}",
-          "slide_urls": "={{ $('MergeImageURLs').first().json.attachments.map(a => a.url) }}"
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "record_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "status",
+              "value": "completed"
+            },
+            {
+              "name": "post_body",
+              "value": "={{ $('Body & Carousel Prompts').first().json.output.variations[0].post_body }}"
+            },
+            {
+              "name": "slide_urls",
+              "value": "={{ $('Merge1').all().map(item => item.json.data.url) }}"
+            }
+          ]
         },
         "options": {
           "response": {
@@ -2143,41 +1939,504 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3856,
-        608
+        4736,
+        592
       ],
-      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "id": "4a5e9393-2bde-4f30-923a-a7d823df443d",
       "name": "Notify App (Webhook)"
-    }
-  ],
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "ovobvc.ezn8n.com",
-            "x-real-ip": "103.176.152.15",
-            "x-forwarded-for": "103.176.152.15",
-            "x-forwarded-proto": "https",
-            "connection": "Upgrade",
-            "accept": "*/*",
-            "accept-language": "*",
-            "sec-fetch-mode": "cors",
-            "user-agent": "node",
-            "accept-encoding": "br, gzip, deflate"
-          },
-          "params": {},
-          "query": {
-            "table_url": "https://airtable.com/appI5nS17LKNdDYGe/tblUGmJPBXfs81pSj/viwucSI3YDRj4OrMi?blocks=hide",
-            "record_id": "recwWys3My6BxgPBw"
-          },
-          "body": {},
-          "webhookUrl": "https://ovobvc.ezn8n.com/webhook/create-carousel",
-          "executionMode": "production"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\": {{ JSON.stringify($('Body & Carousel Prompts').item.json.output.variations[0].carousel_front_page_prompt) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2960,
+        432
+      ],
+      "id": "1a2cce24-ae07-4f70-bd4b-d2d070961a9a",
+      "name": "KIE",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
         }
       }
-    ]
-  },
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "={{ $('InputTableUrls').first().json.inputs.find(i => i.input === 'asset design styles').table_url }}",
+          "mode": "url"
+        },
+        "id": "={{ $('Get Idea').item.json[\"❗Design Style\"][0] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        736
+      ],
+      "id": "090a81bf-c1b5-4cd9-bad3-b681926a7bd9",
+      "name": "Get Visual Style",
+      "notesInFlow": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "okOhvQfWwyH5CNvd",
+          "name": "add"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        432
+      ],
+      "id": "a4c27d7d-42fd-4980-82fa-7b268f185450",
+      "name": "Get Carousel Front Img URL1",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3248,
+        432
+      ],
+      "id": "31ee52f9-c77b-4cd1-9f0f-3a3eb3aac658",
+      "name": "KIE1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        432
+      ],
+      "id": "a4a03c42-168e-4a61-8e20-70d0d04eb4b1",
+      "name": "Wait4",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\":{{ JSON.stringify($('Split Out1').item.json['[\\'output.variations[0].carousel_content_slide_prompts\\']']) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2960,
+        608
+      ],
+      "id": "30e790c5-6cab-4b52-82df-de0ed8c14408",
+      "name": "KIE2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        608
+      ],
+      "id": "46b6b49d-9c1f-4f8a-95a9-3341d109bbb8",
+      "name": "Get Carousel Front Img URL2",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE2').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3248,
+        608
+      ],
+      "id": "d3994cf1-7f0e-472b-84b8-5ed72401fd9c",
+      "name": "KIE3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 100
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        608
+      ],
+      "id": "1e8f6d81-9104-4fc4-84e6-bc0093bbc60e",
+      "name": "Wait",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nano-banana-2\",\n  \"input\": {\n    \"prompt\": {{ JSON.stringify($('Body & Carousel Prompts').item.json.output.variations[0].carousel_cta_page_prompt) }},\n    \"image_input\": [\n      \"{{ $json.data.url }}\"\n    ],\n    \"aspect_ratio\": \"1:1\",\n    \"resolution\": \"1K\",\n    \"output_format\": \"png\"\n  }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2928,
+        784
+      ],
+      "id": "38ce9ddf-5cf4-4c74-9c12-ce69d70f94da",
+      "name": "KIE4",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2768,
+        784
+      ],
+      "id": "121c80d0-8a15-4a05-92f3-786698bf67d9",
+      "name": "Get Carousel Front Img URL3",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rVjLBTIvN7AxAOOx",
+          "name": "Imagebb"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.kie.ai/api/v1/playground/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $('KIE4').item.json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3216,
+        784
+      ],
+      "id": "f84a0a6b-5020-453b-be2f-a734412540e6",
+      "name": "KIE5",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "R1R9U8yoCqrOdkyH",
+          "name": "KIE AI Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3072,
+        784
+      ],
+      "id": "c69d3c6c-af27-46ca-a61d-343e463f2a21",
+      "name": "Wait5",
+      "webhookId": "bcd9454c-2a4c-4d37-983b-49bd8650f03e"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "['output.variations[0].carousel_content_slide_prompts']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        608
+      ],
+      "id": "8ed5b451-66af-4b66-ab88-92c8dadc9fc3",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3392,
+        432
+      ],
+      "id": "e988050d-15f9-4088-91be-97611e5dc86c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3424,
+        608
+      ],
+      "id": "f2f85bcf-c7ab-4826-9460-eff6916375ad",
+      "name": "If1",
+      "retryOnFail": true,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c48bb8bc-e6d2-4554-93bc-d32981720901",
+              "leftValue": "={{ $json.data.state }}",
+              "rightValue": "success",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3392,
+        784
+      ],
+      "id": "9458c66d-fed0-4c3b-ada1-7054ecb93718",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Get Carousel Template').first().json[\"Content Page\"][0].url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2640,
+        608
+      ],
+      "id": "6c744132-bfbb-4b4c-9fc8-89389267457a",
+      "name": "GetTemplateContent1"
+    }
+  ],
+  "pinData": {},
   "connections": {
     "Split Out": {
       "main": [
@@ -2188,12 +2447,12 @@
             "index": 0
           },
           {
-            "node": "Limit1",
+            "node": "Limit2",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Limit2",
+            "node": "Limit1",
             "type": "main",
             "index": 0
           }
@@ -2215,7 +2474,7 @@
       "main": [
         [
           {
-            "node": "Edit image",
+            "node": "Get Carousel Front Img URL1",
             "type": "main",
             "index": 0
           }
@@ -2248,7 +2507,7 @@
       "main": [
         [
           {
-            "node": "Edit image2",
+            "node": "Get Carousel Front Img URL3",
             "type": "main",
             "index": 0
           }
@@ -2259,7 +2518,7 @@
       "main": [
         [
           {
-            "node": "Edit image1",
+            "node": "Split Out1",
             "type": "main",
             "index": 0
           }
@@ -2413,17 +2672,6 @@
         ]
       ]
     },
-    "Get Visual Style": {
-      "main": [
-        [
-          {
-            "node": "Merge Inputs",
-            "type": "main",
-            "index": 2
-          }
-        ]
-      ]
-    },
     "Merge Inputs": {
       "main": [
         [
@@ -2484,30 +2732,180 @@
         ]
       ]
     },
-    "Edit image2": {
+    "System Message2": {
       "main": [
         [
           {
-            "node": "Get Carousel CTA Img URL",
+            "node": "Notify App (Webhook)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit image1": {
+    "KIE": {
       "main": [
         [
           {
-            "node": "Get Carousel Content Img URL",
+            "node": "Wait4",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit image": {
+    "Get Visual Style": {
       "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL1": {
+      "main": [
+        [
+          {
+            "node": "KIE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "KIE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL2": {
+      "main": [
+        [
+          {
+            "node": "KIE2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "KIE3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE4": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Carousel Front Img URL3": {
+      "main": [
+        [
+          {
+            "node": "KIE4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "KIE5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KIE5": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "GetTemplateContent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Get Carousel Front Img URL",
@@ -2517,11 +2915,47 @@
         ]
       ]
     },
-    "System Message2": {
+    "If1": {
       "main": [
         [
           {
-            "node": "Notify App (Webhook)",
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Carousel Content Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Carousel CTA Img URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetTemplateContent1": {
+      "main": [
+        [
+          {
+            "node": "Get Carousel Front Img URL2",
             "type": "main",
             "index": 0
           }
@@ -2533,7 +2967,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "749a8909-f294-4c09-b80e-e7293131ca7b",
+  "versionId": "60487b0c-e77b-4182-badd-8ece59071537",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
