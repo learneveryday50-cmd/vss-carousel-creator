@@ -1,7 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
-import { createCheckoutSession, createCreditTopupSession, redirectToCustomerPortal } from './actions'
+import { buyCredits10, buyCredits25, buyCredits50 } from './actions'
 
 const Spinner = () => (
   <svg className="animate-spin w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
@@ -10,44 +10,28 @@ const Spinner = () => (
   </svg>
 )
 
-export function UpgradeButton() {
+function BuyButton({ action, label }: { action: () => Promise<void>; label: string }) {
   const [isPending, startTransition] = useTransition()
   return (
     <button
-      onClick={() => startTransition(() => createCheckoutSession())}
-      disabled={isPending}
-      className="bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap disabled:opacity-70 inline-flex items-center gap-2"
-    >
-      {isPending && <Spinner />}
-      {isPending ? 'Redirecting…' : 'Upgrade →'}
-    </button>
-  )
-}
-
-export function BuyCreditsButton() {
-  const [isPending, startTransition] = useTransition()
-  return (
-    <button
-      onClick={() => startTransition(() => createCreditTopupSession())}
+      onClick={() => startTransition(() => action())}
       disabled={isPending}
       className="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap disabled:opacity-70 inline-flex items-center gap-2"
     >
       {isPending && <Spinner />}
-      {isPending ? 'Redirecting…' : 'Buy 10 credits →'}
+      {isPending ? 'Redirecting…' : label}
     </button>
   )
 }
 
-export function ManageBillingButton() {
-  const [isPending, startTransition] = useTransition()
-  return (
-    <button
-      onClick={() => startTransition(() => redirectToCustomerPortal())}
-      disabled={isPending}
-      className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors disabled:opacity-70 inline-flex items-center gap-2"
-    >
-      {isPending && <Spinner />}
-      {isPending ? 'Opening…' : 'Manage Billing'}
-    </button>
-  )
+export function Buy10CreditsButton() {
+  return <BuyButton action={buyCredits10} label="Buy 10 credits →" />
+}
+
+export function Buy25CreditsButton() {
+  return <BuyButton action={buyCredits25} label="Buy 25 credits →" />
+}
+
+export function Buy50CreditsButton() {
+  return <BuyButton action={buyCredits50} label="Buy 50 credits →" />
 }
