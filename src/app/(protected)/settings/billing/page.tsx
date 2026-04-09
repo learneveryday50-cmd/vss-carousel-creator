@@ -1,13 +1,31 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { Buy10CreditsButton, Buy25CreditsButton, Buy50CreditsButton } from './billing-buttons'
+import { RedeemKeyForm } from './redeem-key-form'
 
 export const metadata = { title: 'Billing' }
 
 const CREDIT_PACKS = [
-  { credits: 10, price: '$9', label: 'Starter Pack', description: 'Perfect for trying out', Button: Buy10CreditsButton },
-  { credits: 25, price: '$19', label: 'Creator Pack', description: 'Most popular', Button: Buy25CreditsButton },
-  { credits: 50, price: '$35', label: 'Pro Pack', description: 'Best value', Button: Buy50CreditsButton },
+  {
+    credits: 10,
+    price: '$9',
+    label: 'Starter Pack',
+    description: 'Perfect for trying out',
+    url: process.env.NEXT_PUBLIC_GUMROAD_URL_10,
+  },
+  {
+    credits: 25,
+    price: '$19',
+    label: 'Creator Pack',
+    description: 'Most popular',
+    url: process.env.NEXT_PUBLIC_GUMROAD_URL_25,
+  },
+  {
+    credits: 50,
+    price: '$35',
+    label: 'Pro Pack',
+    description: 'Best value',
+    url: process.env.NEXT_PUBLIC_GUMROAD_URL_50,
+  },
 ]
 
 export default async function BillingPage({
@@ -63,7 +81,7 @@ export default async function BillingPage({
       <div>
         <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-3">Buy Credits</h2>
         <div className="space-y-3">
-          {CREDIT_PACKS.map(({ credits, price, label, description, Button }) => (
+          {CREDIT_PACKS.map(({ credits, price, label, description, url }) => (
             <div key={credits} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -79,7 +97,14 @@ export default async function BillingPage({
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <Button />
+                  <a
+                    href={url ?? '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap inline-flex items-center gap-1"
+                  >
+                    Buy on Gumroad →
+                  </a>
                 </div>
               </div>
             </div>
@@ -87,9 +112,18 @@ export default async function BillingPage({
         </div>
       </div>
 
+      {/* Redeem license key */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-1">Redeem License Key</h2>
+        <p className="text-xs text-gray-400 mb-4">
+          After purchasing, you&apos;ll receive a license key by email. Enter it below to add credits.
+        </p>
+        <RedeemKeyForm />
+      </div>
+
       {/* Info note */}
       <p className="text-xs text-gray-400 text-center">
-        Credits never expire · Secure checkout via Whop · Instant delivery
+        Credits never expire · Secure checkout via Gumroad · Instant delivery
       </p>
 
     </div>

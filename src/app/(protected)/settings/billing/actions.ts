@@ -2,33 +2,77 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
-const CREDIT_PACKS = {
-  10: process.env.WHOP_CHECKOUT_10_CREDITS,
-  25: process.env.WHOP_CHECKOUT_25_CREDITS,
-  50: process.env.WHOP_CHECKOUT_50_CREDITS,
-} as const
+const GUMROAD_VERIFY_URL = 'https://api.gumroad.com/v2/licenses/verify'
 
-function buildCheckoutUrl(baseUrl: string, userId: string, credits: number, appUrl: string) {
-  const redirectUri = encodeURIComponent(`${appUrl}/settings/billing?success=credits`)
-  return `${baseUrl}?redirect_uri=${redirectUri}&metadata[user_id]=${userId}&metadata[credits]=${credits}`
+const PRODUCTS = [
+  { productId: process.env.GUMROAD_PRODUCT_10!, credits: 10 },
+  { productId: process.env.GUMROAD_PRODUCT_25!, credits: 25 },
+  { productId: process.env.GUMROAD_PRODUCT_50!, credits: 50 },
+]
+
+async function verifyGumroadLicense(productId: string, licenseKey: string, increment: boolean) {
+  const res = await fetch(GUMROAD_VERIFY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      product_id: productId,
+      license_key: licenseKey,
+      increment_uses_count: increment ? 'true' : 'false',
+    }),
+  })
+  return res.json() as Promise<{ success: boolean; uses?: number; message?: string }>
 }
 
-async function buyCredits(credits: 10 | 25 | 50) {
-  const baseUrl = CREDIT_PACKS[credits]
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-
-  if (!baseUrl || !appUrl) {
-    throw new Error('Billing not configured. Please contact support.')
-  }
+export async function redeemKey(
+  _prevState: { error?: string } | null,
+  formData: FormData,
+): Promise<{ error: string }> {
+  const key = ((formData.get('license_key') as string) ?? '').trim()
+  if (!key) return { error: 'Please enter a license key.' }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  redirect(buildCheckoutUrl(baseUrl, user.id, credits, appUrl))
-}
+  // Find which product this key belongs to (check without incrementing first)
+  let matched: { permalink: string; credits: number } | null = null
+  let currentUses = 0
 
-export async function buyCredits10() { return buyCredits(10) }
-export async function buyCredits25() { return buyCredits(25) }
-export async function buyCredits50() { return buyCredits(50) }
+  for (const product of PRODUCTS) {
+    if (!product.productId) continue
+    const data = await verifyGumroadLicense(product.productId, key, false)
+    if (data.success) {
+      matched = product
+      currentUses = data.uses ?? 0
+      break
+    }
+  }
+
+  if (!matched) return { error: 'Invalid license key. Please check and try again.' }
+  if (currentUses > 0) return { error: 'This license key has already been redeemed.' }
+
+  // Mark as used (increment_uses_count=true)
+  const confirm = await verifyGumroadLicense(matched.productId, key, true)
+  if (!confirm.success || (confirm.uses ?? 0) > 1) {
+    return { error: 'This license key has already been redeemed.' }
+  }
+
+  const admin = createAdminClient()
+  const { data: current } = await admin
+    .from('usage_tracking')
+    .select('credits_remaining')
+    .eq('user_id', user.id)
+    .single()
+
+  await admin
+    .from('usage_tracking')
+    .update({
+      credits_remaining: (current?.credits_remaining ?? 0) + matched.credits,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('user_id', user.id)
+
+  redirect('/settings/billing?success=credits')
+}

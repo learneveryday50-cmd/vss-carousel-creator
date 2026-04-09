@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-04-09T15:06:32.112Z",
+  "phase": "billing-gumroad",
+  "phase_name": "Gumroad Billing Migration",
+  "phase_dir": null,
+  "plan": 1,
+  "task": 2,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "Replace Whop billing with Gumroad license key redemption",
+      "status": "done",
+      "commit": "pending"
+    },
+    {
+      "id": 2,
+      "name": "Configure Receipt tab on Gumroad 10-credit product",
+      "status": "done",
+      "commit": "pending"
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": 3,
+      "name": "Create 25-credit and 50-credit Gumroad products + set env vars",
+      "status": "not_started"
+    }
+  ],
+  "blockers": [],
+  "human_actions_pending": [
+    {
+      "action": "Create 25-credit product ($19) on Gumroad with license key enabled — copy Product ID from Content tab",
+      "context": "Same flow as 10-credit product already created",
+      "blocking": true
+    },
+    {
+      "action": "Create 50-credit product ($35) on Gumroad with license key enabled — copy Product ID from Content tab",
+      "context": "Same flow as 10-credit product already created",
+      "blocking": true
+    },
+    {
+      "action": "Set env vars in .env.local and Vercel: GUMROAD_PRODUCT_10, GUMROAD_PRODUCT_25, GUMROAD_PRODUCT_50, NEXT_PUBLIC_GUMROAD_URL_10, NEXT_PUBLIC_GUMROAD_URL_25, NEXT_PUBLIC_GUMROAD_URL_50",
+      "context": "GUMROAD_PRODUCT_10 product ID is tYtvc16VQuecUnFp54Szww== (permalink wmmnhz). Buy URLs come from Share tab of each product.",
+      "blocking": true
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Use Gumroad Product ID (not permalink) as the product_id in license verify API calls",
+      "rationale": "Gumroad UI explicitly says 'Use your product ID to verify licenses through the API' and shows the base64 ID",
+      "phase": "billing-gumroad"
+    },
+    {
+      "decision": "Try all 3 products when verifying a key — user doesn't specify which pack they bought",
+      "rationale": "Simpler UX — single key input, server tries each product until one matches",
+      "phase": "billing-gumroad"
+    },
+    {
+      "decision": "Check uses===0 before incrementing, then check uses===1 after — prevents double redemption",
+      "rationale": "Gumroad has no separate mark-as-used endpoint; increment_uses_count=true on verify is the mechanism",
+      "phase": "billing-gumroad"
+    }
+  ],
+  "uncommitted_files": [
+    "src/app/(protected)/settings/billing/actions.ts",
+    "src/app/(protected)/settings/billing/page.tsx",
+    "src/app/(protected)/settings/billing/redeem-key-form.tsx",
+    "src/app/(protected)/settings/billing/billing-buttons.tsx (deleted)",
+    "src/app/api/whop/webhook/route.ts (deleted)",
+    ".env.local.example"
+  ],
+  "next_action": "User creates 25 and 50 credit Gumroad products, then pastes Product IDs + buy URLs here. Then set 6 env vars in .env.local and Vercel dashboard.",
+  "context_notes": "Billing fully migrated from Whop to Gumroad in code. 10-credit product already created on Gumroad (Product ID: tYtvc16VQuecUnFp54Szww==, permalink: wmmnhz). Receipt tab configured with button text 'Redeem in VSS Creator' and instructions. Code changes uncommitted — waiting for user to finish creating products before deploying."
+}
