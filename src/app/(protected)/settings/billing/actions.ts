@@ -61,19 +61,24 @@ export async function redeemKey(
   }
 
   const admin = createAdminClient()
-  const { data: current } = await admin
+  const { data: current, error: selectError } = await admin
     .from('usage_tracking')
-    .select('credits_remaining')
+    .select('id, credits_remaining')
     .eq('user_id', user.id)
     .single()
 
-  const { error: updateError } = await admin
+  console.log(`[credits] user=${user.id} select=`, JSON.stringify({ current, selectError }))
+
+  const { data: updated, error: updateError } = await admin
     .from('usage_tracking')
     .update({
       credits_remaining: (current?.credits_remaining ?? 0) + matched.credits,
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', user.id)
+    .select('credits_remaining')
+
+  console.log(`[credits] update=`, JSON.stringify({ updated, updateError }))
 
   if (updateError) return { error: 'Failed to add credits. Please contact support.' }
 
