@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -66,7 +67,7 @@ export async function redeemKey(
     .eq('user_id', user.id)
     .single()
 
-  await admin
+  const { error: updateError } = await admin
     .from('usage_tracking')
     .update({
       credits_remaining: (current?.credits_remaining ?? 0) + matched.credits,
@@ -74,5 +75,8 @@ export async function redeemKey(
     })
     .eq('user_id', user.id)
 
+  if (updateError) return { error: 'Failed to add credits. Please contact support.' }
+
+  revalidatePath('/', 'layout')
   redirect('/settings/billing?success=credits')
 }
