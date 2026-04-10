@@ -1,11 +1,11 @@
 {
   "version": "1.0",
-  "timestamp": "2026-04-10T04:44:39.638Z",
+  "timestamp": "2026-04-10T15:20:43.743Z",
   "phase": "billing-gumroad",
   "phase_name": "Gumroad License Key Billing",
   "phase_dir": null,
   "plan": 1,
-  "task": 5,
+  "task": 6,
   "total_tasks": 7,
   "status": "paused",
   "completed_tasks": [
@@ -13,37 +13,37 @@
     {"id": 2, "name": "Wire Gumroad env vars in .env.local and Vercel", "status": "done", "commit": "a04863a"},
     {"id": 3, "name": "Fix type bug and remove LemonSqueezy route", "status": "done", "commit": "a04863a"},
     {"id": 4, "name": "Move redeem form above credit packs, amber button", "status": "done", "commit": "2b1ed68"},
-    {"id": 5, "name": "Add debug logging to diagnose license verify failure", "status": "done", "commit": "c59bab6"}
+    {"id": 5, "name": "Fix env vars to use real base64 product IDs", "status": "done", "commit": "ec36b0a"},
+    {"id": 6, "name": "Debug credit update not persisting after redemption", "status": "in_progress", "progress": "License verification works end-to-end. Success banner appears. But credits_remaining in DB not updating. Debug logs added (54250af) — waiting for Vercel deploy + Vercel logs to diagnose."}
   ],
   "remaining_tasks": [
-    {"id": 6, "name": "Fix env vars to use real base64 product IDs (not permalinks)", "status": "blocked"},
-    {"id": 7, "name": "Confirm end-to-end license redemption works, then remove debug log", "status": "not_started"}
+    {"id": 7, "name": "Fix credits_remaining not updating after redemption, remove debug logs", "status": "not_started"}
   ],
   "blockers": [
     {
-      "description": "GUMROAD_PRODUCT_* env vars are set to permalinks (wmmnhz/wkfkih/irpqju) but Gumroad API requires base64 product IDs",
-      "type": "human_action",
-      "workaround": "10-credit product ID is tYtvc16VQuecUnFp54Szww== (from prior session). Need IDs for 20 and 40 credit products from Gumroad Content tab."
+      "description": "credits_remaining in usage_tracking not updating after successful license redemption. Admin client update query returns no error but DB value stays at 2.",
+      "type": "technical",
+      "workaround": "Debug logs added in commit 54250af. Need Vercel runtime logs from a fresh redemption attempt to diagnose root cause."
     }
   ],
   "human_actions_pending": [
     {
-      "action": "Get base64 product IDs from Gumroad Content tab for 20-credit (wkfkih) and 40-credit (irpqju) products. Update GUMROAD_PRODUCT_10/20/40 in .env.local and Vercel to the base64 IDs.",
-      "context": "10-credit ID already known: tYtvc16VQuecUnFp54Szww==. Gumroad shows this on Content tab: 'Use your product ID to verify licenses through the API'.",
+      "action": "Wait for Vercel to deploy commit 54250af, redeem a fresh license key, then paste [credits] log lines from Vercel runtime logs",
+      "context": "Debug logging added to show: user.id, select result (current credits + row id), update result (updated row or error). This will reveal whether the admin client is finding the row and whether the update is matching any rows.",
       "blocking": true
     },
     {
-      "action": "Once verified working: remove debug console.log from actions.ts (the [gumroad] line)",
-      "context": "Temporary debug line added at commit c59bab6",
+      "action": "Once bug is fixed, remove debug console.log lines from actions.ts",
+      "context": "Two [credits] log lines added at commit 54250af",
       "blocking": false
     }
   ],
   "decisions": [
     {"decision": "Products are 10/20/40 credits at $9/$19/$35", "rationale": "User created these on Gumroad with permalinks wmmnhz/wkfkih/irpqju", "phase": "billing-gumroad"},
-    {"decision": "Use base64 product ID (not permalink) as product_id in Gumroad license verify API", "rationale": "Gumroad API requires internal product ID, not URL slug. 10-credit ID: tYtvc16VQuecUnFp54Szww==", "phase": "billing-gumroad"},
-    {"decision": "Redeem form placed above credit packs, amber button", "rationale": "User preference + design consistency", "phase": "billing-gumroad"}
+    {"decision": "Use base64 product ID (not permalink) as product_id in Gumroad license verify API", "rationale": "Gumroad API requires internal product ID. IDs: 10cr=tYtvc16VQuecUnFp54Szww==, 20cr=b719PQqdbT4Wd9kSayFQSA==, 40cr=OmdGKqdeve6mG2HLe9SmzA==", "phase": "billing-gumroad"},
+    {"decision": "Admin client (service role) used for DB mutations, user client for auth only", "rationale": "usage_tracking has SELECT-only RLS for users; writes require service role", "phase": "billing-gumroad"}
   ],
   "uncommitted_files": [],
-  "next_action": "Get base64 product IDs for 20 and 40 credit products from Gumroad Content tab → update GUMROAD_PRODUCT_20 and GUMROAD_PRODUCT_40 env vars in .env.local and Vercel → also update GUMROAD_PRODUCT_10 from wmmnhz to tYtvc16VQuecUnFp54Szww== → redeploy → test redemption",
-  "context_notes": "All UI and code is correct and deployed. The ONLY remaining bug is that GUMROAD_PRODUCT_* env vars use URL slugs instead of base64 product IDs. Once those 3 env vars are corrected in Vercel (no code change needed), the license redemption will work."
+  "next_action": "Get [credits] log lines from Vercel runtime logs after redeeming a fresh license key on the deployed commit 54250af. The logs will show whether user.id, the SELECT row, and the UPDATE result look correct.",
+  "context_notes": "License verification (Gumroad API call) works correctly — correct product matched, uses count checked, increment confirmed. The bug is specifically in the Supabase admin client update that follows. The update returns no error but credits_remaining stays at 2. Hypothesis: either 0 rows matched (user_id mismatch somehow) or the update is being rolled back. Debug logs added to surface the actual DB state."
 }
