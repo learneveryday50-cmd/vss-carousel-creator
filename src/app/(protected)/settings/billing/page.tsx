@@ -77,6 +77,15 @@ export default async function BillingPage({
         </p>
       </div>
 
+      {/* Redeem license key */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-1">Redeem License Key</h2>
+        <p className="text-xs text-gray-400 mb-4">
+          After purchasing, you&apos;ll receive a license key by email. Enter it below to add credits.
+        </p>
+        <RedeemKeyForm />
+      </div>
+
       {/* Credit packs */}
       <div>
         <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-3">Buy Credits</h2>
@@ -110,15 +119,6 @@ export default async function BillingPage({
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Redeem license key */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-        <h2 className="text-sm font-bold text-gray-700 uppercase tracking-widest mb-1">Redeem License Key</h2>
-        <p className="text-xs text-gray-400 mb-4">
-          After purchasing, you&apos;ll receive a license key by email. Enter it below to add credits.
-        </p>
-        <RedeemKeyForm />
       </div>
 
       {/* Info note */}
