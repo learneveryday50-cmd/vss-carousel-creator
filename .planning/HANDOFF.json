@@ -1,77 +1,49 @@
 {
   "version": "1.0",
-  "timestamp": "2026-04-09T15:06:32.112Z",
+  "timestamp": "2026-04-10T04:44:39.638Z",
   "phase": "billing-gumroad",
-  "phase_name": "Gumroad Billing Migration",
+  "phase_name": "Gumroad License Key Billing",
   "phase_dir": null,
   "plan": 1,
-  "task": 2,
-  "total_tasks": 3,
+  "task": 5,
+  "total_tasks": 7,
   "status": "paused",
   "completed_tasks": [
-    {
-      "id": 1,
-      "name": "Replace Whop billing with Gumroad license key redemption",
-      "status": "done",
-      "commit": "pending"
-    },
-    {
-      "id": 2,
-      "name": "Configure Receipt tab on Gumroad 10-credit product",
-      "status": "done",
-      "commit": "pending"
-    }
+    {"id": 1, "name": "Update credit packs to 10/20/40 credits", "status": "done", "commit": "a04863a"},
+    {"id": 2, "name": "Wire Gumroad env vars in .env.local and Vercel", "status": "done", "commit": "a04863a"},
+    {"id": 3, "name": "Fix type bug and remove LemonSqueezy route", "status": "done", "commit": "a04863a"},
+    {"id": 4, "name": "Move redeem form above credit packs, amber button", "status": "done", "commit": "2b1ed68"},
+    {"id": 5, "name": "Add debug logging to diagnose license verify failure", "status": "done", "commit": "c59bab6"}
   ],
   "remaining_tasks": [
+    {"id": 6, "name": "Fix env vars to use real base64 product IDs (not permalinks)", "status": "blocked"},
+    {"id": 7, "name": "Confirm end-to-end license redemption works, then remove debug log", "status": "not_started"}
+  ],
+  "blockers": [
     {
-      "id": 3,
-      "name": "Create 25-credit and 50-credit Gumroad products + set env vars",
-      "status": "not_started"
+      "description": "GUMROAD_PRODUCT_* env vars are set to permalinks (wmmnhz/wkfkih/irpqju) but Gumroad API requires base64 product IDs",
+      "type": "human_action",
+      "workaround": "10-credit product ID is tYtvc16VQuecUnFp54Szww== (from prior session). Need IDs for 20 and 40 credit products from Gumroad Content tab."
     }
   ],
-  "blockers": [],
   "human_actions_pending": [
     {
-      "action": "Create 25-credit product ($19) on Gumroad with license key enabled — copy Product ID from Content tab",
-      "context": "Same flow as 10-credit product already created",
+      "action": "Get base64 product IDs from Gumroad Content tab for 20-credit (wkfkih) and 40-credit (irpqju) products. Update GUMROAD_PRODUCT_10/20/40 in .env.local and Vercel to the base64 IDs.",
+      "context": "10-credit ID already known: tYtvc16VQuecUnFp54Szww==. Gumroad shows this on Content tab: 'Use your product ID to verify licenses through the API'.",
       "blocking": true
     },
     {
-      "action": "Create 50-credit product ($35) on Gumroad with license key enabled — copy Product ID from Content tab",
-      "context": "Same flow as 10-credit product already created",
-      "blocking": true
-    },
-    {
-      "action": "Set env vars in .env.local and Vercel: GUMROAD_PRODUCT_10, GUMROAD_PRODUCT_25, GUMROAD_PRODUCT_50, NEXT_PUBLIC_GUMROAD_URL_10, NEXT_PUBLIC_GUMROAD_URL_25, NEXT_PUBLIC_GUMROAD_URL_50",
-      "context": "GUMROAD_PRODUCT_10 product ID is tYtvc16VQuecUnFp54Szww== (permalink wmmnhz). Buy URLs come from Share tab of each product.",
-      "blocking": true
+      "action": "Once verified working: remove debug console.log from actions.ts (the [gumroad] line)",
+      "context": "Temporary debug line added at commit c59bab6",
+      "blocking": false
     }
   ],
   "decisions": [
-    {
-      "decision": "Use Gumroad Product ID (not permalink) as the product_id in license verify API calls",
-      "rationale": "Gumroad UI explicitly says 'Use your product ID to verify licenses through the API' and shows the base64 ID",
-      "phase": "billing-gumroad"
-    },
-    {
-      "decision": "Try all 3 products when verifying a key — user doesn't specify which pack they bought",
-      "rationale": "Simpler UX — single key input, server tries each product until one matches",
-      "phase": "billing-gumroad"
-    },
-    {
-      "decision": "Check uses===0 before incrementing, then check uses===1 after — prevents double redemption",
-      "rationale": "Gumroad has no separate mark-as-used endpoint; increment_uses_count=true on verify is the mechanism",
-      "phase": "billing-gumroad"
-    }
+    {"decision": "Products are 10/20/40 credits at $9/$19/$35", "rationale": "User created these on Gumroad with permalinks wmmnhz/wkfkih/irpqju", "phase": "billing-gumroad"},
+    {"decision": "Use base64 product ID (not permalink) as product_id in Gumroad license verify API", "rationale": "Gumroad API requires internal product ID, not URL slug. 10-credit ID: tYtvc16VQuecUnFp54Szww==", "phase": "billing-gumroad"},
+    {"decision": "Redeem form placed above credit packs, amber button", "rationale": "User preference + design consistency", "phase": "billing-gumroad"}
   ],
-  "uncommitted_files": [
-    "src/app/(protected)/settings/billing/actions.ts",
-    "src/app/(protected)/settings/billing/page.tsx",
-    "src/app/(protected)/settings/billing/redeem-key-form.tsx",
-    "src/app/(protected)/settings/billing/billing-buttons.tsx (deleted)",
-    "src/app/api/whop/webhook/route.ts (deleted)",
-    ".env.local.example"
-  ],
-  "next_action": "User creates 25 and 50 credit Gumroad products, then pastes Product IDs + buy URLs here. Then set 6 env vars in .env.local and Vercel dashboard.",
-  "context_notes": "Billing fully migrated from Whop to Gumroad in code. 10-credit product already created on Gumroad (Product ID: tYtvc16VQuecUnFp54Szww==, permalink: wmmnhz). Receipt tab configured with button text 'Redeem in VSS Creator' and instructions. Code changes uncommitted — waiting for user to finish creating products before deploying."
+  "uncommitted_files": [],
+  "next_action": "Get base64 product IDs for 20 and 40 credit products from Gumroad Content tab → update GUMROAD_PRODUCT_20 and GUMROAD_PRODUCT_40 env vars in .env.local and Vercel → also update GUMROAD_PRODUCT_10 from wmmnhz to tYtvc16VQuecUnFp54Szww== → redeploy → test redemption",
+  "context_notes": "All UI and code is correct and deployed. The ONLY remaining bug is that GUMROAD_PRODUCT_* env vars use URL slugs instead of base64 product IDs. Once those 3 env vars are corrected in Vercel (no code change needed), the license redemption will work."
 }
