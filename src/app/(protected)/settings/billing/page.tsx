@@ -13,18 +13,18 @@ const CREDIT_PACKS = [
     url: process.env.NEXT_PUBLIC_GUMROAD_URL_10,
   },
   {
-    credits: 25,
+    credits: 20,
     price: '$19',
     label: 'Creator Pack',
     description: 'Most popular',
-    url: process.env.NEXT_PUBLIC_GUMROAD_URL_25,
+    url: process.env.NEXT_PUBLIC_GUMROAD_URL_20,
   },
   {
-    credits: 50,
+    credits: 40,
     price: '$35',
     label: 'Pro Pack',
     description: 'Best value',
-    url: process.env.NEXT_PUBLIC_GUMROAD_URL_50,
+    url: process.env.NEXT_PUBLIC_GUMROAD_URL_40,
   },
 ]
 

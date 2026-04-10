@@ -8,8 +8,8 @@ const GUMROAD_VERIFY_URL = 'https://api.gumroad.com/v2/licenses/verify'
 
 const PRODUCTS = [
   { productId: process.env.GUMROAD_PRODUCT_10!, credits: 10 },
-  { productId: process.env.GUMROAD_PRODUCT_25!, credits: 25 },
-  { productId: process.env.GUMROAD_PRODUCT_50!, credits: 50 },
+  { productId: process.env.GUMROAD_PRODUCT_20!, credits: 20 },
+  { productId: process.env.GUMROAD_PRODUCT_40!, credits: 40 },
 ]
 
 async function verifyGumroadLicense(productId: string, licenseKey: string, increment: boolean) {
@@ -37,7 +37,7 @@ export async function redeemKey(
   if (!user) redirect('/login')
 
   // Find which product this key belongs to (check without incrementing first)
-  let matched: { permalink: string; credits: number } | null = null
+  let matched: { productId: string; credits: number } | null = null
   let currentUses = 0
 
   for (const product of PRODUCTS) {
