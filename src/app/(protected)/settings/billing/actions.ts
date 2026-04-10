@@ -43,7 +43,6 @@ export async function redeemKey(
   for (const product of PRODUCTS) {
     if (!product.productId) continue
     const data = await verifyGumroadLicense(product.productId, key, false)
-    console.log(`[gumroad] product=${product.productId} credits=${product.credits} response=`, JSON.stringify(data))
     if (data.success) {
       matched = product
       currentUses = data.uses ?? 0
