@@ -27,7 +27,7 @@ export function RedeemKeyForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap disabled:opacity-70 inline-flex items-center gap-2 shrink-0"
+          className="bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap disabled:opacity-70 inline-flex items-center gap-2 shrink-0"
         >
           {isPending && <Spinner />}
           {isPending ? 'Verifying…' : 'Redeem'}
