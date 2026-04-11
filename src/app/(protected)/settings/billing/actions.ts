@@ -61,26 +61,12 @@ export async function redeemKey(
   }
 
   const admin = createAdminClient()
-  const { data: current, error: selectError } = await admin
-    .from('usage_tracking')
-    .select('id, credits_remaining')
-    .eq('user_id', user.id)
-    .single()
+  const { data: result, error: rpcError } = await admin.rpc('add_credits', {
+    p_user_id: user.id,
+    p_credits: matched.credits,
+  })
 
-  console.log(`[credits] user=${user.id} select=`, JSON.stringify({ current, selectError }))
-
-  const { data: updated, error: updateError } = await admin
-    .from('usage_tracking')
-    .update({
-      credits_remaining: (current?.credits_remaining ?? 0) + matched.credits,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('user_id', user.id)
-    .select('credits_remaining')
-
-  console.log(`[credits] update=`, JSON.stringify({ updated, updateError }))
-
-  if (updateError) return { error: 'Failed to add credits. Please contact support.' }
+  if (rpcError || !result?.success) return { error: 'Failed to add credits. Please contact support.' }
 
   revalidatePath('/', 'layout')
   redirect('/settings/billing?success=credits')
