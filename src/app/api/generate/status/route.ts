@@ -36,6 +36,10 @@ export async function GET(request: NextRequest) {
     })
   }
 
+  if (carousel?.status === 'failed') {
+    return Response.json({ status: 'failed' })
+  }
+
   // 4. Poll Airtable directly (n8n callback requires deployed URL; Airtable is the reliable path)
   let ideaRecord: { id: string; fields: Record<string, unknown> }
   try {
